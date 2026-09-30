@@ -1,1 +1,7 @@
 @import 'tailwindcss';
+@plugin 'daisyui' {
+	theme: false;
+}
+
+@plugin '../themes/catppuccin.latte.ts';
+@plugin '../themes/catppuccin.macchiato.ts';
