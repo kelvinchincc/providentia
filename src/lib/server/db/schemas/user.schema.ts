@@ -1,9 +1,10 @@
+import { randomUUIDv7 } from 'crypto';
 import { index, sqliteTable, text } from 'drizzle-orm/sqlite-core';
 
 export const user = sqliteTable(
 	'users',
 	{
-		id: text('id').primaryKey(),
+		id: text('id').primaryKey().$defaultFn(randomUUIDv7),
 		username: text('username').notNull(),
 		passwordHash: text('password_hash').notNull(),
 		jwtSeed: text('jwt_seed').notNull(),
