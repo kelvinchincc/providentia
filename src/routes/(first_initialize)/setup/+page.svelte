@@ -19,7 +19,7 @@
 </script>
 
 <section class="grid min-h-screen place-items-center">
-	<main class="card w-[min-(80vw_400px)] rounded-lg bg-base-200 p-5">
+	<main class="card w-[min(80vw,400px)] rounded-lg bg-base-200 p-5">
 		<h1 class="bold mb-3 text-2xl">Setup</h1>
 		<form
 			onsubmit={(ev) => {
@@ -31,11 +31,10 @@
 		>
 			<form.Field name="username">
 				{#snippet children(field)}
-					<label class="label w-full">
-						<span>Username</span>
+					<label class="input w-full">
+						<span><i class="fas fa-user"></i></span>
 						<input
 							type="text"
-							class="input w-full"
 							placeholder="Username"
 							value={field.state.value}
 							onblur={field.handleBlur}
@@ -43,17 +42,18 @@
 								field.handleChange((e?.target as HTMLInputElement).value)}
 						/>
 					</label>
-					<div class="text-sm text-error">{field.state.meta.errors[0]?.message}</div>
+					<div class="text-xs text-error">
+						{field.state.meta.errors[0]?.message}
+					</div>
 				{/snippet}
 			</form.Field>
 
 			<form.Field name="password">
 				{#snippet children(field)}
-					<label class="label w-full">
-						<span>Password</span>
+					<label class="input w-full">
+						<span><i class="fas fa-lock"></i></span>
 						<input
 							type="password"
-							class="input w-full"
 							placeholder="Password"
 							value={field.state.value}
 							onblur={field.handleBlur}
@@ -61,17 +61,18 @@
 								field.handleChange((e?.target as HTMLInputElement).value)}
 						/>
 					</label>
-					<div class="text-sm text-error">{field.state.meta.errors[0]?.message}</div>
+					<div class="text-xs text-error">
+						{field.state.meta.errors[0]?.message}
+					</div>
 				{/snippet}
 			</form.Field>
 
 			<form.Field name="confirmPassword">
 				{#snippet children(field)}
-					<label class="label w-full">
-						<span>Confirm Password</span>
+					<label class="input w-full">
+						<span><i class="fas fa-lock"></i></span>
 						<input
 							type="password"
-							class="input w-full"
 							placeholder="Confirm Password"
 							value={field.state.value}
 							onblur={field.handleBlur}
@@ -79,7 +80,9 @@
 								field.handleChange((e?.target as HTMLInputElement).value)}
 						/>
 					</label>
-					<div class="text-sm text-error">{field.state.meta.errors[0]?.message}</div>
+					<div class="text-xs text-error">
+						{field.state.meta.errors[0]?.message}
+					</div>
 				{/snippet}
 			</form.Field>
 
