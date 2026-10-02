@@ -5,3 +5,7 @@
 
 @plugin '../themes/catppuccin.latte.ts';
 @plugin '../themes/catppuccin.macchiato.ts';
+
+html {
+	@apply bg-base-300;
+}
