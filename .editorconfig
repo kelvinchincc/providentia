@@ -2,3 +2,8 @@
 indent_style = tab
 indent_size = 4
 window_width = 100
+
+[*.py]
+indent_size = 4
+indent_style = space
+window_width = 120
