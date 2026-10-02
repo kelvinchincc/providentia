@@ -17,3 +17,13 @@ CREATE TABLE `gems` (
 	`note` text,
 	`type` text NOT NULL
 );
+--> statement-breakpoint
+CREATE TABLE `stats` (
+	`id` text PRIMARY KEY NOT NULL,
+	`item` text NOT NULL,
+	`value` integer DEFAULT 0 NOT NULL,
+	`created_at` integer NOT NULL,
+	`updated_at` integer NOT NULL
+);
+--> statement-breakpoint
+CREATE INDEX `item_idx` ON `stats` (`item`);
