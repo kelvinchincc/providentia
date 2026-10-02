@@ -1,4 +1,8 @@
-import type { HealthcheckApiResponse } from '$lib/schema/api/healthcheck';
+/*
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ */
 import { redirect, type Handle } from '@sveltejs/kit';
 import { env } from '$env/dynamic/private';
 import { logger } from '$lib/server/utils/logger';
