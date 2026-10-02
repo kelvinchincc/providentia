@@ -40,6 +40,7 @@
 	"dependencies": {
 		"@libsql/client": "^0.18.0",
 		"@tanstack/svelte-form": "^1.33.5",
+		"argon2": "^0.45.1",
 		"axios": "^1.20.0",
 		"dayjs": "^1.11.23",
 		"dotenv": "^18.0.4",

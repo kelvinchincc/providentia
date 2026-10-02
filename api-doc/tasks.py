@@ -1,16 +1,25 @@
+import csv
 import glob
 import os
 import subprocess
 import sys
+from io import StringIO
 
 from invoke.context import Context
 from invoke.tasks import task
 
 
-@task(help={"file": "Specify a .hurl file to run. If not provided, a file will be selected using fzf."})
-def run(_ctx: Context, file=None):
+@task(
+    help={
+        "file": "Specify a .hurl file to run. If not provided, a file will be selected using fzf.",
+        "env": "Specify a .env file to use for variables. Defaults to .env.",
+        "vars": "Array of key=value pairs to set as environment variables. Example: --var FOO=bar,BAZ=qux",
+    }
+)
+def run(_ctx: Context, file=None, env=".env", vars=None):
     """Run hurl with .env variables. Pass extra flags with -- separator: inv run -- --verbose"""
     files = get_sorted_hurl_files()
+    parsed_vars = next(csv.reader(StringIO(vars if vars else ""), delimiter=","), [])
 
     if not files:
         print("No .hurl files found")
@@ -27,23 +36,25 @@ def run(_ctx: Context, file=None):
     except ValueError:
         pass
 
-    cmd = ["hurl", "--variables-file", ".env", selected] + trailing_args
-    result = subprocess.run(cmd, check=True)
-    sys.exit(result.returncode)
+    variables: list[list[str]] = [["--variable", var] for var in parsed_vars]
+    cmd = [
+        "hurl",
+        "--variables-file",
+        env,
+        *[arg for sublist in variables for arg in sublist],
+        selected,
+    ] + trailing_args
+    run_cmd(cmd)
 
 
 @task(help={"json": "Process JSON with jq before opening in Zed"})
 def zed(_ctx: Context, json=False):
     """Launch Zed in stdin mode"""
     if json:
-        result = subprocess.run("jq .", input=sys.stdin.read(), text=True, capture_output=True, check=True)
-        if result.returncode != 0:
-            print("jq failed to process the input")
-            sys.exit(result.returncode)
-
-        result = subprocess.run("zed -e -", input=result.stdout, text=True, check=True)
+        run_cmd(["jq", "."], exit_on_error=True)
+        run_cmd(["zed", "-e", "-"], exit_on_error=True)
     else:
-        sys.exit(subprocess.run("zed -e -", check=True).returncode)
+        run_cmd(["zed", "-e", "-"], exit_on_error=True)
 
 
 def get_sorted_hurl_files():
@@ -67,3 +78,14 @@ def select_file(files):
     except FileNotFoundError:
         print("fzf not found")
         return None
+
+
+def run_cmd(cmd: list[str], exit_on_error=None):
+    """Run a command and return the result. If exit_on_error is True, exit on error."""
+    try:
+        result = subprocess.run(cmd, check=True)
+        return result
+    except subprocess.CalledProcessError as e:
+        if exit_on_error or exit_on_error is None:
+            sys.exit(e.returncode)
+        return e

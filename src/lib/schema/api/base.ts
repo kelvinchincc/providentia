@@ -3,7 +3,7 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
-import { z, type ZodType } from 'zod';
+import { z, ZodType } from 'zod';
 
 export function createBaseApiResponseSchema<T extends z.ZodType>(dataSchema: T) {
 	return z.discriminatedUnion('success', [
@@ -16,6 +16,21 @@ export function createBaseApiResponseSchema<T extends z.ZodType>(dataSchema: T) 
 			message: z.string()
 		})
 	]);
+}
+
+export const basicOkApiResponseSchema = createBaseApiResponseSchema(z.string());
+export type BasicOkApiResponse = z.infer<typeof basicOkApiResponseSchema>;
+
+/**
+ * Creates a successful API response with a basic string message.
+ * @param message The message to be returned in the response.
+ * @returns An object representing a successful API response, containing the provided message.
+ */
+export function createBasicOkApiResponse(message: string): BasicOkApiResponse {
+	return {
+		success: true,
+		data: message
+	};
 }
 
 /**
@@ -32,6 +47,11 @@ export function createOkApiResponse<T extends ZodType>(schema: T, data: z.infer<
 	};
 }
 
+/**
+ * Creates an error API response with the given message.
+ * @param message The error message to be returned in the response.
+ * @returns An object representing an error API response, containing the provided message.
+ */
 export function createErrApiResponse(message: string) {
 	return {
 		success: false,

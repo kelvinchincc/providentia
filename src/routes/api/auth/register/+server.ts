@@ -8,18 +8,27 @@ import { user as userRepo } from '$lib/server/db/schemas';
 import { eq } from 'drizzle-orm';
 import type { RequestHandler } from '../../healthcheck/$types';
 import { registerUserRequestSchema, type RegisterUserRequest } from '$lib/schema/api/register-user';
+import { hashPassword } from '$lib/server/utils/auth';
+import { needInitializationCheck } from '$lib/server/utils/healthcheck';
+import { createBasicOkApiResponse, createErrApiResponse } from '$lib/schema/api/base';
+import { json } from '@sveltejs/kit';
 
 export const POST: RequestHandler = async ({ request }) => {
 	const body: RegisterUserRequest = await request.json();
+	const initialized = !(await needInitializationCheck());
+
+	if (initialized) {
+		return json(createErrApiResponse('Forbidden'), { status: 403 });
+	}
 
 	try {
 		registerUserRequestSchema.parse(body);
 	} catch (error) {
-		return new Response('Bad Request', { status: 400 });
+		return json(createErrApiResponse('Bad Request'), { status: 400 });
 	}
 
 	if (body.password !== body.confirmPassword) {
-		return new Response('Bad Request', { status: 400 });
+		return json(createErrApiResponse('Bad Request'), { status: 400 });
 	}
 
 	const existingUser = await db.query.user.findFirst({
@@ -27,17 +36,17 @@ export const POST: RequestHandler = async ({ request }) => {
 	});
 
 	if (existingUser) {
-		return new Response('Conflict', { status: 409 });
+		return json(createErrApiResponse('Conflict'), { status: 409 });
 	}
 
 	await db.transaction(async (tr) => {
 		await tr.insert(userRepo).values({
 			username: body.username,
 			jwtSeed: crypto.randomUUID(),
-			passwordHash: crypto.randomUUID(), // Placeholder for password hashing, replace with actual hashing logic
+			passwordHash: await hashPassword(body.password),
 			refreshTokenSeed: crypto.randomUUID()
 		});
 	});
 
-	return new Response('Created', { status: 201 });
+	return json(createBasicOkApiResponse('Created'), { status: 201 });
 };
