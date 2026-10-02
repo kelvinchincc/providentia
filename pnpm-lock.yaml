@@ -169,6 +169,9 @@ importers:
       '@libsql/client':
         specifier: ^0.18.0
         version: 0.18.0
+      dayjs:
+        specifier: ^1.11.23
+        version: 1.11.23
       dotenv:
         specifier: ^18.0.4
         version: 18.0.4
@@ -1047,6 +1050,9 @@ packages:
 
   daisyui@5.7.46:
     resolution: {integrity: sha512-z/tfVXLpLRe1ojGeokzxauHA9Ij5CGfk+83EdatQbFSVr02h5mUcp4nkgQJOw68wH1wAAPu/SY+MWbDdJG2R4w==}
+
+  dayjs@1.11.23:
+    resolution: {integrity: sha512-QDTCU0M0MxR3hQfnlDJfwekQiaanm1ubOD231u73WBckQ/fsamwRLiE2GBz6D3a/xF1NgfiDLJjXBa1hYOYTtQ==}
 
   deepmerge@4.3.1:
     resolution: {integrity: sha512-3sUqbMEc77XqpdNO7FRyRog+eW3ph+GYCbj+rK+uYyRMuwsVy0rMiVtPn+QJlKFvWP/1PYpapqYn0Me2knFn+A==}
@@ -2142,6 +2148,8 @@ snapshots:
   cookie@0.6.0: {}
 
   daisyui@5.7.46: {}
+
+  dayjs@1.11.23: {}
 
   deepmerge@4.3.1: {}
 
