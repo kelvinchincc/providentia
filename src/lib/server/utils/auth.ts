@@ -30,9 +30,9 @@ export function hashPassword(password: string) {
 	}
 }
 
-export function veirfyPassword(hash: string, password: string) {
+export async function verifyPassword(hash: string, password: string) {
 	try {
-		const isValid = argon2.verify(hash, password);
+		const isValid = await argon2.verify(hash, password);
 		return isValid;
 	} catch (error) {
 		logger.error('Error verifying password:', error);
