@@ -1,7 +1,8 @@
 import type { HealthcheckApiResponse } from '$lib/schema/api/healthcheck';
 import { redirect, type Handle } from '@sveltejs/kit';
-import axios from 'axios';
 import { env } from '$env/dynamic/private';
+import { logger } from '$lib/server/utils/logger';
+import { needInitializationCheck } from '$lib/server/utils/healthcheck';
 
 export const handle: Handle = async ({ event, resolve }) => {
 	if (event.url.pathname === '/setup') return resolve(event);
@@ -12,19 +13,18 @@ export const handle: Handle = async ({ event, resolve }) => {
 	if (event.url.pathname.startsWith('/api')) return resolve(event);
 
 	try {
-		const result = await axios.get<HealthcheckApiResponse>(`${env.DOMAIN}/api/healthcheck`);
-		if (!result.data.success) {
-			throw new Error('Healthcheck failed: ' + result.data.message);
-		}
-
-		if (!result.data.data.initialized) {
+		const needInitialization = await needInitializationCheck();
+		if (needInitialization) {
 			throw new Error('redirect-need-initialization');
 		}
 	} catch (error) {
 		if (error instanceof Error && error.message === 'redirect-need-initialization') {
+			logger.info('Redirecting to setup page due to uninitialized state.');
 			throw redirect(301, `${env.DOMAIN}/setup`);
 		} else {
-			console.error('Healthcheck failed:', error);
+			logger.error(
+				'Healthcheck failed: ' + (error instanceof Error ? error.message : String(error))
+			);
 			return new Response('Service Unavailable', { status: 503 });
 		}
 	}
