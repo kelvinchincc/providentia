@@ -12,7 +12,8 @@ from invoke.tasks import task
 @task(
     help={
         "file": "Specify a .hurl file to run. If not provided, a file will be selected using fzf.",
-        "env": "Specify a .env file to use for variables. Defaults to .env.",
+        "env": """Specify a .env file to use for variables. Defaults to .env. If passed as list, the first file will be
+the variables file, and the rest will be read and passed as variables to hurl.""",
         "vars": "Array of key=value pairs to set as environment variables. Example: --var FOO=bar,BAZ=qux",
     }
 )
@@ -36,11 +37,15 @@ def run(_ctx: Context, file=None, env=".env", vars=None):
     except ValueError:
         pass
 
+    env_files = parse_env_file_list(env)
+    env_to_use = env_files[0]
+    env_vars = load_env_variables(env_files[1:])  # Load additional env files
     variables: list[list[str]] = [["--variable", var] for var in parsed_vars]
+    variables += [["--variable", f"{k}={v}"] for k, v in env_vars.items()]
     cmd = [
         "hurl",
         "--variables-file",
-        env,
+        env_to_use,
         *[arg for sublist in variables for arg in sublist],
         selected,
     ] + trailing_args
@@ -89,3 +94,26 @@ def run_cmd(cmd: list[str], exit_on_error=None):
         if exit_on_error or exit_on_error is None:
             sys.exit(e.returncode)
         return e
+
+
+def parse_env_file_list(env_file: str) -> list[str]:
+    """Parse a given env file list string into a list of env files, if not provided, return the default .env file"""
+
+    if not env_file:
+        return [".env"]
+
+    env_files = [file.strip() for file in env_file.split(",") if file.strip()]
+    return env_files if env_files else [".env"]
+
+
+def load_env_variables(env_files: list[str]) -> dict[str, str]:
+    """Load environment variables from a list of env files and return a dictionary of variables"""
+    env_vars = {}
+    for env_file in env_files:
+        if os.path.exists(env_file):
+            with open(env_file) as f:
+                for line in f:
+                    if line.strip() and not line.startswith("#"):
+                        key, value = line.strip().split("=", 1)
+                        env_vars[key] = value
+    return env_vars
