@@ -24,7 +24,7 @@ export const handle: Handle = async ({ event, resolve }) => {
 	} catch (error) {
 		if (error instanceof Error && error.message === 'redirect-need-initialization') {
 			logger.info('Redirecting to setup page due to uninitialized state.');
-			throw redirect(301, `${env.DOMAIN}/setup`);
+			throw redirect(301, `${env.APP_URL}/setup`);
 		} else {
 			logger.error(
 				'Healthcheck failed: ' + (error instanceof Error ? error.message : String(error))

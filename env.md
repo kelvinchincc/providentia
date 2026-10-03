@@ -44,5 +44,5 @@ JWT_SECRET=your_random_secret_key_here
 eg command to generate a random secret key:
 
 ```
-openssl rand -base64 32
+openssl rand -hex 64
 ```

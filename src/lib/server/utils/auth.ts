@@ -39,3 +39,14 @@ export async function verifyPassword(hash: string, password: string) {
 		throw new FailedVerifyPasswordException('Failed to verify password');
 	}
 }
+
+/**
+ * Generates a random seed for cryptographic purposes.
+ * @returns {string} A random seed represented as a string in hex format.
+ */
+export function generateSeed(): string {
+	const length = 256; // Length of the seed in bits
+	const array = new Uint8Array(length / 8);
+	crypto.getRandomValues(array);
+	return Array.from(array, (byte) => byte.toString(16).padStart(2, '0')).join('');
+}

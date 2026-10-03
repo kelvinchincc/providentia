@@ -4,16 +4,28 @@
  file, You can obtain one at http://mozilla.org/MPL/2.0/.
 -->
 <script lang="ts">
+	import { goto } from '$app/navigation';
+	import { resolve } from '$app/paths';
 	import {
 		firstRegistrationFormSchema,
 		initialValues
 	} from '$lib/schema/form/first-registration-form';
 	import { createForm } from '@tanstack/svelte-form';
+	import axios from 'axios';
 
 	const form = createForm(() => ({
 		defaultValues: initialValues(),
 		validators: {
 			onSubmit: firstRegistrationFormSchema
+		},
+		onSubmit: async ({ value }) => {
+			try {
+				await axios.post('/api/auth/register', value);
+				goto(resolve('/login'));
+			} catch (error) {
+				alert('An error occurred during registration. Please try again.');
+				console.error(error);
+			}
 		}
 	}));
 </script>
