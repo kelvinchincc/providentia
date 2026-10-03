@@ -1,9 +1,7 @@
-import csv
 import glob
 import os
 import subprocess
 import sys
-from io import StringIO
 
 from invoke.context import Context
 from invoke.tasks import task
@@ -12,15 +10,16 @@ from invoke.tasks import task
 @task(
     help={
         "file": "Specify a .hurl file to run. If not provided, a file will be selected using fzf.",
-        "env": """Specify a .env file to use for variables. Defaults to .env. If passed as list, the first file will be
-the variables file, and the rest will be read and passed as variables to hurl.""",
-        "vars": "Array of key=value pairs to set as environment variables. Example: --var FOO=bar,BAZ=qux",
-    }
+        "env": """Specifiy additional .env files to load. Example: --env .env.local,.env.test, note that .env is always
+loaded in all cases""",
+        "vars": "Specify additional variables to load. Example: --vars VAR1=value1,VAR2=value2",
+        "verbose": "Enable verbose output",
+    },
+    iterable=["env", "vars"],
 )
-def run(_ctx: Context, file=None, env=".env", vars=None):
+def run(_ctx: Context, file=None, env=None, vars=None, verbose=False):
     """Run hurl with .env variables. Pass extra flags with -- separator: inv run -- --verbose"""
     files = get_sorted_hurl_files()
-    parsed_vars = next(csv.reader(StringIO(vars if vars else ""), delimiter=","), [])
 
     if not files:
         print("No .hurl files found")
@@ -37,15 +36,17 @@ def run(_ctx: Context, file=None, env=".env", vars=None):
     except ValueError:
         pass
 
-    env_files = parse_env_file_list(env)
-    env_to_use = env_files[0]
-    env_vars = load_env_variables(env_files[1:])  # Load additional env files
-    variables: list[list[str]] = [["--variable", var] for var in parsed_vars]
-    variables += [["--variable", f"{k}={v}"] for k, v in env_vars.items()]
+    env_files = env if env is not None else [".env"]
+    env_files = [["--variables-file", f] for f in env_files]
+    variables: list[list[str]] = [
+        ["--variable", var] for var in (vars if vars is not None else [])
+    ]
     cmd = [
         "hurl",
+        *(["--verbose"] if verbose else []),
         "--variables-file",
-        env_to_use,
+        ".env",
+        *[arg for sublist in env_files for arg in sublist],
         *[arg for sublist in variables for arg in sublist],
         selected,
     ] + trailing_args
@@ -94,26 +95,3 @@ def run_cmd(cmd: list[str], exit_on_error=None):
         if exit_on_error or exit_on_error is None:
             sys.exit(e.returncode)
         return e
-
-
-def parse_env_file_list(env_file: str) -> list[str]:
-    """Parse a given env file list string into a list of env files, if not provided, return the default .env file"""
-
-    if not env_file:
-        return [".env"]
-
-    env_files = [file.strip() for file in env_file.split(",") if file.strip()]
-    return env_files if env_files else [".env"]
-
-
-def load_env_variables(env_files: list[str]) -> dict[str, str]:
-    """Load environment variables from a list of env files and return a dictionary of variables"""
-    env_vars = {}
-    for env_file in env_files:
-        if os.path.exists(env_file):
-            with open(env_file) as f:
-                for line in f:
-                    if line.strip() and not line.startswith("#"):
-                        key, value = line.strip().split("=", 1)
-                        env_vars[key] = value
-    return env_vars
