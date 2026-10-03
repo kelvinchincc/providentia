@@ -3,14 +3,14 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
-import { env } from '$env/dynamic/private';
-import { FailedHashPasswordException } from '$lib/exception/failed-hash-password';
-import { FailedVerifyPasswordException } from '$lib/exception/failed-verify-password';
+import { JWT_SECRET } from '$app/env/private';
+import { FailedHashPasswordException } from '#lib/exception/failed-hash-password.js';
+import { FailedVerifyPasswordException } from '#lib/exception/failed-verify-password.js';
 import { logger } from './logger';
 import argon2 from 'argon2';
 
 export function getJWTSecret() {
-	const jwtSecret = env.JWT_SECRET;
+	const jwtSecret = JWT_SECRET;
 
 	if (!jwtSecret) {
 		logger.error('JWT_SECRET environment variable is not set');

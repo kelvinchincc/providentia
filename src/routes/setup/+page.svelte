@@ -1,15 +1,10 @@
-<!--
- This Source Code Form is subject to the terms of the Mozilla Public
- License, v. 2.0. If a copy of the MPL was not distributed with this
- file, You can obtain one at http://mozilla.org/MPL/2.0/.
--->
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import { resolve } from '$app/paths';
 	import {
 		firstRegistrationFormSchema,
 		initialValues
-	} from '$lib/schema/form/first-registration-form';
+	} from '#lib/schema/form/first-registration-form.js';
 	import { createForm } from '@tanstack/svelte-form';
 	import axios from 'axios';
 
@@ -21,7 +16,7 @@
 		onSubmit: async ({ value }) => {
 			try {
 				await axios.post('/api/auth/register', value);
-				goto(resolve('/login'));
+				goto(resolve('login'));
 			} catch (error) {
 				alert('An error occurred during registration. Please try again.');
 				console.error(error);
@@ -29,6 +24,12 @@
 		}
 	}));
 </script>
+
+<!--
+ This Source Code Form is subject to the terms of the Mozilla Public
+ License, v. 2.0. If a copy of the MPL was not distributed with this
+ file, You can obtain one at http://mozilla.org/MPL/2.0/.
+-->
 
 <section class="grid min-h-screen place-items-center">
 	<main class="card w-[min(80vw,400px)] rounded-lg bg-base-200 p-5">

@@ -3,7 +3,7 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
-import { generateCurrentTimestamp } from '$lib/server/utils/datetime';
+import { generateCurrentTimestamp } from '#lib/server/utils/datetime.js';
 import { randomUUIDv7 } from 'crypto';
 import { index, integer, sqliteTable, text } from 'drizzle-orm/sqlite-core';
 

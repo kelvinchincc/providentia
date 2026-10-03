@@ -1,12 +1,14 @@
+import { redirect } from '@sveltejs/kit';
+import type { Handle } from '@sveltejs/kit/hooks';
+
 /*
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
-import { redirect, type Handle } from '@sveltejs/kit';
-import { env } from '$env/dynamic/private';
-import { logger } from '$lib/server/utils/logger';
-import { needInitializationCheck } from '$lib/server/utils/healthcheck';
+import { APP_URL } from '$app/env/private';
+import { logger } from '#lib/server/utils/logger.js';
+import { needInitializationCheck } from '#lib/server/utils/healthcheck.js';
 
 export const handle: Handle = async ({ event, resolve }) => {
 	if (event.url.pathname === '/setup') return resolve(event);
@@ -24,7 +26,7 @@ export const handle: Handle = async ({ event, resolve }) => {
 	} catch (error) {
 		if (error instanceof Error && error.message === 'redirect-need-initialization') {
 			logger.info('Redirecting to setup page due to uninitialized state.');
-			throw redirect(301, `${env.APP_URL}/setup`);
+			throw redirect(301, `${APP_URL}/setup`);
 		} else {
 			logger.error(
 				'Healthcheck failed: ' + (error instanceof Error ? error.message : String(error))
