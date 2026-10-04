@@ -6,7 +6,7 @@
 import { db } from '#lib/server/db/index.js';
 import { user as userRepo } from '#lib/server/db/schemas/index.js';
 import { eq } from 'drizzle-orm';
-import type { RequestHandler } from '../../healthcheck/$types';
+import type { RequestHandler } from '../../auth/register/$types';
 import {
 	registerUserRequestSchema,
 	type RegisterUserRequest

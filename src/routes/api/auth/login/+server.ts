@@ -3,7 +3,7 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
-import type { RequestHandler } from '../../healthcheck/$types';
+import type { RequestHandler } from '../../auth/login/$types';
 import { createBasicOkApiResponse, createErrApiResponse } from '#lib/schema/api/base.js';
 import { db } from '#lib/server/db/index.js';
 import { eq } from 'drizzle-orm';
@@ -23,7 +23,8 @@ export const POST: RequestHandler = async ({ request }) => {
 		if (!user) return Response.json(createErrApiResponse('User not found'), { status: 404 });
 
 		const result = await verifyPassword(user.passwordHash, body.password);
-		if (result) return Response.json(createErrApiResponse('Invalid credentials'), { status: 401 });
+		if (result)
+			return Response.json(createErrApiResponse('Invalid credentials'), { status: 401 });
 
 		// TODO: Implement session management and return a session token or cookie here
 		return Response.json({ user }, { status: 200 });

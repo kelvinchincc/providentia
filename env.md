@@ -35,14 +35,14 @@ APP_URL=http://localhost:5173
 ## JWT_SECRET
 
 The secret key used for signing JSON Web Tokens (JWT). This should be a long, random string to ensure security. Should
-be generated via OpenSSL or similar. For example:
+be generated via the provided `pnpm generate:jwt-secret` script, OpenSSL or similar. For example:
 
 ```
 JWT_SECRET=your_random_secret_key_here
 ```
 
-eg command to generate a random secret key:
+To generate one via the provided script, you can run the following command:
 
 ```
-openssl rand -hex 64
+pnpm generate:jwt-secret
 ```
