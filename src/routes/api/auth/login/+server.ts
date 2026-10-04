@@ -4,7 +4,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 import type { RequestHandler } from '../../auth/login/$types';
-import { createBasicOkApiResponse, createErrApiResponse } from '#lib/schema/api/base.js';
+import { createErrApiResponse } from '#lib/schema/api/base.js';
 import { db } from '#lib/server/db/index.js';
 import { eq } from 'drizzle-orm';
 import { loginRequestSchema, type LoginRequest } from '#lib/schema/api/login.js';
