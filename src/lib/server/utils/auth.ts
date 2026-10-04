@@ -6,8 +6,12 @@
 import { JWT_SECRET } from '$app/env/private';
 import { FailedHashPasswordException } from '#lib/exception/failed-hash-password.js';
 import { FailedVerifyPasswordException } from '#lib/exception/failed-verify-password.js';
+import { InvalidJWTPayloadException } from '#lib/exception/invalid-jwt-payload.js';
 import { logger } from './logger';
 import argon2 from 'argon2';
+import { jwtSchema, JWTType, type JWTPayload } from '#lib/schema/base/jwt.js';
+import { ZodError } from 'zod';
+import * as jose from 'jose';
 
 export function getJWTSecret() {
 	const jwtSecret = JWT_SECRET;
@@ -49,4 +53,26 @@ export function generateSeed(): string {
 	const array = new Uint8Array(length / 8);
 	crypto.getRandomValues(array);
 	return Array.from(array, (byte) => byte.toString(16).padStart(2, '0')).join('');
+}
+
+/**
+ * Signs a JWT payload using the secret key.
+ * @param payload - The payload to be signed in the JWT.
+ * @throws {InvalidJWTPayloadException} If the payload is invalid according to the JWT schema.
+ */
+export async function signJWTSecret(payload: JWTPayload) {
+	try {
+		jwtSchema.parse(payload);
+	} catch (error) {
+		if (!(error instanceof ZodError)) throw error;
+
+		throw new InvalidJWTPayloadException('Invalid JWT payload');
+	}
+
+	const signed = await new jose.SignJWT(payload)
+		.setProtectedHeader({ alg: 'HS256' })
+		.setIssuedAt()
+		.setExpirationTime(payload.t === JWTType.ACCESS ? '1h' : '7d')
+		.sign(new TextEncoder().encode(getJWTSecret()));
+	return signed;
 }

@@ -9,8 +9,9 @@ import { db } from '#lib/server/db/index.js';
 import { eq } from 'drizzle-orm';
 import { loginRequestSchema, type LoginRequest } from '#lib/schema/api/login.js';
 import { user as userRepo } from '#lib/server/db/schemas/index.js';
-import { verifyPassword } from '#lib/server/utils/auth.js';
+import { signJWTSecret, verifyPassword } from '#lib/server/utils/auth.js';
 import { logger } from '#lib/server/utils/logger.js';
+import { JWTType } from '#lib/schema/base/jwt.js';
 
 export const POST: RequestHandler = async ({ request }) => {
 	const body: LoginRequest = await request.json();
@@ -27,7 +28,13 @@ export const POST: RequestHandler = async ({ request }) => {
 			return Response.json(createErrApiResponse('Invalid credentials'), { status: 401 });
 
 		// TODO: Implement session management and return a session token or cookie here
-		return Response.json({ user }, { status: 200 });
+		const jwtPayload = await signJWTSecret({
+			u: user.id,
+			s: user.jwtSeed,
+			t: JWTType.ACCESS
+		});
+		logger.debug(JSON.stringify(jwtPayload));
+		return Response.json(jwtPayload, { status: 200 });
 	} catch (error) {
 		logger.error('Error during login:', error);
 		return Response.json(createErrApiResponse('Malformed request'), { status: 400 });
