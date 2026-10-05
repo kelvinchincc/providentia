@@ -12,6 +12,11 @@ import argon2 from 'argon2';
 import { jwtSchema, JWTType, type JWTPayload } from '#lib/schema/base/jwt.js';
 import { ZodError } from 'zod';
 import * as jose from 'jose';
+import type { Cookies } from '@sveltejs/kit';
+import { UnauthorizedException } from '#lib/exception/http/index.js';
+import { db } from '../db';
+import { eq } from 'drizzle-orm';
+import { user as userRepo } from '../db/schemas';
 
 export function getJWTSecret() {
 	const jwtSecret = JWT_SECRET;
@@ -80,24 +85,54 @@ export async function signJWTSecret(payload: JWTPayload) {
 /**
  * Verifies a JWT token against the provided seed and type.
  * @param token - The JWT token to be verified.
- * @param seed - The seed to compare against the payload's seed.
  * @param type - The expected type of the JWT payload.
- * @returns A promise that resolves to true if the token is valid and matches the seed and type, otherwise false.
+ * @returns A promise that resolves to the user object if the token is valid, or null if invalid.
  */
-export async function verifyJWTSecret(token: string, seed: string, type: JWTPayload['t']) {
+export async function verifyJWTSecret(token: string, type: JWTPayload['t']) {
 	const secret = new TextEncoder().encode(getJWTSecret());
 	try {
 		const { payload } = await jose.jwtVerify(token, secret, {
 			algorithms: ['HS256']
 		});
 
-		if (payload.s !== seed || payload.t !== type) {
-			return false;
+		jwtSchema.parse(payload);
+		const userId = (payload as JWTPayload).u;
+		const user = await db.query.user.findFirst({ where: eq(userRepo.id, userId) });
+
+		if (!user) {
+			return null;
 		}
+
+		const seed = user.jwtSeed;
+
+		if (payload.s !== seed || payload.t !== type) {
+			return null;
+		}
+
+		return user;
 	} catch (error) {
 		logger.error('Error verifying JWT:', error);
-		return false;
+		return null;
+	}
+}
+
+/**
+ * Verifies the authentication of a user based on the JWT token stored in cookies.
+ *
+ * @param cookies - The cookies object containing the JWT token.
+ * @param jwtType - The expected type of the JWT payload (default is JWTType.ACCESS).
+ * @returns The user object if the token is valid, or throws an UnauthorizedException if invalid.
+ * @throws {UnauthorizedException} If the token is missing, empty, or invalid.
+ */
+export async function verifyAuth(cookies: Cookies, jwtType: JWTPayload['t'] = JWTType.ACCESS) {
+	const token = cookies.get('auth');
+	if (token == null || token === '') {
+		throw new UnauthorizedException();
 	}
 
-	return true;
+	const jwtPayload = await verifyJWTSecret(token, jwtType);
+
+	if (jwtPayload == null) throw new UnauthorizedException();
+
+	return jwtPayload;
 }

@@ -41,3 +41,7 @@ export function okResponse(data: unknown, status: number = 200) {
 
 	return Response.json(data, { status: status });
 }
+
+export function noContentResponse() {
+	return new Response(null, { status: 204 });
+}
