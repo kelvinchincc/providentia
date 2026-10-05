@@ -13,24 +13,30 @@ import {
 } from '#lib/schema/api/register-user.js';
 import { generateSeed, hashPassword } from '#lib/server/utils/auth.js';
 import { needInitializationCheck } from '#lib/server/utils/healthcheck.js';
-import { createBasicOkApiResponse, createErrApiResponse } from '#lib/schema/api/base.js';
+import { createBasicOkApiResponse } from '#lib/schema/api/base.js';
+import { createApiRoute, okResponse } from '#lib/server/utils/api.js';
+import {
+	BadRequestException,
+	ForbiddenException,
+	ConflictException
+} from '#lib/exception/http/index.js';
 
-export const POST: RequestHandler = async ({ request }) => {
+export const POST = createApiRoute(async ({ request }) => {
 	const body: RegisterUserRequest = await request.json();
-	const initialized = !(await needInitializationCheck());
 
+	const initialized = !(await needInitializationCheck());
 	if (initialized) {
-		return Response.json(createErrApiResponse('Forbidden'), { status: 403 });
+		throw new ForbiddenException();
 	}
 
 	try {
 		registerUserRequestSchema.parse(body);
 	} catch (error) {
-		return Response.json(createErrApiResponse('Bad Request'), { status: 400 });
+		throw new BadRequestException('Malformed request');
 	}
 
 	if (body.password !== body.confirmPassword) {
-		return Response.json(createErrApiResponse('Bad Request'), { status: 400 });
+		throw new BadRequestException('Passwords do not match');
 	}
 
 	const existingUser = await db.query.user.findFirst({
@@ -38,7 +44,7 @@ export const POST: RequestHandler = async ({ request }) => {
 	});
 
 	if (existingUser) {
-		return Response.json(createErrApiResponse('Conflict'), { status: 409 });
+		throw new ConflictException('Username already exists');
 	}
 
 	await db.transaction(async (tr) => {
@@ -50,5 +56,5 @@ export const POST: RequestHandler = async ({ request }) => {
 		});
 	});
 
-	return Response.json(createBasicOkApiResponse('Created'), { status: 201 });
-};
+	return okResponse(createBasicOkApiResponse('created'), 201);
+});

@@ -76,3 +76,28 @@ export async function signJWTSecret(payload: JWTPayload) {
 		.sign(new TextEncoder().encode(getJWTSecret()));
 	return signed;
 }
+
+/**
+ * Verifies a JWT token against the provided seed and type.
+ * @param token - The JWT token to be verified.
+ * @param seed - The seed to compare against the payload's seed.
+ * @param type - The expected type of the JWT payload.
+ * @returns A promise that resolves to true if the token is valid and matches the seed and type, otherwise false.
+ */
+export async function verifyJWTSecret(token: string, seed: string, type: JWTPayload['t']) {
+	const secret = new TextEncoder().encode(getJWTSecret());
+	try {
+		const { payload } = await jose.jwtVerify(token, secret, {
+			algorithms: ['HS256']
+		});
+
+		if (payload.s !== seed || payload.t !== type) {
+			return false;
+		}
+	} catch (error) {
+		logger.error('Error verifying JWT:', error);
+		return false;
+	}
+
+	return true;
+}

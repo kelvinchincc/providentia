@@ -12,20 +12,27 @@ import { user as userRepo } from '#lib/server/db/schemas/index.js';
 import { signJWTSecret, verifyPassword } from '#lib/server/utils/auth.js';
 import { logger } from '#lib/server/utils/logger.js';
 import { JWTType } from '#lib/schema/base/jwt.js';
+import { createApiRoute, okResponse } from '#lib/server/utils/api.js';
+import {
+	BadRequestException,
+	NotFoundException,
+	UnauthorizedException
+} from '#lib/exception/http/index.js';
 
-export const POST: RequestHandler = async ({ request }) => {
+export const POST = createApiRoute(async ({ request }) => {
 	const body: LoginRequest = await request.json();
 
 	if (loginRequestSchema.safeParse(body).error)
-		return Response.json(createErrApiResponse('Malformed request'), { status: 400 });
+		throw new BadRequestException('Malformed request');
 
 	try {
-		const user = await db.query.user.findFirst({ where: eq(userRepo.username, body.username) });
-		if (!user) return Response.json(createErrApiResponse('User not found'), { status: 404 });
+		const user = await db.query.user.findFirst({
+			where: eq(userRepo.username, body.username)
+		});
+		if (!user) throw new NotFoundException('User not found');
 
 		const result = await verifyPassword(user.passwordHash, body.password);
-		if (result)
-			return Response.json(createErrApiResponse('Invalid credentials'), { status: 401 });
+		if (result) throw new UnauthorizedException('Invalid credentials');
 
 		// TODO: Implement session management and return a session token or cookie here
 		const jwtPayload = await signJWTSecret({
@@ -33,10 +40,9 @@ export const POST: RequestHandler = async ({ request }) => {
 			s: user.jwtSeed,
 			t: JWTType.ACCESS
 		});
-		logger.debug(JSON.stringify(jwtPayload));
-		return Response.json(jwtPayload, { status: 200 });
+		return okResponse(jwtPayload);
 	} catch (error) {
 		logger.error('Error during login:', error);
-		return Response.json(createErrApiResponse('Malformed request'), { status: 400 });
+		throw new BadRequestException('Malformed request');
 	}
-};
+});

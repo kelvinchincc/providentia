@@ -5,16 +5,16 @@
  */
 import { createOkApiResponse } from '#lib/schema/api/base.js';
 import { healthcheckApiDataSchema } from '#lib/schema/api/healthcheck.js';
+import { createApiRoute, okResponse } from '#lib/server/utils/api.js';
 import { needInitializationCheck } from '#lib/server/utils/healthcheck.js';
-import type { RequestHandler } from '@sveltejs/kit';
 
-export const GET: RequestHandler = async () => {
+export const GET = createApiRoute(async () => {
 	const needInitialization = await needInitializationCheck();
 
-	return Response.json(
+	return okResponse(
 		createOkApiResponse(healthcheckApiDataSchema, {
 			status: 'ok',
 			initialized: !needInitialization
 		})
 	);
-};
+});
