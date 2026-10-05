@@ -22,6 +22,11 @@ import {
 	NotFoundException,
 	UnauthorizedException
 } from '#lib/exception/http/index.js';
+import {
+	AUTH_COOKIE_TTL_MS,
+	COOKIE_OPTIONS,
+	REFRESH_COOKIE_TTL_MS
+} from '#lib/constants/cookies.js';
 
 export const POST = createApiRoute(async ({ request, cookies }) => {
 	const body: LoginRequest = await request.json();
@@ -53,15 +58,15 @@ export const POST = createApiRoute(async ({ request, cookies }) => {
 			s: user.jwtSeed
 		});
 
-		cookies.set('auth', jwt, { sameSite: 'strict' });
-		cookies.set('refresh', refreshJwt, { sameSite: 'strict' });
+		cookies.set(COOKIE_OPTIONS.AUTH_COOKIE, jwt, { sameSite: 'strict' });
+		cookies.set(COOKIE_OPTIONS.REFRESH_COOKIE, refreshJwt, { sameSite: 'strict' });
 
 		const response: LoginApiData = {
 			username: user.username,
 			authToken: 'cookie',
-			authTokenTTL: 3600,
+			authTokenTTL: AUTH_COOKIE_TTL_MS,
 			refreshToken: 'cookie',
-			refreshTokenTTL: 604800
+			refreshTokenTTL: REFRESH_COOKIE_TTL_MS
 		};
 		return okResponse(createOkApiResponse(loginApiDataSchema, response));
 	} catch (error) {

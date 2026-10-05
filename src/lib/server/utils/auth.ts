@@ -17,6 +17,7 @@ import { UnauthorizedException } from '#lib/exception/http/index.js';
 import { db } from '../db';
 import { eq } from 'drizzle-orm';
 import { user as userRepo } from '../db/schemas';
+import { AUTH_COOKIE_TTL, COOKIE_OPTIONS, REFRESH_COOKIE_TTL } from '#lib/constants/cookies.js';
 
 export function getJWTSecret() {
 	const jwtSecret = JWT_SECRET;
@@ -77,7 +78,7 @@ export async function signJWTSecret(payload: JWTPayload) {
 	const signed = await new jose.SignJWT(payload)
 		.setProtectedHeader({ alg: 'HS256' })
 		.setIssuedAt()
-		.setExpirationTime(payload.t === JWTType.ACCESS ? '1h' : '7d')
+		.setExpirationTime(payload.t === JWTType.ACCESS ? AUTH_COOKIE_TTL : REFRESH_COOKIE_TTL)
 		.sign(new TextEncoder().encode(getJWTSecret()));
 	return signed;
 }
@@ -125,7 +126,9 @@ export async function verifyJWTSecret(token: string, type: JWTPayload['t']) {
  * @throws {UnauthorizedException} If the token is missing, empty, or invalid.
  */
 export async function verifyAuth(cookies: Cookies, jwtType: JWTPayload['t'] = JWTType.ACCESS) {
-	const token = cookies.get('auth');
+	const cookie =
+		jwtType === JWTType.ACCESS ? COOKIE_OPTIONS.AUTH_COOKIE : COOKIE_OPTIONS.REFRESH_COOKIE;
+	const token = cookies.get(cookie);
 	if (token == null || token === '') {
 		throw new UnauthorizedException();
 	}
