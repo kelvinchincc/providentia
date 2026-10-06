@@ -4,6 +4,7 @@
  file, You can obtain one at http://mozilla.org/MPL/2.0/.
 -->
 <script lang="ts">
+	import Header from '#lib/client/components/header.svelte';
 	import { useAuthStore } from '#lib/client/store/authStore.js';
 	import { goto } from '$app/navigation';
 	import { resolve } from '$app/paths';
@@ -18,4 +19,7 @@
 	});
 </script>
 
-{@render props.children()}
+<Header />
+<div class="p-4">
+	{@render props.children()}
+</div>
