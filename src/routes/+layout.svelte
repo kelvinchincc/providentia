@@ -4,11 +4,18 @@
  file, You can obtain one at http://mozilla.org/MPL/2.0/.
 -->
 <script lang="ts">
+	import { QueryClient, QueryClientProvider } from '@tanstack/svelte-query';
+	import { SvelteQueryDevtools } from '@tanstack/svelte-query-devtools';
 	import './layout.css';
 	import favicon from '#lib/assets/favicon.svg';
 
 	let { children } = $props();
+
+	const queryClient = new QueryClient();
 </script>
 
 <svelte:head><link rel="icon" href={favicon} /></svelte:head>
-{@render children()}
+<QueryClientProvider client={queryClient}>
+	{@render children()}
+	<SvelteQueryDevtools />
+</QueryClientProvider>
