@@ -4,9 +4,9 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { browser } from '$app/env';
-import { createStore } from '@tanstack/svelte-store';
+import { createStore, useSelector } from '@tanstack/svelte-store';
 import dayjs from 'dayjs';
+import { createStoreWriter, getStoreItems } from '../utils/store';
 
 const storeKey = 'authStore';
 
@@ -17,17 +17,20 @@ type AuthStore = {
 };
 
 export const authStore = createStore(
-	loadFromStorage() ??
+	getStoreItems<AuthStore>(storeKey) ??
 		({
 			username: null,
 			tokenExpiresAt: null,
 			refreshTokenExpiresAt: null
 		} as AuthStore)
 );
+export const useAuthStore = () => useSelector(authStore, (state) => state);
+
+const update = createStoreWriter(storeKey, authStore);
 
 export const authStoreActions = {
 	login: (username: string, tokenExpiry: number, refreshTokenExpiry: number) => {
-		writeToStorage((prev) => {
+		update((prev) => {
 			const now = dayjs().unix();
 
 			return {
@@ -38,9 +41,8 @@ export const authStoreActions = {
 			};
 		});
 	},
-
 	logout: () => {
-		writeToStorage((prev) => ({
+		update((prev) => ({
 			...prev,
 			username: null,
 			tokenExpiresAt: null,
@@ -48,18 +50,3 @@ export const authStoreActions = {
 		}));
 	}
 };
-
-function loadFromStorage(): AuthStore | null {
-	if (!browser) return null;
-
-	const data = localStorage.getItem(storeKey);
-	return data ? (JSON.parse(data) as AuthStore) : null;
-}
-
-function writeToStorage(updator: (prev: AuthStore) => AuthStore) {
-	authStore.setState((prev) => {
-		const result = updator(prev);
-		localStorage.setItem(storeKey, JSON.stringify(result));
-		return result;
-	});
-}

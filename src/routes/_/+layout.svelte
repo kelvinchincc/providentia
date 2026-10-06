@@ -4,16 +4,15 @@
  file, You can obtain one at http://mozilla.org/MPL/2.0/.
 -->
 <script lang="ts">
-	import { authStore } from '#lib/client/store/authStore.js';
+	import { useAuthStore } from '#lib/client/store/authStore.js';
 	import { goto } from '$app/navigation';
 	import { resolve } from '$app/paths';
 
 	const props = $props();
+	const authStore = useAuthStore();
 
 	$effect(() => {
-		const isLoggedIn = authStore.state.username != null;
-
-		if (isLoggedIn) return;
+		if (authStore.current.username) return;
 
 		goto(resolve('login'));
 	});
