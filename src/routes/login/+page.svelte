@@ -9,6 +9,7 @@
 	import { createLoginMutation } from '#lib/client/services/providentia/mutations/login-mutation.js';
 	import { goto } from '$app/navigation';
 	import { resolve } from '$app/paths';
+	import { authStoreActions } from '#lib/client/store/authStore.js';
 
 	const loginMutation = createLoginMutation();
 
@@ -19,7 +20,16 @@
 		},
 		onSubmit: async ({ value }) => {
 			try {
-				await loginMutation.mutateAsync(value);
+				const result = await loginMutation.mutateAsync(value);
+				if (!result.success) {
+					alert('Login failed, please try again.');
+					return;
+				}
+				authStoreActions.login(
+					result.data.username,
+					result.data.authTokenTTL,
+					result.data.refreshTokenTTL
+				);
 				goto(resolve('_'));
 			} catch (error) {
 				alert('Login failed, please try again.');

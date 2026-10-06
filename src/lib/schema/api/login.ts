@@ -23,5 +23,5 @@ export const loginApiDataSchema = z.object({
 
 export type LoginApiData = z.infer<typeof loginApiDataSchema>;
 
-export const loginApiResponse = createBaseApiResponseSchema(loginApiDataSchema);
-export type LoginApiResponse = z.infer<typeof loginApiResponse>;
+export const loginApiResponseSchema = createBaseApiResponseSchema(loginApiDataSchema);
+export type LoginApiResponse = z.infer<typeof loginApiResponseSchema>;

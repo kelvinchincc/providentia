@@ -178,6 +178,9 @@ importers:
       '@tanstack/svelte-query-devtools':
         specifier: ^6.3.1
         version: 6.3.1(@tanstack/svelte-query@6.3.1(svelte@5.57.1))(csstype@3.2.3)(svelte@5.57.1)
+      '@tanstack/svelte-store':
+        specifier: ^0.12.2
+        version: 0.12.2(svelte@5.57.1)
       argon2:
         specifier: ^0.45.1
         version: 0.45.1
