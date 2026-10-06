@@ -16,7 +16,7 @@ type AuthStore = {
 	refreshTokenExpiresAt: number | null;
 };
 
-export const authStore = createStore(
+const authStore = createStore(
 	getStoreItems<AuthStore>(storeKey) ??
 		({
 			username: null,
@@ -24,6 +24,7 @@ export const authStore = createStore(
 			refreshTokenExpiresAt: null
 		} as AuthStore)
 );
+
 export const useAuthStore = () => useSelector(authStore, (state) => state);
 
 const update = createStoreWriter(storeKey, authStore);
