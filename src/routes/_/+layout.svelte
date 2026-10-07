@@ -4,6 +4,7 @@
  file, You can obtain one at http://mozilla.org/MPL/2.0/.
 -->
 <script lang="ts">
+	import Footer from '#lib/client/components/footer.svelte';
 	import Header from '#lib/client/components/header.svelte';
 	import { useAuthStore } from '#lib/client/store/authStore.js';
 	import { goto } from '$app/navigation';
@@ -19,7 +20,10 @@
 	});
 </script>
 
-<Header />
-<div class="p-4">
-	{@render props.children()}
-</div>
+<section class="grid min-h-screen grid-rows-[auto_1fr_auto]">
+	<Header />
+	<div class="p-4">
+		{@render props.children()}
+	</div>
+	<Footer />
+</section>
