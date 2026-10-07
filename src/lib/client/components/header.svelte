@@ -6,6 +6,7 @@
 <script lang="ts">
 	import { useAuthStore, authStoreActions } from '#lib/client/store/authStore.js';
 	import Avatar from 'svelte-boring-avatars';
+	import logo from '#lib/assets/trend.png';
 
 	const authStore = useAuthStore();
 
@@ -17,7 +18,9 @@
 <nav class="navbar flex justify-between bg-base-100">
 	<section>
 		<button class="btn btn-ghost text-xl">
-			<img src="/trend.png" alt="Providentia Logo" class="mr-2 h-6 w-6" />
+			<div class="mr-2">
+				<img src={logo} alt="Providentia Logo" class="h-6 w-6 grayscale invert" />
+			</div>
 			Providentia
 		</button>
 	</section>
