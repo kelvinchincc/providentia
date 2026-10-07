@@ -15,7 +15,12 @@
 {/snippet}
 
 <section class="card rounded-lg bg-base-200 p-4">
-	<h2 class="bold mb-2 text-xl">{item.name}</h2>
+	<header class="mb-2 flex items-center justify-between">
+		<h2 class="bold text-xl">{item.name}</h2>
+		<button class="btn btn-square btn-error" aria-label="Remove Forcast">
+			<i class="fa-solid fa-trash"></i>
+		</button>
+	</header>
 	<section class="grid grid-cols-[auto_auto] gap-1">
 		{@render field('Target Date', item.targetDate)}
 		{@render field('Basic Expected', item.expectedGemsBasic.toLocaleString())}
