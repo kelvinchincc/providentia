@@ -8,6 +8,9 @@
 	import { createForm } from '@tanstack/svelte-form';
 	import axios from 'axios';
 	import { dispatch } from '#lib/client/utils/timing.js';
+	import { createRegisterMutation } from '#lib/client/services/providentia/mutations/register-mutation.js';
+
+	const registerMutation = createRegisterMutation();
 
 	const form = createForm(() => ({
 		defaultValues: initialValues(),
@@ -16,7 +19,7 @@
 		},
 		onSubmit: async ({ value }) => {
 			try {
-				await axios.post('/api/auth/register', value);
+				await registerMutation.mutateAsync(value);
 				dispatch(() => goto(resolve('login')));
 			} catch (error) {
 				alert('An error occurred during registration. Please try again.');
