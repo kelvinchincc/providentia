@@ -30,12 +30,11 @@ export function getJWTSecret() {
 	return jwtSecret;
 }
 
-export function hashPassword(password: string) {
+export async function hashPassword(password: string) {
 	try {
-		const hash = argon2.hash(password);
+		const hash = await argon2.hash(password);
 		return hash;
 	} catch (error) {
-		logger.error('Error hashing password:', error);
 		throw new FailedHashPasswordException('Failed to hash password');
 	}
 }

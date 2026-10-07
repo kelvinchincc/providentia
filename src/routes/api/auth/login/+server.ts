@@ -45,7 +45,7 @@ export const POST = createApiRoute(async ({ request, cookies }) => {
 		if (!user) throw new NotFoundException('User not found');
 
 		const result = await verifyPassword(user.passwordHash, body.password);
-		if (result) throw new UnauthorizedException('Invalid credentials');
+		if (!result) throw new UnauthorizedException('Invalid credentials');
 
 		const jwt = await signJWTSecret({
 			u: user.id,
@@ -71,6 +71,6 @@ export const POST = createApiRoute(async ({ request, cookies }) => {
 		return okResponse(createOkApiResponse(loginApiDataSchema, response));
 	} catch (error) {
 		logger.error('Error during login:', error);
-		throw new BadRequestException('Malformed request');
+		throw error;
 	}
 });

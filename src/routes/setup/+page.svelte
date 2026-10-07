@@ -7,6 +7,7 @@
 	} from '#lib/schema/form/first-registration-form.js';
 	import { createForm } from '@tanstack/svelte-form';
 	import axios from 'axios';
+	import { dispatch } from '#lib/client/utils/timing.js';
 
 	const form = createForm(() => ({
 		defaultValues: initialValues(),
@@ -16,7 +17,7 @@
 		onSubmit: async ({ value }) => {
 			try {
 				await axios.post('/api/auth/register', value);
-				goto(resolve('login'));
+				dispatch(() => goto(resolve('login')));
 			} catch (error) {
 				alert('An error occurred during registration. Please try again.');
 				console.error(error);

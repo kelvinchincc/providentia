@@ -10,6 +10,7 @@
 	import { goto } from '$app/navigation';
 	import { resolve } from '$app/paths';
 	import { authStoreActions } from '#lib/client/store/authStore.js';
+	import { dispatch } from '#lib/client/utils/timing.js';
 
 	const loginMutation = createLoginMutation();
 
@@ -30,7 +31,7 @@
 					result.data.authTokenTTL,
 					result.data.refreshTokenTTL
 				);
-				goto(resolve('_'));
+				dispatch(() => goto(resolve('_')));
 			} catch (error) {
 				alert('Login failed, please try again.');
 				console.error('Login error:', error);
