@@ -1,4 +1,5 @@
 <script lang="ts">
+	import AlertDialog from '#lib/client/components/dialog/alert-dialog/index.svelte';
 	import GemsOverview from '#lib/client/components/gems-overview/index.svelte';
 	import TargetCard from '#lib/client/components/target-card/index.svelte';
 
