@@ -1,4 +1,4 @@
-<main class="m-4">
+<main class="p-4">
 	<h1 class="mb-1 text-3xl"><a href="/" class="link link-primary">Providentia</a></h1>
 
 	<p>

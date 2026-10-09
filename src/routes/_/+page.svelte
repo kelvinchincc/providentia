@@ -1,7 +1,9 @@
 <script lang="ts">
 	import AlertDialog from '#lib/client/components/dialog/alert-dialog/index.svelte';
+	import Footer from '#lib/client/components/footer.svelte';
 	import GemsOverview from '#lib/client/components/gems-overview/index.svelte';
 	import TargetCard from '#lib/client/components/target-card/index.svelte';
+	import { dialogStoreActions } from '#lib/client/store/genericDialogStore.js';
 
 	const mockedGems = {
 		total: 136060,
@@ -44,6 +46,11 @@
 			targetDate: '2024-07-30'
 		}
 	];
+
+	function onAddForcast() {
+		// TODO: Implement the logic to add a new forcast
+		dialogStoreActions.alert('Hello World!');
+	}
 </script>
 
 <main>
@@ -53,7 +60,7 @@
 
 	<section id="forcast">
 		<section class="flex items-center justify-end gap-2">
-			<button class="btn btn-primary">
+			<button class="btn btn-primary" onclick={onAddForcast}>
 				<i class="fa-solid fa-plus"></i>
 				Add forcast
 			</button>

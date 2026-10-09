@@ -4,19 +4,37 @@
  file, You can obtain one at http://mozilla.org/MPL/2.0/.
 -->
 <script lang="ts">
-	import { cn } from '#lib/client/utils/cn.js';
 	import BaseDialog from '../base-dialog/index.svelte';
 	import type { Props } from './types';
 
-	const { open, onClose, onCancel, onOk }: Props = $props();
+	const { open, message, onClose, onCancel, onOk, title }: Props = $props();
 </script>
 
 <BaseDialog {open} onClose={() => onClose?.()}>
-	<p>Hi</p>
-	<footer class="dialog-footer mt-3 flex justify-end gap-2">
+	<header>
+		<h3 class="text-lg font-bold">{title ?? 'Alert'}</h3>
+	</header>
+	<p class="py-4">{message}</p>
+	<footer class="dialog-footer flex justify-end gap-2">
 		{#if onCancel}
-			<button class="btn btn-secondary" onclick={onCancel}>Cancel</button>
+			<button
+				class="btn btn-secondary"
+				onclick={() => {
+					onCancel?.();
+					onClose?.();
+				}}
+			>
+				Cancel
+			</button>
 		{/if}
-		<button class="btn w-20 btn-primary" onclick={onOk}>Ok</button>
+		<button
+			class="btn w-20 btn-primary"
+			onclick={() => {
+				onOk?.();
+				onClose?.();
+			}}
+		>
+			Ok
+		</button>
 	</footer>
 </BaseDialog>
