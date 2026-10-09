@@ -4,6 +4,8 @@
 	import GemsOverview from '#lib/client/components/gems-overview/index.svelte';
 	import TargetCard from '#lib/client/components/target-card/index.svelte';
 	import { dialogStoreActions } from '#lib/client/store/genericDialogStore.js';
+	import { goto } from '$app/navigation';
+	import { resolve } from '$app/paths';
 
 	const mockedGems = {
 		total: 136060,
@@ -51,6 +53,10 @@
 		// TODO: Implement the logic to add a new forcast
 		dialogStoreActions.alert('Hello World!');
 	}
+
+	function onObtainHistoryClicked() {
+		goto(resolve('/_/obtain-history'));
+	}
 </script>
 
 <main>
@@ -68,7 +74,7 @@
 				<i class="fa-solid fa-pen-to-square"></i>
 				Log Gems
 			</button>
-			<button class="btn btn-primary">
+			<button class="btn btn-primary" onclick={onObtainHistoryClicked}>
 				<i class="fa-solid fa-clock-rotate-left"></i>
 				Obtain history
 			</button>
