@@ -122,6 +122,7 @@
 					<button
 						class="badge flex cursor-pointer items-center rounded-full text-xs badge-primary"
 						onclick={() => form.setFieldValue('note', preset)}
+						type="button"
 					>
 						{preset}
 					</button>
