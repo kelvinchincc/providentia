@@ -124,10 +124,10 @@
 		<!-- preset -->
 		<section class="flex flex-col gap-2">
 			<div class="text-sm text-neutral">Note Presets:</div>
-			<div class="flex flex-wrap gap-2">
+			<div class="flex flex-wrap gap-1">
 				{#each presets as preset (preset)}
 					<button
-						class="badge flex cursor-pointer items-center rounded-full text-xs badge-primary"
+						class="badge flex cursor-pointer items-center rounded-full badge-outline text-xs badge-primary"
 						onclick={() => form.setFieldValue('note', preset)}
 						type="button"
 					>
