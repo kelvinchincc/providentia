@@ -38,12 +38,11 @@ export const dialogStoreActions = {
 		}));
 	},
 	handleClose: () => {
-		store.setState((state) => {
-			state.onClose?.();
-			return {
-				...state,
-				open: false
-			};
-		});
+		if (!store.state.open) return;
+		store.setState((state) => ({
+			...state,
+			open: false
+		}));
+		store.state.onClose?.();
 	}
 };

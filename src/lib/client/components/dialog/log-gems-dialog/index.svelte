@@ -11,6 +11,7 @@
 	import { createDefaultValues, logGemSchema } from '#lib/schema/api/log-gems.js';
 	import { dialogStoreActions } from '#lib/client/store/genericDialogStore.js';
 	import { cn } from '#lib/client/utils/cn.js';
+	import { dispatch } from '#lib/client/utils/timing.js';
 
 	const { open, onClose }: Props = $props();
 
@@ -25,6 +26,12 @@
 	}));
 
 	const presets = ['Store Purchase', 'Daily Reward', 'Event Reward'];
+
+	$effect(() => {
+		if (open) return;
+
+		dispatch(() => form.reset());
+	});
 </script>
 
 <BaseDialog {open} {onClose}>
@@ -74,7 +81,7 @@
 							onblur={handleBlur}
 						>
 							<option value="free">Free</option>
-							<option value="Paid">Paid</option>
+							<option value="paid">Paid</option>
 						</select>
 					</label>
 					{#if meta.errors.length}
