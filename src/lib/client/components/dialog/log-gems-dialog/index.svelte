@@ -34,6 +34,8 @@
 		'Quest Reward'
 	];
 
+	let mode = $state<'direct' | 'delta'>('delta');
+
 	$effect(() => {
 		if (open) return;
 
@@ -55,6 +57,20 @@
 	>
 		<form.Field name="amount">
 			{#snippet children({ state: { value, meta }, handleChange, handleBlur })}
+				<div role="tablist" class="tabs tabs-border w-full">
+					<button
+						class={cn('tab', { 'tab-active': mode === 'direct' })}
+						onclick={() => (mode = 'direct')}
+						role="tab"
+						title="Direct Mode">Direct</button
+					>
+					<button
+						class={cn('tab', { 'tab-active': mode === 'delta' })}
+						onclick={() => (mode = 'delta')}
+						role="tab"
+						title="Delta Mode">Delta</button
+					>
+				</div>
 				<div>
 					<label class={cn('input w-full', { 'border-error': meta.errors.length > 0 })}>
 						<i class="fa-regular fa-gem min-w-7"></i>
