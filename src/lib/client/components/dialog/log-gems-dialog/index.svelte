@@ -25,7 +25,14 @@
 		}
 	}));
 
-	const presets = ['Store Purchase', 'Daily Reward', 'Event Reward'];
+	// TODO: This should be from API
+	const presets = [
+		'Store Purchase',
+		'Daily Reward',
+		'Event Reward',
+		'Level Reward',
+		'Quest Reward'
+	];
 
 	$effect(() => {
 		if (open) return;
@@ -117,7 +124,7 @@
 		<!-- preset -->
 		<section class="flex flex-col gap-2">
 			<div class="text-sm text-neutral">Note Presets:</div>
-			<div class="flex gap-2">
+			<div class="flex flex-wrap gap-2">
 				{#each presets as preset (preset)}
 					<button
 						class="badge flex cursor-pointer items-center rounded-full text-xs badge-primary"
