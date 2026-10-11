@@ -1,8 +1,7 @@
 <script lang="ts">
-	import AlertDialog from '#lib/client/components/dialog/alert-dialog/index.svelte';
-	import Footer from '#lib/client/components/footer.svelte';
 	import GemsOverview from '#lib/client/components/gems-overview/index.svelte';
 	import TargetCard from '#lib/client/components/target-card/index.svelte';
+	import LogGemsDialog from '#lib/client/components/dialog/log-gems-dialog/index.svelte';
 	import { dialogStoreActions } from '#lib/client/store/genericDialogStore.js';
 	import { goto } from '$app/navigation';
 	import { resolve } from '$app/paths';
@@ -49,6 +48,8 @@
 		}
 	];
 
+	let logGemsDialogOpen = $state(false);
+
 	function onAddForcast() {
 		// TODO: Implement the logic to add a new forcast
 		dialogStoreActions.alert('Hello World!');
@@ -60,6 +61,8 @@
 </script>
 
 <main>
+	<LogGemsDialog open={logGemsDialogOpen} onClose={() => (logGemsDialogOpen = false)} />
+
 	<div class="mb-4 max-w-[min(100%,800px)]">
 		<GemsOverview total={mockedGems.total} free={mockedGems.free} paid={mockedGems.paid} />
 	</div>
@@ -70,7 +73,7 @@
 				<i class="fa-solid fa-plus"></i>
 				Add forcast
 			</button>
-			<button class="btn btn-primary">
+			<button class="btn btn-primary" onclick={() => (logGemsDialogOpen = true)}>
 				<i class="fa-solid fa-pen-to-square"></i>
 				Log Gems
 			</button>

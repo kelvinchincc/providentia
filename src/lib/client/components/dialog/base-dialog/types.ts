@@ -4,9 +4,12 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-export interface Props {
+export interface BaseModelProps {
 	open: boolean;
 	onClose: () => void;
+}
+
+export interface Props extends BaseModelProps {
 	class?: string;
 	children: any;
 }
