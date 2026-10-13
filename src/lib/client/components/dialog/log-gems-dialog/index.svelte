@@ -61,15 +61,29 @@
 					<button
 						class={cn('tab', { 'tab-active': mode === 'direct' })}
 						onclick={() => (mode = 'direct')}
+						type="button"
 						role="tab"
-						title="Direct Mode">Direct</button
 					>
+						<span
+							class="tooltip tooltip-start"
+							data-tip="Directly set the amount of gems to a specific value"
+						>
+							Direct
+						</span>
+					</button>
 					<button
 						class={cn('tab', { 'tab-active': mode === 'delta' })}
 						onclick={() => (mode = 'delta')}
+						type="button"
 						role="tab"
-						title="Delta Mode">Delta</button
 					>
+						<span
+							class="tooltip tooltip-start"
+							data-tip="Delta mode allows you to add or subtract gems from the current amount"
+						>
+							Delta
+						</span>
+					</button>
 				</div>
 				<div>
 					<label class={cn('input w-full', { 'border-error': meta.errors.length > 0 })}>
