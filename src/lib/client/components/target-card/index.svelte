@@ -23,7 +23,7 @@
 	</header>
 	<section class="grid grid-cols-[auto_auto] gap-1">
 		{@render field('Target Date', item.targetDate)}
-		{@render field('Basic Expected', item.expectedGemsBasic.toLocaleString())}
-		{@render field('Average Gain Expected', item.expectedGemsLinear.toLocaleString())}
+		{@render field('Linear Gain', item.expectedGemsBasic.toLocaleString())}
+		{@render field('30 Days Average Gain', item.expectedGemsLinear.toLocaleString())}
 	</section>
 </section>
