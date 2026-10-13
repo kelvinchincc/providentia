@@ -52,7 +52,7 @@
 
 	function onAddForcast() {
 		// TODO: Implement the logic to add a new forcast
-		dialogStoreActions.alert('Hello World!');
+		dialogStoreActions.alert('Comming Soon!');
 	}
 
 	function onObtainHistoryClicked() {

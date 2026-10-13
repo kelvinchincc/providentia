@@ -14,7 +14,7 @@
 	<header>
 		<h3 class="text-lg font-bold">{title ?? 'Alert'}</h3>
 	</header>
-	<p class="py-4">{message}</p>
+	<p class="py-4 whitespace-pre-wrap">{message}</p>
 	<footer class="dialog-footer flex justify-end gap-2">
 		{#if onCancel}
 			<button

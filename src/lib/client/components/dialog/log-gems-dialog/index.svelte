@@ -21,7 +21,7 @@
 			onSubmit: logGemSchema
 		},
 		onSubmit: ({ value }) => {
-			dialogStoreActions.alert(JSON.stringify(value));
+			dialogStoreActions.alert(JSON.stringify(value, null, 2));
 		}
 	}));
 
