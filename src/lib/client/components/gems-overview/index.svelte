@@ -10,11 +10,11 @@
 	const props: Props = $props();
 </script>
 
-{#snippet stat(label: string, amount: number)}
-	<div class="tooltip" data-tip={amount}>
+{#snippet stat(label: string, amount: number, tooltip?: string)}
+	<div class="tooltip" data-tip={tooltip ?? amount}>
 		<div class="stats w-full cursor-default bg-base-200 shadow-lg select-none">
 			<div class="stat">
-				<div class="stat-title">{label} {GEM_UNIT}</div>
+				<div class="stat-title">{label}</div>
 				<div class="stat-value truncate overflow-hidden">{amount.toLocaleString()}</div>
 			</div>
 		</div>
@@ -22,7 +22,13 @@
 {/snippet}
 
 <section class="grid grid-cols-[repeat(auto-fit,minmax(200px,1fr))] gap-4">
-	{@render stat('Free', props.free)}
-	{@render stat('Paid', props.paid)}
-	{@render stat('Total', props.total)}
+	{@render stat(`Free ${GEM_UNIT}`, props.free)}
+	{@render stat(`Paid ${GEM_UNIT}`, props.paid)}
+	{@render stat(`Total ${GEM_UNIT}`, props.total)}
+	{@render stat('Lenear Rewards', 1, 'Garunteed rewards, eg from login rewards or weekly quests')}
+	{@render stat(
+		'30 Days Gain Average',
+		2,
+		'Average gain over the last 30 days, eg from quests, events, and other sources'
+	)}
 </section>

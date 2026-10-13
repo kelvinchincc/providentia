@@ -64,7 +64,7 @@
 <main>
 	<LogGemsDialog open={logGemsDialogOpen} onClose={() => (logGemsDialogOpen = false)} />
 
-	<div class="mb-4 max-w-[min(100%,800px)]">
+	<div class="mb-4">
 		<GemsOverview total={mockedGems.total} free={mockedGems.free} paid={mockedGems.paid} />
 	</div>
 
