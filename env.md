@@ -46,3 +46,14 @@ To generate one via the provided script, you can run the following command:
 ```
 pnpm generate:jwt-secret
 ```
+
+## GEM_UNIT
+
+The unit of measurement for gems in the application. This can be set to any string value that represents the unit you
+want to use. For example:
+
+```
+GEM_UNIT=Magia Stones
+```
+
+Default value is `Gems`. You can change it to any other unit of your choice, or following the game you want to manage.

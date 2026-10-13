@@ -5,6 +5,7 @@
 	import { dialogStoreActions } from '#lib/client/store/genericDialogStore.js';
 	import { goto } from '$app/navigation';
 	import { resolve } from '$app/paths';
+	import { GEM_UNIT } from '$app/env/public';
 
 	const mockedGems = {
 		total: 136060,
@@ -75,7 +76,7 @@
 			</button>
 			<button class="btn btn-primary" onclick={() => (logGemsDialogOpen = true)}>
 				<i class="fa-solid fa-pen-to-square"></i>
-				Log Gems
+				Log {GEM_UNIT}
 			</button>
 			<button class="btn btn-primary" onclick={onObtainHistoryClicked}>
 				<i class="fa-solid fa-clock-rotate-left"></i>

@@ -5,6 +5,7 @@
 -->
 <script lang="ts">
 	import type { Props } from './types';
+	import { GEM_UNIT } from '$app/env/public';
 
 	const props: Props = $props();
 </script>
@@ -13,7 +14,7 @@
 	<div class="tooltip" data-tip={amount}>
 		<div class="stats w-full cursor-default bg-base-200 shadow-lg select-none">
 			<div class="stat">
-				<div class="stat-title">{label}</div>
+				<div class="stat-title">{label} {GEM_UNIT}</div>
 				<div class="stat-value truncate overflow-hidden">{amount.toLocaleString()}</div>
 			</div>
 		</div>
@@ -21,7 +22,7 @@
 {/snippet}
 
 <section class="grid grid-cols-[repeat(auto-fit,minmax(200px,1fr))] gap-4">
-	{@render stat('Free Gems', props.free)}
-	{@render stat('Paid Gems', props.paid)}
-	{@render stat('Total Gems', props.total)}
+	{@render stat('Free', props.free)}
+	{@render stat('Paid', props.paid)}
+	{@render stat('Total', props.total)}
 </section>
