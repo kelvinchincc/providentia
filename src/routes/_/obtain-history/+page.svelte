@@ -5,6 +5,7 @@
 -->
 <script lang="ts">
 	import { createGemsHistoryQuery } from '#lib/client/services/providentia/query/gems-history-query.js';
+	import { formatDateTime } from '#lib/client/utils/display.ts';
 
 	const LIMIT = 10;
 
@@ -35,8 +36,8 @@
 							<tr>
 								<td>{bulkIndex * LIMIT + itemIndex + 1}</td>
 								<td>{item.amount}</td>
-								<td>{item.obtainedAt}</td>
-								<td>{item.updatedAt}</td>
+								<td>{formatDateTime(item.obtainedAt)}</td>
+								<td>{formatDateTime(item.updatedAt)}</td>
 								<td>{item.type}</td>
 								<td>{item.note}</td>
 							</tr>
