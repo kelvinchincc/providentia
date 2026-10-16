@@ -5,7 +5,7 @@
 -->
 <script lang="ts">
 	import { createGemsHistoryQuery } from '#lib/client/services/providentia/query/gems-history-query.js';
-	import { formatDateTime } from '#lib/client/utils/display.ts';
+	import { formatDateTime, formatGemType } from '#lib/client/utils/display.ts';
 
 	const LIMIT = 10;
 
@@ -38,8 +38,8 @@
 								<td>{item.amount}</td>
 								<td>{formatDateTime(item.obtainedAt)}</td>
 								<td>{formatDateTime(item.updatedAt)}</td>
-								<td>{item.type}</td>
-								<td>{item.note}</td>
+								<td>{formatGemType(item.type)}</td>
+								<td>{item.note || '-'}</td>
 							</tr>
 						{/each}
 					{/each}
