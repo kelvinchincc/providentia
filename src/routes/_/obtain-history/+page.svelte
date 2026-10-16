@@ -61,20 +61,22 @@
 			</table>
 		</div>
 	{/if}
-	{#if gemsHistoryQuery.isFetching}
-		<div class="grid place-items-center">
-			<div class="loading loading-xl loading-dots"></div>
-		</div>
-	{/if}
 
-	{#if gemsHistoryQuery.isSuccess}
-		<button
-			class="btn mt-2 btn-ghost"
-			disabled={gemsHistoryQuery.isFetchingNextPage || !gemsHistoryQuery.hasNextPage}
-			onclick={() => gemsHistoryQuery.fetchNextPage()}
-		>
-			<i class="fa-solid fa-chevron-down"></i>
-			Load More...
-		</button>
-	{/if}
+	<footer class="relative mt-2 h-10">
+		{#if gemsHistoryQuery.isSuccess}
+			<button
+				class="btn float-left btn-ghost"
+				disabled={gemsHistoryQuery.isFetchingNextPage || !gemsHistoryQuery.hasNextPage}
+				onclick={() => gemsHistoryQuery.fetchNextPage()}
+			>
+				<i class="fa-solid fa-chevron-down"></i>
+				Load More...
+			</button>
+		{/if}
+		{#if gemsHistoryQuery.isFetching}
+			<div class="absolute inset-0 grid place-items-center">
+				<div class="loading loading-xl loading-dots"></div>
+			</div>
+		{/if}
+	</footer>
 </section>
