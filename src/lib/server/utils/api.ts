@@ -5,6 +5,7 @@
  */
 import { HTTPExceptionBase } from '#lib/exception/http/http-exception-base.js';
 import type { RequestHandler } from '@sveltejs/kit';
+import { logger } from './logger';
 
 /**
  * Wraps a request handler with error handling for HTTP exceptions.
@@ -20,6 +21,7 @@ export function createApiRoute(handler: RequestHandler): RequestHandler {
 		try {
 			return await handler(event);
 		} catch (error) {
+			logger.error(`Error in API route: ${error}`);
 			if (!(error instanceof HTTPExceptionBase))
 				return Response.json({ error: 'Internal server error' }, { status: 500 });
 

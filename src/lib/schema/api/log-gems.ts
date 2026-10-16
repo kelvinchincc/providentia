@@ -14,6 +14,16 @@ export const logGemSchema = z.object({
 
 export type LogGemRequest = z.infer<typeof logGemSchema>;
 
+export const logGemApiSchema = z.object({
+	amount: z
+		.number('Amount is required')
+		.min(1, 'Amount is required and must be a number greater than 0'),
+	type: z.enum(['free', 'paid'], 'Type is required'),
+	note: z.string().optional()
+});
+
+export type LogGemApiRequest = z.infer<typeof logGemApiSchema>;
+
 export function createDefaultValues(): LogGemRequest {
 	return {
 		amount: '',

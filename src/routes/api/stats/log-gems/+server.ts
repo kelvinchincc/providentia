@@ -5,35 +5,38 @@
  */
 
 import { BadRequestException } from '#lib/exception/http/bad-request-exception.js';
-import { NotImplementedException } from '#lib/exception/http/not-implemented-exception.js';
-import { logGemSchema, type LogGemRequest } from '#lib/schema/api/log-gems.js';
+import { logGemApiSchema, type LogGemApiRequest } from '#lib/schema/api/log-gems.js';
 import { db } from '#lib/server/db/index.js';
 import { gem } from '#lib/server/db/schemas/gem.schema.js';
-import { createApiRoute } from '#lib/server/utils/api.js';
+import { createApiRoute, noContentResponse } from '#lib/server/utils/api.js';
 import { verifyAuth } from '#lib/server/utils/auth.js';
+import { logger } from '#lib/server/utils/logger.js';
 
 export const POST = createApiRoute(async ({ cookies, request }) => {
 	await verifyAuth(cookies);
 
-	const body: LogGemRequest = await request.json();
-	const amount = Number(body.amount);
+	const body: LogGemApiRequest = await (async () => {
+		try {
+			return await request.json();
+		} catch (error) {
+			logger.debug('Error parsing request body:', error);
+			throw new BadRequestException('Invalid JSON in request body');
+		}
+	})();
 
 	try {
-		logGemSchema.parse(body);
-		if (amount <= 0 || !Number.isInteger(amount)) {
-			throw new BadRequestException('Amount must be a positive integer');
-		}
+		logGemApiSchema.parse(body);
 	} catch (error) {
 		throw new BadRequestException('Invalid request body');
 	}
 
-	await db.transaction(async (tx) => {
-		tx.insert(gem).values({
+	db.transaction(async (tx) => {
+		await tx.insert(gem).values({
 			type: body.type,
-			amount,
+			amount: body.amount,
 			note: body.note
 		});
 	});
 
-	throw new NotImplementedException();
+	return noContentResponse();
 });
