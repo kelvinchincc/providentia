@@ -6,11 +6,15 @@
 import { generateCurrentTimestamp } from '#lib/server/utils/datetime.js';
 import { randomUUIDv7 } from 'crypto';
 import { index, integer, sqliteTable, text } from 'drizzle-orm/sqlite-core';
+import { user } from './user.schema';
 
 export const stat = sqliteTable(
 	'stats',
 	{
 		id: text('id').primaryKey().$defaultFn(randomUUIDv7),
+		userId: text('user_id')
+			.notNull()
+			.references(() => user.id),
 		item: text('item').notNull(),
 		value: integer('value').notNull().default(0),
 		createdAt: integer('created_at').notNull().$defaultFn(generateCurrentTimestamp),
