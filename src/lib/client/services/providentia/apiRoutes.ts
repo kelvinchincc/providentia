@@ -7,3 +7,5 @@ export const authLogin = '/api/auth/login';
 export const authRefresh = '/api/auth/refresh';
 export const authLogout = '/api/auth/logout';
 export const authRegister = '/api/auth/register';
+
+export const logGems = '/api/stats/log-gems';

@@ -12,16 +12,29 @@
 	import { dialogStoreActions } from '#lib/client/store/genericDialogStore.js';
 	import { cn } from '#lib/client/utils/cn.js';
 	import { dispatch } from '#lib/client/utils/timing.js';
+	import { createLogGemsMutation } from '#lib/client/services/providentia/mutations/log-gems-mutation.js';
 
 	const { open, onClose }: Props = $props();
+	const logGemsMutation = createLogGemsMutation();
 
 	const form = createForm(() => ({
 		defaultValues: createDefaultValues(),
 		validators: {
 			onSubmit: logGemSchema
 		},
-		onSubmit: ({ value }) => {
-			dialogStoreActions.alert(JSON.stringify(value, null, 2));
+		onSubmit: async ({ value }) => {
+			try {
+				await logGemsMutation.mutateAsync(value);
+				dialogStoreActions.alert('Gems logged successfully!', {
+					title: 'Success'
+				});
+				dispatch(() => onClose());
+			} catch (error) {
+				console.error('Error logging gems:', error);
+				dialogStoreActions.alert('Unable to log gems. Please try again later.', {
+					title: 'Unexpected Error Occurred'
+				});
+			}
 		}
 	}));
 
