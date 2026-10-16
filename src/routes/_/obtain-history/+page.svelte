@@ -3,6 +3,15 @@
  License, v. 2.0. If a copy of the MPL was not distributed with this
  file, You can obtain one at http://mozilla.org/MPL/2.0/.
 -->
+<script lang="ts">
+	import { createGemsHistoryQuery } from '#lib/client/services/providentia/query/gems-history-query.js';
+
+	const gemsHistoryQuery = createGemsHistoryQuery({ from: '', limit: 10 });
+
+	$effect(() => {
+		console.log(gemsHistoryQuery.data);
+	});
+</script>
 
 <section class="mx-auto w-200">
 	<div class="rounded-lg border border-base-content/5">
