@@ -8,11 +8,12 @@ import { createMutation } from '@tanstack/svelte-query';
 import { authLogout } from '../apiRoutes';
 import axios from 'axios';
 import { authStoreActions } from '#lib/client/store/authStore.js';
+import { client } from '../apiClient';
 
 export function createLogoutMutation() {
 	return createMutation(() => ({
 		mutationFn: async () => {
-			const response = await axios.post(authLogout);
+			const response = await client.post(authLogout);
 			authStoreActions.logout();
 			return response.data;
 		}
