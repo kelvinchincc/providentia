@@ -4,5 +4,5 @@ GET {{BASE}}/api/stats/list-gems
 auth: {{AUTH}}
 
 [Query]
-from: 123456
-limit: 10
+limit: {{LIST_GEMS_LIMIT}}
+from: {{LIST_GEMS_FROM}}

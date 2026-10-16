@@ -15,7 +15,12 @@ import {
 
 export const createGemsHistoryQuery = (params: { from: string; limit: number }) => {
 	const queryFn = async () => {
-		const response = await client.get<GemHistoryApiResponse>(gemHistory, { params });
+		const response = await client.get<GemHistoryApiResponse>(gemHistory, {
+			params: {
+				from: params.from === '' ? undefined : params.from,
+				limit: params.limit
+			}
+		});
 		if (!gemHistoryApiResponseSchema.safeParse(response.data)) {
 			throw new Error('Invalid response data from gem history API');
 		}

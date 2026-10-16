@@ -19,7 +19,8 @@ export const gemHistorySchema = z.object({
 export const gemHistoryArraySchema = z.array(gemHistorySchema);
 export const pagedGemHistoryArraySchema = z.object({
 	list: gemHistoryArraySchema,
-	haveMore: z.boolean()
+	haveMore: z.boolean(),
+	next: z.uuid().nullable()
 });
 export const gemHistoryApiResponseSchema = createBaseApiResponseSchema(pagedGemHistoryArraySchema);
 

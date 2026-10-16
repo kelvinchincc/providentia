@@ -16,7 +16,7 @@ import { gem } from '#lib/server/db/schemas/gem.schema.js';
 import { createApiRoute, okResponse } from '#lib/server/utils/api.js';
 import { verifyAuth } from '#lib/server/utils/auth.js';
 import { logger } from '#lib/server/utils/logger.js';
-import { and, desc, eq, lt } from 'drizzle-orm';
+import { and, desc, eq, lte } from 'drizzle-orm';
 
 export const GET = createApiRoute(async ({ url, cookies }) => {
 	const user = await verifyAuth(cookies);
@@ -26,18 +26,20 @@ export const GET = createApiRoute(async ({ url, cookies }) => {
 	const limit: number = Number.parseInt(params.get('limit') ?? '10', 10);
 
 	// Keyset pagination: uuidv7 ids sort by creation time, so descending id order
-	// with `id < from` returns the items older than the cursor. Fetch one extra row to detect more pages.
+	// with `id <= from` returns the items older than the cursor. Fetch one extra row to detect more pages.
 	const rows = await db
 		.select()
 		.from(gem)
-		.where(and(eq(gem.userId, user.id), from ? lt(gem.id, from) : undefined))
+		.where(and(eq(gem.userId, user.id), from ? lte(gem.id, from) : undefined))
 		.orderBy(desc(gem.id))
 		.limit(limit + 1);
 
 	const haveMore = rows.length > limit;
+	const nextCursor = haveMore ? rows[limit - 1].id : null;
 	const pagedResult: PagedGemHistories = {
 		list: (haveMore ? rows.slice(0, limit) : rows) as GemHistories,
-		haveMore
+		haveMore,
+		next: nextCursor
 	};
 
 	try {
