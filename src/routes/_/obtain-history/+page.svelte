@@ -7,7 +7,7 @@
 	import { createGemsHistoryQuery } from '#lib/client/services/providentia/query/gems-history-query.js';
 	import { formatDateTime, formatGemType } from '#lib/client/utils/display.js';
 
-	const LIMIT = 10;
+	const LIMIT = 1;
 
 	const gemsHistoryQuery = createGemsHistoryQuery({ limit: LIMIT });
 
@@ -17,8 +17,14 @@
 </script>
 
 <section class="mx-auto w-200">
-	<div class="rounded-lg border border-base-content/5">
-		{#if gemsHistoryQuery.isSuccess}
+	{#if gemsHistoryQuery.isError}
+		<div role="alert" class="alert alert-outline alert-error">
+			<i class="fa-solid fa-triangle-exclamation"></i>
+			<span>{gemsHistoryQuery.error.message}</span>
+		</div>
+	{/if}
+	{#if gemsHistoryQuery.isSuccess}
+		<div class="rounded-lg border border-base-content/5">
 			<table class="table">
 				<thead>
 					<tr>
@@ -31,6 +37,14 @@
 					</tr>
 				</thead>
 				<tbody>
+					{#if gemsHistoryQuery.data.pages[0]?.list.length === 0}
+						<tr>
+							<td colspan="6" class="text-center">
+								<i class="fa-solid fa-ban"></i>
+								No data
+							</td>
+						</tr>
+					{/if}
 					{#each gemsHistoryQuery.data.pages as data, bulkIndex (data?.next || '00000000-0000-0000-0000-000000000000')}
 						{#each data?.list as item, itemIndex (item.id)}
 							<tr>
@@ -45,15 +59,22 @@
 					{/each}
 				</tbody>
 			</table>
-		{/if}
-	</div>
+		</div>
+	{/if}
+	{#if gemsHistoryQuery.isFetching}
+		<div class="grid place-items-center">
+			<div class="loading loading-xl loading-dots"></div>
+		</div>
+	{/if}
 
-	<button
-		class="btn mt-2 btn-ghost"
-		disabled={gemsHistoryQuery.isFetchingNextPage || !gemsHistoryQuery.hasNextPage}
-		onclick={() => gemsHistoryQuery.fetchNextPage()}
-	>
-		<i class="fa-solid fa-chevron-down"></i>
-		Load More...
-	</button>
+	{#if gemsHistoryQuery.isSuccess}
+		<button
+			class="btn mt-2 btn-ghost"
+			disabled={gemsHistoryQuery.isFetchingNextPage || !gemsHistoryQuery.hasNextPage}
+			onclick={() => gemsHistoryQuery.fetchNextPage()}
+		>
+			<i class="fa-solid fa-chevron-down"></i>
+			Load More...
+		</button>
+	{/if}
 </section>
