@@ -177,7 +177,6 @@ def save_response(file_path: str, output: str):
 
 def discover_env_files(selected_file):
     """Discover .env files from project root to the selected file's directory.
-
     Walks up from the selected file until finding tasks.py (project root),
     then collects all .env files along the path from root to the file's directory,
     ordered from root to leaf.
@@ -242,6 +241,9 @@ def select_file(files):
     except FileNotFoundError:
         print("fzf not found")
         return None
+    except subprocess.CalledProcessError:
+        print("No file selected")
+        return None
 
 
 def run_cmd(cmd: list[str], exit_on_error=None, capture_output=False):
@@ -255,6 +257,9 @@ def run_cmd(cmd: list[str], exit_on_error=None, capture_output=False):
         if exit_on_error or exit_on_error is None:
             sys.exit(e.returncode)
         return e
+    except KeyboardInterrupt:
+        print("\nExecution interrupted by user.")
+        sys.exit(1)
 
 
 # END HELPER FUNCTIONS
