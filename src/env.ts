@@ -5,9 +5,16 @@ const required = (name: string) => (input: string | undefined) => {
 	return input;
 };
 
+const number = (name: string) => (input: string | undefined) => {
+	const value = Number(required(name)(input));
+	if (Number.isNaN(value) || value <= 0) throw new Error(`Invalid environment variable: ${name} must be a positive number`);
+	return value;
+};
+
 export const variables = defineEnvVars({
 	APP_URL: { schema: required('APP_URL') },
 	JWT_SECRET: { schema: required('JWT_SECRET') },
 	DATABASE_URL: { schema: required('DATABASE_URL') },
-	GEM_UNIT: { schema: (value) => value || 'Gems', public: true }
+	GEM_UNIT: { schema: (value) => value || 'Gems', public: true },
+	PULL_PRICE: { schema: number('PULL_PRICE'), public: true }
 });

@@ -5,7 +5,7 @@
 -->
 <script lang="ts">
 	import type { Props } from './types';
-	import { GEM_UNIT } from '$app/env/public';
+	import { GEM_UNIT, PULL_PRICE } from '$app/env/public';
 
 	const props: Props = $props();
 </script>
@@ -28,6 +28,7 @@
 	{@render stat(`Free ${GEM_UNIT}`, props.free, 'Earned from the game')}
 	{@render stat(`Paid ${GEM_UNIT}`, props.paid, 'Purchased from store')}
 	{@render stat(`Total ${GEM_UNIT}`, props.total, 'Total spendable')}
+	{@render stat(`Pull Count`, Math.floor(props.total / PULL_PRICE), 'Total number of pulls')}
 	{@render stat('Lenear Rewards', 1, 'Login rewards')}
 	{@render stat('30 Days Gain Average', 2, 'Average 30 days gain')}
 </section>

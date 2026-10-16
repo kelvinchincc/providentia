@@ -8,9 +8,9 @@
 	import { GEM_UNIT } from '$app/env/public';
 
 	const mockedGems = {
-		total: 136060,
+		total: 153680,
 		paid: 300,
-		free: 135760
+		free: 153380
 	};
 
 	const mockedForcast = [

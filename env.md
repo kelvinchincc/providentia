@@ -57,3 +57,13 @@ GEM_UNIT=Magia Stones
 ```
 
 Default value is `Gems`. You can change it to any other unit of your choice, or following the game you want to manage.
+
+## PULL_PRICE
+
+The cost of one pull, in `GEM_UNIT`. Used to calculate how many pulls a user can afford with the gems they have. This
+must be a positive number, and it is required. The app fails to start if the value is missing, not a number, or not
+greater than `0`. For example:
+
+```
+PULL_PRICE=160
+```
