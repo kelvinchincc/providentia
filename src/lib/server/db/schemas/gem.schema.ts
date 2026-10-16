@@ -6,9 +6,13 @@
 import { generateCurrentTimestamp } from '#lib/server/utils/datetime.js';
 import { randomUUIDv7 } from 'crypto';
 import { integer, sqliteTable, text } from 'drizzle-orm/sqlite-core';
+import { user } from './user.schema';
 
 export const gem = sqliteTable('gems', {
 	id: text('id').primaryKey().$defaultFn(randomUUIDv7),
+	userId: text('user_id')
+		.notNull()
+		.references(() => user.id),
 	amount: integer('amount').notNull().default(0),
 	obtainedAt: integer('obtained_at').notNull().$defaultFn(generateCurrentTimestamp),
 	updatedAt: integer('updated_at').notNull().$defaultFn(generateCurrentTimestamp),

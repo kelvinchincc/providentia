@@ -13,7 +13,7 @@ import { verifyAuth } from '#lib/server/utils/auth.js';
 import { logger } from '#lib/server/utils/logger.js';
 
 export const POST = createApiRoute(async ({ cookies, request }) => {
-	await verifyAuth(cookies);
+	const user = await verifyAuth(cookies);
 
 	const body: LogGemApiRequest = await (async () => {
 		try {
@@ -32,6 +32,7 @@ export const POST = createApiRoute(async ({ cookies, request }) => {
 
 	db.transaction(async (tx) => {
 		await tx.insert(gem).values({
+			userId: user.id,
 			type: body.type,
 			amount: body.amount,
 			note: body.note
