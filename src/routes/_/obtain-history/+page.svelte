@@ -6,7 +6,9 @@
 <script lang="ts">
 	import { createGemsHistoryQuery } from '#lib/client/services/providentia/query/gems-history-query.js';
 
-	const gemsHistoryQuery = createGemsHistoryQuery({ limit: 1 });
+	const LIMIT = 10;
+
+	const gemsHistoryQuery = createGemsHistoryQuery({ limit: LIMIT });
 
 	$effect(() => {
 		console.log(gemsHistoryQuery.data);
@@ -28,17 +30,17 @@
 					</tr>
 				</thead>
 				<tbody>
-					{#each gemsHistoryQuery.data.pages as data (data?.next || '00000000-0000-0000-0000-000000000000')}
-						<tr>
-							{#each data?.list as item (item.id)}
-								<td>1</td>
+					{#each gemsHistoryQuery.data.pages as data, bulkIndex (data?.next || '00000000-0000-0000-0000-000000000000')}
+						{#each data?.list as item, itemIndex (item.id)}
+							<tr>
+								<td>{bulkIndex * LIMIT + itemIndex + 1}</td>
 								<td>{item.amount}</td>
 								<td>{item.obtainedAt}</td>
 								<td>{item.updatedAt}</td>
 								<td>{item.type}</td>
 								<td>{item.note}</td>
-							{/each}
-						</tr>
+							</tr>
+						{/each}
 					{/each}
 				</tbody>
 			</table>
