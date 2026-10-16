@@ -5,7 +5,7 @@
 -->
 <script lang="ts">
 	import { createGemsHistoryQuery } from '#lib/client/services/providentia/query/gems-history-query.js';
-	import { formatDateTime, formatGemType } from '#lib/client/utils/display.ts';
+	import { formatDateTime, formatGemType } from '#lib/client/utils/display.js';
 
 	const LIMIT = 10;
 

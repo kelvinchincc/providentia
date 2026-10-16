@@ -7,7 +7,7 @@
 import dayjs from 'dayjs';
 
 export function formatDateTime(timestamp: number): string {
-	const date = dayjs(timestamp);
+	const date = dayjs.unix(timestamp);
 	return date.format('DD MMM YYYY, HH:mm:ss');
 }
 
