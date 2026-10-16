@@ -99,6 +99,50 @@ def zed(_ctx: Context, json=False):
         run_cmd(["zed", "-e", "-"], exit_on_error=True)
 
 
+@task()
+def login(_ctx):
+    """
+    login the user via the inv run -e ./auth/login.hurl
+
+    Login the user, then grab the auth cookie and register to .env
+    """
+
+    output = subprocess.run(
+        ["inv", "run", "-e", "-f", "./auth/login.hurl"],
+        capture_output=True,
+        text=True,
+        check=True,
+    )
+    token: str = ""
+    headers = output.stderr.split("\n")
+    for header in headers:
+        if not header.startswith("< set-cookie: auth="):
+            continue  # <- continue?
+
+        parts = header.split("=")
+        parts = parts[1].split(";")[0]
+        token = parts
+        break
+
+    # replace the existing auth token "AUTH=<token>"
+    env_file = ".env"
+    if not os.path.exists(env_file):
+        print(f"{env_file} not found")
+        return
+
+    lines: list[str] = []
+    with open(env_file, "r") as f:
+        print(f"Reading {env_file} to update AUTH")
+        lines = f.readlines()
+    with open(env_file, "w") as f:
+        print(f"Writing updated AUTH to {env_file}")
+        for line in lines:
+            if line.startswith("AUTH="):
+                f.write(f"AUTH={token}\n")
+            else:
+                f.write(line)
+
+
 # BEGIN HELPER FUNCTIONS
 def process_response_output(output: str) -> str:
     """Comment out HTTP headers before JSON content in output."""
