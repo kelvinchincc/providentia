@@ -10,7 +10,7 @@ import {
 	type LogGemRequest
 } from '#lib/schema/api/log-gems.js';
 import { createMutation } from '@tanstack/svelte-query';
-import axios from 'axios';
+import { client } from '../apiClient';
 
 export const createLogGemsMutation = () => {
 	return createMutation(() => ({
@@ -20,7 +20,7 @@ export const createLogGemsMutation = () => {
 				amount: Number(amount)
 			};
 			logGemApiSchema.parse(payload);
-			const response = await axios.post('/api/stats/log-gems', payload);
+			const response = await client.post('/api/stats/log-gems', payload);
 			return response.data;
 		}
 	}));
