@@ -35,7 +35,7 @@ export const GET = createApiRoute(async ({ url, cookies }) => {
 		.limit(limit + 1);
 
 	const haveMore = rows.length > limit;
-	const nextCursor = haveMore ? rows[limit - 1].id : null;
+	const nextCursor = haveMore ? rows[limit].id : '00000000-0000-0000-0000-000000000000';
 	const pagedResult: PagedGemHistories = {
 		list: (haveMore ? rows.slice(0, limit) : rows) as GemHistories,
 		haveMore,

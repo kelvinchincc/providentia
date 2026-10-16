@@ -20,7 +20,7 @@ export const gemHistoryArraySchema = z.array(gemHistorySchema);
 export const pagedGemHistoryArraySchema = z.object({
 	list: gemHistoryArraySchema,
 	haveMore: z.boolean(),
-	next: z.uuid().nullable()
+	next: z.uuid()
 });
 export const gemHistoryApiResponseSchema = createBaseApiResponseSchema(pagedGemHistoryArraySchema);
 
