@@ -5,10 +5,22 @@
  */
 import { drizzle } from 'drizzle-orm/libsql';
 import * as schema from '#lib/server/db/schemas/index.js';
-import { DATABASE_URL } from '$app/env/private';
+import { DATABASE_URL, DB_MODE } from '$app/env/private';
 import { createClient } from '@libsql/client';
+import { logger } from '../utils/logger';
 
 if (!DATABASE_URL) throw new Error('DATABASE_URL is not set');
 
 const client = createClient({ url: DATABASE_URL });
 export const db = drizzle(client, { schema });
+
+(async () => {
+	logger.info('Setting database journal mode...');
+	try {
+		// DB_MODE is validated to be 'delete' | 'wal' in src/env.ts, so interpolation is safe
+		const result = await db.run(`PRAGMA journal_mode = ${DB_MODE}`);
+		logger.info(`Database journal mode: ${result.rows[0]?.journal_mode}`);
+	} catch (err) {
+		logger.error(`Failed to read journal mode: ${err}`);
+	}
+})();

@@ -7,7 +7,17 @@ const required = (name: string) => (input: string | undefined) => {
 
 const number = (name: string) => (input: string | undefined) => {
 	const value = Number(required(name)(input));
-	if (Number.isNaN(value) || value <= 0) throw new Error(`Invalid environment variable: ${name} must be a positive number`);
+	if (Number.isNaN(value) || value <= 0)
+		throw new Error(`Invalid environment variable: ${name} must be a positive number`);
+	return value;
+};
+
+const dbMode = (name: string) => (input: string | undefined) => {
+	// Validate that the input is either 'delete' or 'wal'
+	const value = required(name)(input);
+	if (value !== 'delete' && value !== 'wal') {
+		throw new Error(`Invalid environment variable: ${name} must be either 'delete' or 'wal'`);
+	}
 	return value;
 };
 
@@ -16,5 +26,6 @@ export const variables = defineEnvVars({
 	JWT_SECRET: { schema: required('JWT_SECRET') },
 	DATABASE_URL: { schema: required('DATABASE_URL') },
 	GEM_UNIT: { schema: (value) => value || 'Gems', public: true },
-	PULL_PRICE: { schema: number('PULL_PRICE'), public: true }
+	PULL_PRICE: { schema: number('PULL_PRICE'), public: true },
+	DB_MODE: { schema: dbMode('DB_MODE') }
 });

@@ -4,7 +4,7 @@ POST {{BASE}}/api/stats/log-gems
 auth: {{AUTH}}
 
 {
-	"amount": 1000,
-	"type": "free",
+	"amount": 500,
+	"type": "paid",
 	"note": "Test log gems"
 }
