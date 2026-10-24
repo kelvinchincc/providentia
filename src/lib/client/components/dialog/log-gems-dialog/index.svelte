@@ -15,8 +15,10 @@
 	import { createLogGemsMutation } from '#lib/client/services/providentia/mutations/log-gems-mutation.js';
 	import { useQueryClient } from '@tanstack/svelte-query';
 	import { queryKeys } from '#lib/client/services/providentia/query/queryKeys.js';
+	import { createGemsOverviewQuery } from '#lib/client/services/providentia/query/gems-overview-query.js';
 
 	const { open, onClose }: Props = $props();
+	const gemsOverviewQuery = createGemsOverviewQuery();
 	const logGemsMutation = createLogGemsMutation();
 	const queryClient = useQueryClient();
 
@@ -25,9 +27,18 @@
 		validators: {
 			onSubmit: logGemSchema
 		},
-		onSubmit: async ({ value }) => {
+		onSubmit: async ({ value: { amount, ...value } }) => {
 			try {
-				await logGemsMutation.mutateAsync(value);
+				const currentTotal = gemsOverviewQuery.data?.total ?? 0;
+				const delta =
+					mode === 'delta'
+						? Number.parseInt(amount) - currentTotal
+						: Number.parseInt(amount);
+
+				await logGemsMutation.mutateAsync({
+					amount: delta.toString(),
+					...value
+				});
 				dialogStoreActions.alert('Gems logged successfully!', {
 					title: 'Success'
 				});

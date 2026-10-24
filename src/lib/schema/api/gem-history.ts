@@ -10,7 +10,7 @@ import { createBaseApiResponseSchema } from './base';
 export const gemHistorySchema = z.object({
 	id: z.uuid(),
 	userId: z.uuid(),
-	amount: z.number().int().nonnegative(),
+	amount: z.number().int(),
 	obtainedAt: z.number().int().nonnegative(),
 	updatedAt: z.number().int().nonnegative(),
 	note: z.string().optional(),

@@ -8,6 +8,7 @@
 	import { formatDateTime, formatGemType } from '#lib/client/utils/display.js';
 	import { GEM_UNIT } from '$app/env/public';
 	import LogGemsDialog from '#lib/client/components/dialog/log-gems-dialog/index.svelte';
+	import { cn } from '#lib/client/utils/cn.js';
 
 	const LIMIT = 25;
 
@@ -54,7 +55,9 @@
 						{#each data?.list as item, itemIndex (item.id)}
 							<tr>
 								<td>{bulkIndex * LIMIT + itemIndex + 1}</td>
-								<td>{item.amount}</td>
+								<td class={cn('text-right', { 'text-error': item.amount < 0 })}
+									>{item.amount}</td
+								>
 								<td>{formatDateTime(item.obtainedAt)}</td>
 								<td>{formatDateTime(item.updatedAt)}</td>
 								<td>{formatGemType(item.type)}</td>

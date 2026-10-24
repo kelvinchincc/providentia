@@ -7,7 +7,18 @@
 import { z } from 'zod';
 
 export const logGemSchema = z.object({
-	amount: z.string('Amount is required').min(1, 'Amount is required'),
+	amount: z
+		.string('Amount is required')
+		.min(1, 'Amount is required')
+		.refine(
+			(val) => {
+				// value must be valid numeric
+				return !isNaN(Number(val));
+			},
+			{
+				message: 'Amount must be a valid number'
+			}
+		),
 	type: z.enum(['free', 'paid'], 'Type is required'),
 	note: z.string().optional()
 });
@@ -15,9 +26,7 @@ export const logGemSchema = z.object({
 export type LogGemRequest = z.infer<typeof logGemSchema>;
 
 export const logGemApiSchema = z.object({
-	amount: z
-		.number('Amount is required')
-		.min(1, 'Amount is required and must be a number greater than 0'),
+	amount: z.number('Amount is required'),
 	type: z.enum(['free', 'paid'], 'Type is required'),
 	note: z.string().optional()
 });
