@@ -14,7 +14,7 @@
 	import { dispatch } from '#lib/client/utils/timing.js';
 	import { createLogGemsMutation } from '#lib/client/services/providentia/mutations/log-gems-mutation.js';
 	import { useQueryClient } from '@tanstack/svelte-query';
-	import { queryKeys } from '#lib/client/services/providentia/query/queryKeys.ts';
+	import { queryKeys } from '#lib/client/services/providentia/query/queryKeys.js';
 
 	const { open, onClose }: Props = $props();
 	const logGemsMutation = createLogGemsMutation();
@@ -37,6 +37,9 @@
 							queryKey: queryKeys.gemsOverview()
 						});
 					}, 5000);
+					queryClient.invalidateQueries({
+						queryKey: queryKeys.gemHistory()
+					});
 					onClose();
 				});
 			} catch (error) {

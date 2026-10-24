@@ -7,12 +7,6 @@
 	import { resolve } from '$app/paths';
 	import { GEM_UNIT } from '$app/env/public';
 
-	const mockedGems = {
-		total: 153680,
-		paid: 300,
-		free: 153380
-	};
-
 	const mockedForcast = [
 		{
 			id: 1,
@@ -65,7 +59,7 @@
 	<LogGemsDialog open={logGemsDialogOpen} onClose={() => (logGemsDialogOpen = false)} />
 
 	<div class="mb-4">
-		<GemsOverview total={mockedGems.total} free={mockedGems.free} paid={mockedGems.paid} />
+		<GemsOverview />
 	</div>
 
 	<section id="forcast">

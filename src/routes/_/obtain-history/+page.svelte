@@ -6,15 +6,20 @@
 <script lang="ts">
 	import { createGemsHistoryQuery } from '#lib/client/services/providentia/query/gems-history-query.js';
 	import { formatDateTime, formatGemType } from '#lib/client/utils/display.js';
+	import { GEM_UNIT } from '$app/env/public';
+	import LogGemsDialog from '#lib/client/components/dialog/log-gems-dialog/index.svelte';
 
 	const LIMIT = 25;
 
 	const gemsHistoryQuery = createGemsHistoryQuery({ limit: LIMIT });
+	let isLogGemsDialogOpen = $state(false);
 
 	$effect(() => {
 		console.log(gemsHistoryQuery.data);
 	});
 </script>
+
+<LogGemsDialog open={isLogGemsDialogOpen} onClose={() => (isLogGemsDialogOpen = false)} />
 
 <section class="mx-auto w-200">
 	{#if gemsHistoryQuery.isError}
@@ -71,6 +76,13 @@
 			>
 				<i class="fa-solid fa-chevron-down"></i>
 				Load More...
+			</button>
+			<button
+				class="btn float-right btn-primary"
+				onclick={() => (isLogGemsDialogOpen = true)}
+			>
+				<i class="fa-solid fa-pen-to-square"></i>
+				Log {GEM_UNIT}
 			</button>
 		{/if}
 		{#if gemsHistoryQuery.isFetching}
