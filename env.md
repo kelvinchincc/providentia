@@ -80,3 +80,8 @@ Exaple:
 ```
 DB_MODE=delete
 ```
+
+## TOTAL_WEEKLY_GEMS_OBTAINABLE
+
+The total amount of gems a user can get in a week, uses to calculate daily confrimed obtain rate, which is a constants
+where the user can get from fixed dialy tasks, and login rewards.

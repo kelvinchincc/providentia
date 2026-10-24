@@ -27,5 +27,8 @@ export const variables = defineEnvVars({
 	DATABASE_URL: { schema: required('DATABASE_URL') },
 	GEM_UNIT: { schema: (value) => value || 'Gems', public: true },
 	PULL_PRICE: { schema: number('PULL_PRICE'), public: true },
-	DB_MODE: { schema: dbMode('DB_MODE') }
+	DB_MODE: { schema: dbMode('DB_MODE') },
+	TOTAL_WEEKLY_GEMS_OBTAINABLE: {
+		schema: (value) => Number.parseInt(value ?? '0') || 0
+	}
 });
