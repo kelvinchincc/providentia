@@ -33,7 +33,7 @@ export const POST = createApiRoute(async ({ cookies, request }) => {
 		throw new BadRequestException('Invalid request body');
 	}
 
-	db.transaction(async (tx) => {
+	await db.transaction(async (tx) => {
 		await tx.insert(gem).values({
 			userId: user.id,
 			type: body.type,
