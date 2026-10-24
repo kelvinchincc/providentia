@@ -36,7 +36,12 @@ client.interceptors.response.use(
 		const config = error.config as RetriableRequestConfig | undefined;
 
 		// if request return 401, try to refresh token and retry the request, only once globally.
-		if (error.response?.status !== 401 || !config || config._retry || config.url === authRefresh) {
+		if (
+			error.response?.status !== 401 ||
+			!config ||
+			config._retry ||
+			config.url === authRefresh
+		) {
 			throw error;
 		}
 
