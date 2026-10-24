@@ -113,25 +113,12 @@ export async function updateStats(userId: string) {
 			});
 		}
 
-		if (extAverageGemsStat.length > 0) {
-			await tx
-				.update(stat)
-				.set({ value: newMonthlyAvg[0]?.total || 0 })
-				.where(and(eq(stat.userId, userId), eq(stat.item, StatKey.MONTHLY_AVG_GAINS)));
-		} else {
-			await tx.insert(stat).values({
-				userId,
-				item: StatKey.MONTHLY_AVG_GAINS,
-				value: newMonthlyAvg[0]?.total || 0
-			});
-		}
-
 		const dailyGains = Math.round((newMonthlyAvg[0]?.total || 0) / 30);
 		if (extLinearGainsStat.length > 0) {
 			await tx
 				.update(stat)
 				.set({ value: dailyGains })
-				.where(and(eq(stat.userId, userId), eq(stat.item, StatKey.LINEAR_GAINS)));
+				.where(and(eq(stat.userId, userId), eq(stat.item, StatKey.MONTHLY_AVG_GAINS)));
 		} else {
 			await tx.insert(stat).values({
 				userId,

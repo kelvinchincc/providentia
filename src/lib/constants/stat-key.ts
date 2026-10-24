@@ -18,11 +18,13 @@ export const StatKey = {
 	 */
 	TOTAL_PAID_GEMS: 'total-paid-gems',
 	/**
-	 * Daily average number of gems the user will be obtained, usually daily login rewards.
+	 * Daily average number of gems the user will be obtained, usually daily login rewards. Currently unused as it is
+	 * static stats.
 	 */
 	LINEAR_GAINS: 'linear-gains',
 	/**
-	 * Average number of gems the user will be obtained per month, this is based on the gain history of last 30 days.
+	 * Average number of gems the user will be obtained in a day, base on the previous 30 days of gem gains. This is a
+	 * more accurate representation of the user's gem gains than LINEAR_GAINS.
 	 */
 	MONTHLY_AVG_GAINS: 'monthly-avg-gains'
 };
