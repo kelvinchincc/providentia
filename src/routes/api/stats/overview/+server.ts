@@ -5,7 +5,6 @@
  */
 
 import { StatKey } from '#lib/constants/stat-key.js';
-import { NotImplementedException } from '#lib/exception/http/not-implemented-exception.js';
 import { UnauthorizedException } from '#lib/exception/http/unauthorized-exception.js';
 import { overviewSchema, type Overview } from '#lib/schema/api/overview.js';
 import { db } from '#lib/server/db/index.js';

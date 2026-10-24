@@ -4,8 +4,4 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-export interface Props {
-	total: number;
-	paid: number;
-	free: number;
-}
+export interface Props {}

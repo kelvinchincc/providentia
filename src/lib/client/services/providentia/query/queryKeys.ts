@@ -8,5 +8,6 @@ export const queryKeys = {
 	base: ['providentia'] as const,
 	gemHistory: () => [...queryKeys.base, 'gem-history'] as const,
 	gemHistoryWithParams: (params: { from: string; limit: number }) =>
-		[...queryKeys.gemHistory(), params] as const
+		[...queryKeys.gemHistory(), params] as const,
+	gemsOverview: () => [...queryKeys.base, 'stats', 'overview'] as const
 };
