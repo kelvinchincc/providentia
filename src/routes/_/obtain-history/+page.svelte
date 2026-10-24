@@ -7,7 +7,7 @@
 	import { createGemsHistoryQuery } from '#lib/client/services/providentia/query/gems-history-query.js';
 	import { formatDateTime, formatGemType } from '#lib/client/utils/display.js';
 
-	const LIMIT = 1;
+	const LIMIT = 25;
 
 	const gemsHistoryQuery = createGemsHistoryQuery({ limit: LIMIT });
 
