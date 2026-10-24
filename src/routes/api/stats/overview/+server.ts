@@ -12,9 +12,9 @@ import { stat } from '#lib/server/db/schemas/stat.schema.js';
 import { createApiRoute, okResponse } from '#lib/server/utils/api.js';
 import { verifyAuth } from '#lib/server/utils/auth.js';
 import { and, eq } from 'drizzle-orm';
-import { TOTAL_WEEKLY_GEMS_OBTAINABLE } from '$app/env/private';
 import { PULL_PRICE } from '$app/env/public';
 import { createOkApiResponse } from '#lib/schema/api/base.js';
+import { DAILY_AVERAGE_GEMS_OBTAINED } from '#lib/constants/static.js';
 
 export const GET = createApiRoute(async ({ cookies }) => {
 	const user = await verifyAuth(cookies);
@@ -58,7 +58,7 @@ async function getOverview(userId: string): Promise<Overview> {
 		paid: totalPaid[0]?.value ?? 0,
 		total: totalGemsValue,
 		monthlyAvg: monthlyAvg[0]?.value ?? 0,
-		linearAvg: TOTAL_WEEKLY_GEMS_OBTAINABLE / 7,
+		linearAvg: DAILY_AVERAGE_GEMS_OBTAINED,
 		pullCount: totalPulls
 	};
 }
