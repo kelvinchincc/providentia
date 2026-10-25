@@ -4,6 +4,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
+import { NULL_UUID } from '#lib/constants/values.js';
 import { InternalServerErrorException } from '#lib/exception/http/internal-server-error-exception.js';
 import { createOkApiResponse } from '#lib/schema/api/base.js';
 import {
@@ -35,7 +36,7 @@ export const GET = createApiRoute(async ({ url, cookies }) => {
 		.limit(limit + 1);
 
 	const haveMore = rows.length > limit;
-	const nextCursor = haveMore ? rows[limit].id : '00000000-0000-0000-0000-000000000000';
+	const nextCursor = haveMore ? rows[limit].id : NULL_UUID;
 	const pagedResult: PagedGemHistories = {
 		list: (haveMore ? rows.slice(0, limit) : rows) as GemHistories,
 		haveMore,

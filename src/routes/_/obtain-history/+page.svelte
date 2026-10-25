@@ -16,6 +16,7 @@
 	import { useQueryClient } from '@tanstack/svelte-query';
 	import { dispatch } from '#lib/client/utils/timing.js';
 	import { queryKeys } from '#lib/client/services/providentia/query/queryKeys.js';
+	import { NULL_UUID } from '#lib/constants/values.js';
 
 	const LIMIT = 25;
 
@@ -81,7 +82,7 @@
 							</td>
 						</tr>
 					{/if}
-					{#each gemsHistoryQuery.data.pages as data, bulkIndex (data?.next || '00000000-0000-0000-0000-000000000000')}
+					{#each gemsHistoryQuery.data.pages as data, bulkIndex (data?.next || NULL_UUID)}
 						{#each data?.list as item, itemIndex (item.id)}
 							<tr>
 								<td>{bulkIndex * LIMIT + itemIndex + 1}</td>
