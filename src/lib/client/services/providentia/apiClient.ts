@@ -21,6 +21,7 @@ const refreshToken = () => {
 		.then(() => undefined)
 		.catch((error) => {
 			// clear auth state, layout redirects to login
+			console.error(error);
 			authStoreActions.logout();
 			throw error;
 		})

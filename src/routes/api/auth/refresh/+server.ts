@@ -8,10 +8,8 @@ import { AUTH_COOKIE_TTL_MS, REFRESH_COOKIE_TTL_MS } from '#lib/constants/cookie
 import { createOkApiResponse } from '#lib/schema/api/base.js';
 import { loginApiDataSchema, type LoginApiData } from '#lib/schema/api/login.js';
 import { JWTType } from '#lib/schema/base/jwt.js';
-import { db } from '#lib/server/db/index.js';
-import { user as userRepo } from '#lib/server/db/schemas/user.schema.js';
-import { createApiRoute, noContentResponse, okResponse } from '#lib/server/utils/api.js';
-import { generateSeed, signJWTSecret, verifyAuth } from '#lib/server/utils/auth.js';
+import { createApiRoute, okResponse } from '#lib/server/utils/api.js';
+import { signJWTSecret, verifyAuth } from '#lib/server/utils/auth.js';
 
 export const POST = createApiRoute(async ({ cookies }) => {
 	const user = await verifyAuth(cookies, JWTType.REFRESH);
