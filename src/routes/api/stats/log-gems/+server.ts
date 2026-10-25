@@ -42,10 +42,7 @@ export const POST = createApiRoute(async ({ cookies, request }) => {
 		});
 	});
 
-	// Fire and forget updating stats, we don't need to wait for it to complete
-	updateStats(user.id).catch((error) => {
-		logger.error('Error updating stats:', error);
-	});
+	await updateStats(user.id);
 
 	return noContentResponse();
 });

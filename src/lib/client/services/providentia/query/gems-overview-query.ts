@@ -25,7 +25,6 @@ export const createGemsOverviewQuery = () => {
 
 	return createQuery(() => ({
 		queryKey: queryKeys.gemsOverview(),
-		queryFn,
-		refetchInterval: 1000 * 60 // 1 minute
+		queryFn
 	}));
 };
