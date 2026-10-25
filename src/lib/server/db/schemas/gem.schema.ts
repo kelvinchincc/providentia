@@ -5,17 +5,21 @@
  */
 import { generateCurrentTimestamp } from '#lib/server/utils/datetime.js';
 import { randomUUIDv7 } from 'crypto';
-import { integer, sqliteTable, text } from 'drizzle-orm/sqlite-core';
+import { index, integer, sqliteTable, text } from 'drizzle-orm/sqlite-core';
 import { user } from './user.schema';
 
-export const gem = sqliteTable('gems', {
-	id: text('id').primaryKey().$defaultFn(randomUUIDv7),
-	userId: text('user_id')
-		.notNull()
-		.references(() => user.id),
-	amount: integer('amount').notNull().default(0),
-	obtainedAt: integer('obtained_at').notNull().$defaultFn(generateCurrentTimestamp),
-	updatedAt: integer('updated_at').notNull().$defaultFn(generateCurrentTimestamp),
-	note: text('note'),
-	type: text('type').notNull()
-});
+export const gem = sqliteTable(
+	'gems',
+	{
+		id: text('id').primaryKey().$defaultFn(randomUUIDv7),
+		userId: text('user_id')
+			.notNull()
+			.references(() => user.id),
+		amount: integer('amount').notNull().default(0),
+		obtainedAt: integer('obtained_at').notNull().$defaultFn(generateCurrentTimestamp),
+		updatedAt: integer('updated_at').notNull().$defaultFn(generateCurrentTimestamp),
+		note: text('note'),
+		type: text('type').notNull()
+	},
+	(table) => [index('idx_gems_userid_amount').on(table.userId, table.amount)]
+);
