@@ -39,7 +39,8 @@
 						<th class="w-45">Obtained At</th>
 						<th class="w-45">Updated At</th>
 						<th class="w-15">Type</th>
-						<th class="">Note</th>
+						<th class="min-w-50">Note</th>
+						<th class=""></th>
 					</tr>
 				</thead>
 				<tbody>
@@ -62,6 +63,14 @@
 								<td>{formatDateTime(item.updatedAt)}</td>
 								<td>{formatGemType(item.type)}</td>
 								<td>{item.note || '-'}</td>
+								<td class="flex gap-1">
+									<button class="btn btn-square btn-secondary" aria-label="Edit">
+										<i class="fa-solid fa-pen-to-square"></i>
+									</button>
+									<button class="btn btn-square btn-error" aria-label="Delete">
+										<i class="fa-solid fa-trash"></i>
+									</button>
+								</td>
 							</tr>
 						{/each}
 					{/each}
