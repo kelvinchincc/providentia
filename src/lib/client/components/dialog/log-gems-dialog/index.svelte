@@ -29,11 +29,11 @@
 		},
 		onSubmit: async ({ value: { amount, ...value } }) => {
 			try {
-				const currentTotal = gemsOverviewQuery.data?.total ?? 0;
+				const currentFreeTotal = gemsOverviewQuery.data?.free ?? 0;
+				const currentPaidTotal = gemsOverviewQuery.data?.paid ?? 0;
+				const toDeduct = value.type === 'free' ? currentFreeTotal : currentPaidTotal;
 				const delta =
-					mode === 'delta'
-						? Number.parseInt(amount) - currentTotal
-						: Number.parseInt(amount);
+					mode === 'delta' ? Number.parseInt(amount) - toDeduct : Number.parseInt(amount);
 
 				await logGemsMutation.mutateAsync({
 					amount: delta.toString(),
@@ -130,7 +130,7 @@
 							{value}
 							onchange={(e) => handleChange((e.target as HTMLInputElement).value)}
 							onblur={handleBlur}
-							placeholder="Amount"
+							placeholder={mode === 'direct' ? 'Amount' : 'Current Amount'}
 						/>
 					</label>
 					{#if meta.errors}
