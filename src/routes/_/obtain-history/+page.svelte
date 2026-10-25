@@ -4,16 +4,27 @@
  file, You can obtain one at http://mozilla.org/MPL/2.0/.
 -->
 <script lang="ts">
+	import LogGemsDialog from '#lib/client/components/dialog/log-gems-dialog/index.svelte';
+	import QuestionDialog from '#lib/client/components/dialog/question-dialog/index.svelte';
+
 	import { createGemsHistoryQuery } from '#lib/client/services/providentia/query/gems-history-query.js';
 	import { formatDateTime, formatGemType } from '#lib/client/utils/display.js';
 	import { GEM_UNIT } from '$app/env/public';
-	import LogGemsDialog from '#lib/client/components/dialog/log-gems-dialog/index.svelte';
 	import { cn } from '#lib/client/utils/cn.js';
+	import { createDeleteGemsMutation } from '#lib/client/services/providentia/mutations/delete-gems-mutation.js';
+	import { dialogStoreActions } from '#lib/client/store/genericDialogStore.js';
+	import { useQueryClient } from '@tanstack/svelte-query';
+	import { dispatch } from '#lib/client/utils/timing.js';
+	import { queryKeys } from '#lib/client/services/providentia/query/queryKeys.js';
 
 	const LIMIT = 25;
 
+	const queryClient = useQueryClient();
 	const gemsHistoryQuery = createGemsHistoryQuery({ limit: LIMIT });
+	const deleteGemsMutation = createDeleteGemsMutation();
+
 	let isLogGemsDialogOpen = $state(false);
+	let gemRecordToDelete = $state<string | null>(null);
 
 	$effect(() => {
 		console.log(gemsHistoryQuery.data);
@@ -21,6 +32,24 @@
 </script>
 
 <LogGemsDialog open={isLogGemsDialogOpen} onClose={() => (isLogGemsDialogOpen = false)} />
+<QuestionDialog
+	open={gemRecordToDelete != null}
+	title="Are you sure to delete this record?"
+	message="This action cannot undo"
+	onClose={() => (gemRecordToDelete = null)}
+	onYes={async () => {
+		try {
+			await deleteGemsMutation.mutateAsync(gemRecordToDelete!);
+		} catch (error) {
+			dialogStoreActions.alert('Opps! Something went wrong ,please try again later!');
+		} finally {
+			dispatch(() => {
+				queryClient.invalidateQueries({ queryKey: queryKeys.gemHistory() });
+				queryClient.invalidateQueries({ queryKey: queryKeys.gemsOverview() });
+			});
+		}
+	}}
+/>
 
 <section class="mx-auto w-200">
 	{#if gemsHistoryQuery.isError}
@@ -67,7 +96,11 @@
 									<button class="btn btn-square btn-secondary" aria-label="Edit">
 										<i class="fa-solid fa-pen-to-square"></i>
 									</button>
-									<button class="btn btn-square btn-error" aria-label="Delete">
+									<button
+										class="btn btn-square btn-error"
+										aria-label="Delete"
+										onclick={() => (gemRecordToDelete = item.id)}
+									>
 										<i class="fa-solid fa-trash"></i>
 									</button>
 								</td>

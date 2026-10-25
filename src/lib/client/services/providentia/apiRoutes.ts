@@ -11,3 +11,4 @@ export const authRegister = '/api/auth/register';
 export const logGems = '/api/stats/log-gems';
 export const gemHistory = '/api/stats/list-gems';
 export const gemsOverview = '/api/stats/overview';
+export const deleteGems = '/api/stats/delete-gems';

@@ -18,7 +18,7 @@
 	<footer class="dialog-footer flex justify-end gap-2">
 		{#if onCancel}
 			<button
-				class="btn btn-secondary"
+				class="btn w-20 btn-secondary"
 				onclick={() => {
 					onCancel?.();
 					onClose?.();
