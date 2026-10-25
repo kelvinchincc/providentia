@@ -22,7 +22,7 @@ const refreshToken = () => {
 		.catch((error) => {
 			// clear auth state, layout redirects to login
 			console.error(error);
-			authStoreActions.logout();
+			// authStoreActions.logout(); 
 			throw error;
 		})
 		.finally(() => {
