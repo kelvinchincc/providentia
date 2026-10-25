@@ -93,7 +93,13 @@
 								<td>{formatGemType(item.type)}</td>
 								<td>{item.note || '-'}</td>
 								<td class="flex gap-1">
-									<button class="btn btn-square btn-secondary" aria-label="Edit">
+									<button
+										class="btn btn-square btn-secondary"
+										aria-label="Edit"
+										onclick={() => {
+											dialogStoreActions.alert('Comming soon!');
+										}}
+									>
 										<i class="fa-solid fa-pen-to-square"></i>
 									</button>
 									<button
