@@ -68,19 +68,6 @@ greater than `0`. For example:
 PULL_PRICE=160
 ```
 
-## DB_MODE
-
-The mode in which the sqlite database operates. This can be set to either `delete` or `wal`, this field is required.
-Delete mode is the sqlite default mode, if not sure what WAL mode dose, set it to `delete`, it is the safest option. WAL
-mode is faster and more efficient, but it requires more disk space and can be more complex to manage. To learn more
-about WAL mode, you can read the sqlite documentation on [WAL mode](https://www.sqlite.org/wal.html).
-
-Exaple:
-
-```
-DB_MODE=delete
-```
-
 ## TOTAL_WEEKLY_GEMS_OBTAINABLE
 
 The total amount of gems a user can get in a week, uses to calculate daily confrimed obtain rate, which is a constants

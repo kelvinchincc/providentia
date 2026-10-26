@@ -1,0 +1,5 @@
+# SQL Work spaces, should be ignored but structured for future use
+*
+!*/
+!.gitkeep
+!.gitignore
