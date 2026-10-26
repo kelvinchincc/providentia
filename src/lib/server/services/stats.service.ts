@@ -32,46 +32,38 @@ export async function updateStats(userId: string) {
 	const totalGems = (totalFree[0]?.total || 0) + (totalPaid[0]?.total || 0);
 
 	// if have stat record, update it, otherwise create a new one
-	const [
-		extFreeGemsStat,
-		extPaidGemsStat,
-		extTotalGemsStat,
-		extAverageGemsStat,
-		extLinearGainsStat,
-		newMonthlyAvg
-	] = await Promise.all([
-		db
-			.select()
-			.from(stat)
-			.where(and(eq(stat.userId, userId), eq(stat.item, StatKey.TOTAL_FREE_GEMS)))
-			.limit(1),
-		db
-			.select()
-			.from(stat)
-			.where(and(eq(stat.userId, userId), eq(stat.item, StatKey.TOTAL_PAID_GEMS)))
-			.limit(1),
-		db
-			.select()
-			.from(stat)
-			.where(and(eq(stat.userId, userId), eq(stat.item, StatKey.TOTAL_GEMS)))
-			.limit(1),
-		db
-			.select()
-			.from(stat)
-			.where(and(eq(stat.userId, userId), eq(stat.item, StatKey.MONTHLY_AVG_GAINS)))
-			.limit(1),
-		db
-			.select()
-			.from(stat)
-			.where(and(eq(stat.userId, userId), eq(stat.item, StatKey.LINEAR_GAINS)))
-			.limit(1),
-		db
-			.select({ total: sum(gem.amount).mapWith(Number) })
-			.from(gem)
-			.where(
-				and(eq(gem.userId, userId), gte(gem.obtainedAt, dayjs().subtract(30, 'day').unix()))
-			)
-	]);
+	const [extFreeGemsStat, extPaidGemsStat, extTotalGemsStat, extAverageGemsStat, newMonthlyAvg] =
+		await Promise.all([
+			db
+				.select()
+				.from(stat)
+				.where(and(eq(stat.userId, userId), eq(stat.item, StatKey.TOTAL_FREE_GEMS)))
+				.limit(1),
+			db
+				.select()
+				.from(stat)
+				.where(and(eq(stat.userId, userId), eq(stat.item, StatKey.TOTAL_PAID_GEMS)))
+				.limit(1),
+			db
+				.select()
+				.from(stat)
+				.where(and(eq(stat.userId, userId), eq(stat.item, StatKey.TOTAL_GEMS)))
+				.limit(1),
+			db
+				.select()
+				.from(stat)
+				.where(and(eq(stat.userId, userId), eq(stat.item, StatKey.MONTHLY_AVG_GAINS)))
+				.limit(1),
+			db
+				.select({ total: sum(gem.amount).mapWith(Number) })
+				.from(gem)
+				.where(
+					and(
+						eq(gem.userId, userId),
+						gte(gem.obtainedAt, dayjs().subtract(30, 'day').unix())
+					)
+				)
+		]);
 
 	await db.transaction(async (tx) => {
 		if (extFreeGemsStat.length > 0) {
@@ -114,7 +106,7 @@ export async function updateStats(userId: string) {
 		}
 
 		const dailyGains = Math.round((newMonthlyAvg[0]?.total || 0) / 30);
-		if (extLinearGainsStat.length > 0) {
+		if (extAverageGemsStat.length > 0) {
 			await tx
 				.update(stat)
 				.set({ value: dailyGains })
