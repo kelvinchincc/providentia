@@ -43,11 +43,9 @@
 					title: 'Success'
 				});
 				dispatch(() => {
-					dispatch(() => {
-						queryClient.invalidateQueries({
-							queryKey: queryKeys.gemsOverview()
-						});
-					}, 5000);
+					queryClient.invalidateQueries({
+						queryKey: queryKeys.gemsOverview()
+					});
 					queryClient.invalidateQueries({
 						queryKey: queryKeys.gemHistory()
 					});
