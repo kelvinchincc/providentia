@@ -122,7 +122,7 @@ export async function updateStats(userId: string) {
 		} else {
 			await tx.insert(stat).values({
 				userId,
-				item: StatKey.LINEAR_GAINS,
+				item: StatKey.MONTHLY_AVG_GAINS,
 				value: dailyGains
 			});
 		}
