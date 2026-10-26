@@ -102,29 +102,31 @@
 								<td>{formatDateTime(item.updatedAt)}</td>
 								<td>{formatGemType(item.type)}</td>
 								<td>{item.note || '-'}</td>
-								<td class="flex gap-1">
-									<button
-										class="btn btn-square btn-secondary"
-										aria-label="Edit"
-										onclick={() => {
-											gemRecordToEdit = {
-												id: item.id,
-												amount: item.amount,
-												note: item.note,
-												type: item.type
-											};
-											isEditGemsDialogOpen = true;
-										}}
-									>
-										<i class="fa-solid fa-pen-to-square"></i>
-									</button>
-									<button
-										class="btn btn-square btn-error"
-										aria-label="Delete"
-										onclick={() => (gemRecordToDelete = item.id)}
-									>
-										<i class="fa-solid fa-trash"></i>
-									</button>
+								<td>
+									<div class="flex gap-2">
+										<button
+											class="btn btn-square btn-secondary"
+											aria-label="Edit"
+											onclick={() => {
+												gemRecordToEdit = {
+													id: item.id,
+													amount: item.amount,
+													note: item.note,
+													type: item.type
+												};
+												isEditGemsDialogOpen = true;
+											}}
+										>
+											<i class="fa-solid fa-pen-to-square"></i>
+										</button>
+										<button
+											class="btn btn-square btn-error"
+											aria-label="Delete"
+											onclick={() => (gemRecordToDelete = item.id)}
+										>
+											<i class="fa-solid fa-trash"></i>
+										</button>
+									</div>
 								</td>
 							</tr>
 						{/each}
