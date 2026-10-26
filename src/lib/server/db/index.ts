@@ -5,9 +5,8 @@
  */
 import { drizzle } from 'drizzle-orm/libsql';
 import * as schema from '#lib/server/db/schemas/index.js';
-import { DATABASE_URL, DB_MODE } from '$app/env/private';
+import { DATABASE_URL } from '$app/env/private';
 import { createClient } from '@libsql/client';
-import { logger } from '../utils/logger';
 
 if (!DATABASE_URL) throw new Error('DATABASE_URL is not set');
 
