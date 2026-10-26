@@ -13,5 +13,24 @@ export const updateGemSchema = z.object({
 	type: z.enum([GemType.FREE, GemType.PAID]).optional(),
 	note: z.string().optional()
 });
+export const updateGemFormSchema = z.object({
+	amount: z.string().refine((val) => {
+		// must be numeric, and cannot be empty
+		if (val.trim() === '') return false;
+		const num = Number(val);
+		return !isNaN(num) && Number.isInteger(num) && num !== 0;
+	}),
+	type: z.enum([GemType.FREE, GemType.PAID]).optional(),
+	note: z.string().optional()
+});
 
 export type UpdateGemSchema = z.infer<typeof updateGemSchema>;
+export type UpdateGemFormSchema = z.infer<typeof updateGemFormSchema>;
+
+export function createDefaultFormSchema(): UpdateGemFormSchema {
+	return {
+		amount: '',
+		type: GemType.FREE,
+		note: ''
+	};
+}

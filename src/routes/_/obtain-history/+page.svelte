@@ -6,6 +6,7 @@
 <script lang="ts">
 	import LogGemsDialog from '#lib/client/components/dialog/log-gems-dialog/index.svelte';
 	import QuestionDialog from '#lib/client/components/dialog/question-dialog/index.svelte';
+	import EditGemsDialog from '#lib/client/components/dialog/edit-gems-dialog/index.svelte';
 
 	import { createGemsHistoryQuery } from '#lib/client/services/providentia/query/gems-history-query.js';
 	import { formatDateTime, formatGemType } from '#lib/client/utils/display.js';
@@ -17,6 +18,7 @@
 	import { dispatch } from '#lib/client/utils/timing.js';
 	import { queryKeys } from '#lib/client/services/providentia/query/queryKeys.js';
 	import { NULL_UUID } from '#lib/constants/values.js';
+	import type { GemRecord } from '#lib/client/components/dialog/edit-gems-dialog/types.js';
 
 	const LIMIT = 25;
 
@@ -26,6 +28,8 @@
 
 	let isLogGemsDialogOpen = $state(false);
 	let gemRecordToDelete = $state<string | null>(null);
+	let isEditGemsDialogOpen = $state(false);
+	let gemRecordToEdit = $state<GemRecord | null>(null);
 
 	$effect(() => {
 		console.log(gemsHistoryQuery.data);
@@ -33,6 +37,11 @@
 </script>
 
 <LogGemsDialog open={isLogGemsDialogOpen} onClose={() => (isLogGemsDialogOpen = false)} />
+<EditGemsDialog
+	open={isEditGemsDialogOpen}
+	recordToEdit={gemRecordToEdit}
+	onClose={() => (isEditGemsDialogOpen = false)}
+/>
 <QuestionDialog
 	open={gemRecordToDelete != null}
 	title="Are you sure to delete this record?"
@@ -98,7 +107,13 @@
 										class="btn btn-square btn-secondary"
 										aria-label="Edit"
 										onclick={() => {
-											dialogStoreActions.alert('Comming soon!');
+											gemRecordToEdit = {
+												id: item.id,
+												amount: item.amount,
+												note: item.note,
+												type: item.type
+											};
+											isEditGemsDialogOpen = true;
 										}}
 									>
 										<i class="fa-solid fa-pen-to-square"></i>
