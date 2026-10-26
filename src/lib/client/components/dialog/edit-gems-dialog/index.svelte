@@ -11,12 +11,42 @@
 	import { createDefaultFormSchema, updateGemFormSchema } from '#lib/schema/api/update-gem.js';
 	import { cn } from '#lib/client/utils/cn.js';
 	import { GemType } from '#lib/constants/gem-type.js';
+	import { createUpdateGemsMutation } from '#lib/client/services/providentia/mutations/update-gems-mutation.js';
+	import { dialogStoreActions } from '#lib/client/store/genericDialogStore.js';
+	import { dispatch } from '#lib/client/utils/timing.js';
+	import { useQueryClient } from '@tanstack/svelte-query';
+	import { queryKeys } from '#lib/client/services/providentia/query/queryKeys.js';
 
 	const { onClose, open, recordToEdit }: Props = $props();
+	const queryClient = useQueryClient();
+	const updateGemMutation = createUpdateGemsMutation();
 	const form = createForm(() => ({
 		defaultValues: createDefaultFormSchema(),
 		validators: {
 			onSubmit: updateGemFormSchema
+		},
+		onSubmit: async ({ value }) => {
+			if (recordToEdit == null) {
+				throw new Error('No record to edit');
+			}
+
+			try {
+				await updateGemMutation.mutateAsync({
+					id: recordToEdit.id,
+					...value
+				});
+				onClose();
+			} catch (error) {
+				console.error('Error updating gem record:', error);
+				dialogStoreActions.alert('Unable to update gem record. Please try again later.', {
+					title: 'Unexpected Error Occurred'
+				});
+			} finally {
+				dispatch(() => {
+					queryClient.invalidateQueries({ queryKey: queryKeys.gemHistory() });
+					queryClient.invalidateQueries({ queryKey: queryKeys.gemsOverview() });
+				});
+			}
 		}
 	}));
 
@@ -78,8 +108,8 @@
 							}}
 							onblur={handleBlur}
 						>
-							<option value="free">Free</option>
-							<option value="paid">Paid</option>
+							<option value={GemType.FREE}>Free</option>
+							<option value={GemType.PAID}>Paid</option>
 						</select>
 					</label>
 					{#if meta.errors}
@@ -111,10 +141,12 @@
 				</div>
 			{/snippet}
 		</form.Field>
-	</form>
 
-	<section class="mt-4 flex justify-end gap-2">
-		<button class="btn btn-secondary" type="button" onclick={() => onClose()}> Cancel </button>
-		<button class="btn btn-primary" type="submit">Submit</button>
-	</section>
+		<section class="mt-4 flex justify-end gap-2">
+			<button class="btn btn-secondary" type="button" onclick={() => onClose()}>
+				Cancel
+			</button>
+			<button class="btn btn-primary" type="submit">Submit</button>
+		</section>
+	</form>
 </BaseDialog>
