@@ -13,7 +13,7 @@ import { db } from '#lib/server/db/index.js';
 import { notePreset } from '#lib/server/db/schemas/note-preset.schema.js';
 import { createApiRoute, noContentResponse, okResponse } from '#lib/server/utils/api.js';
 import { verifyAuth } from '#lib/server/utils/auth.js';
-import { eq } from 'drizzle-orm';
+import { eq, and } from 'drizzle-orm';
 
 export const GET = createApiRoute(async ({ cookies }) => {
 	const user = await verifyAuth(cookies);
@@ -36,17 +36,31 @@ export const GET = createApiRoute(async ({ cookies }) => {
 });
 
 export const POST = createApiRoute(async ({ cookies, request }) => {
-	const user = await verifyAuth(cookies);
+	const authUser = await verifyAuth(cookies);
 	const body = createNotePresetRequest.safeParse(await request.json());
-	if (user == null) throw new UnauthorizedException();
+	if (authUser == null) throw new UnauthorizedException();
 	if (!body.success) throw new BadRequestException(body.error.message);
 
 	const payload = body.data;
 	await db.insert(notePreset).values({
-		userId: user.id,
+		userId: authUser.id,
 		content: payload.content,
 		name: payload.name ?? ''
 	});
+
+	return noContentResponse();
+});
+
+export const DELETE = createApiRoute(async ({ cookies, url }) => {
+	const authUser = await verifyAuth(cookies);
+	const id = url.searchParams.get('id');
+
+	if (authUser == null) throw new UnauthorizedException();
+	if (id == null) throw new BadRequestException('Missing id parameter');
+
+	await db
+		.delete(notePreset)
+		.where(and(eq(notePreset.userId, authUser.id), eq(notePreset.id, id)));
 
 	return noContentResponse();
 });
