@@ -72,3 +72,5 @@ Strong success criteria let you loop independently. Weak criteria ("make it work
 ## Project-Specific Guidelines
 
 - package manager: pnpm
+- if told to commit, commit only the files you changed, unless being told to include unrelated files. If you see unrelated files, ask if they should be included. All changes should be in one commit unless told otherwise.
+- when writing commit messages, always look at the changes made to the files, not just by what we have discussed. If additioal files are included, collect all the changes and commit message should reflect all the changes made. If you see unrelated files, ask if they should be included. All changes should be in one commit unless told otherwise.
