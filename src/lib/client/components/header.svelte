@@ -16,14 +16,18 @@
 		authStoreActions.logout();
 	}
 
-	function handleNavgateToDashboard() {
+	function handleNavigateToDashboard() {
 		goto(resolve('/_'));
+	}
+
+	function handleNavigateToProfile() {
+		goto(resolve('/_/profile'));
 	}
 </script>
 
 <nav class="navbar flex justify-between bg-base-100">
 	<section>
-		<button class="btn btn-ghost text-xl" onclick={handleNavgateToDashboard}>
+		<button class="btn btn-ghost text-xl" onclick={handleNavigateToDashboard}>
 			<div class="mr-2">
 				<img src={logo} alt="Providentia Logo" class="h-6 w-6 grayscale invert" />
 			</div>
@@ -32,14 +36,18 @@
 	</section>
 
 	<section class="flex items-center gap-2">
-		<div class="overflow-clip rounded-lg" title={authStore.current.username ?? 'Anonymous'}>
+		<button
+			class="btn btn-square overflow-clip rounded-lg btn-ghost"
+			title={authStore.current.username ?? 'Anonymous'}
+			onclick={handleNavigateToProfile}
+		>
 			<Avatar
 				name={authStore.current.username ?? undefined}
 				variant="pixel"
 				square
 				size={40}
 			/>
-		</div>
+		</button>
 		<button class="btn btn-square btn-primary" title="Logout" onclick={handleLogout}>
 			<i class="fa-solid fa-arrow-right-from-bracket"></i>
 		</button>
