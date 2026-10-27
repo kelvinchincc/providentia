@@ -1,0 +1,1 @@
+CREATE INDEX `idx_gems_userid_obtained_at` ON `gems` (`user_id`,`obtained_at`,`amount`);

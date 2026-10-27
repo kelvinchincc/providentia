@@ -5,11 +5,10 @@
  */
 
 import { BadRequestException } from '#lib/exception/http/bad-request-exception.js';
-import { NotImplementedException } from '#lib/exception/http/not-implemented-exception.js';
 import { UnauthorizedException } from '#lib/exception/http/unauthorized-exception.js';
 import { db } from '#lib/server/db/index.js';
 import { gem } from '#lib/server/db/schemas/gem.schema.js';
-import { updateStats } from '#lib/server/services/stats.service.js';
+import { lazyUpdateStats } from '#lib/server/services/stats.service.js';
 import { createApiRoute, noContentResponse } from '#lib/server/utils/api.js';
 import { verifyAuth } from '#lib/server/utils/auth.js';
 import { and, eq } from 'drizzle-orm';
@@ -28,7 +27,18 @@ export const DELETE = createApiRoute(async ({ cookies, url }) => {
 		throw new BadRequestException('Missing id parameter');
 	}
 
-	await db.delete(gem).where(and(eq(gem.userId, user.id), eq(gem.id, id)));
-	await updateStats(user.id);
+	await db.transaction(async (tx) => {
+		const record = await tx
+			.select()
+			.from(gem)
+			.where(and(eq(gem.userId, user.id), eq(gem.id, id)))
+			.limit(1);
+		await tx.delete(gem).where(and(eq(gem.userId, user.id), eq(gem.id, id)));
+		await lazyUpdateStats(tx, {
+			userId: user.id,
+			// Negative amount to indicate that we are removing gems from the total
+			changes: [{ type: record[0]?.type || 'free', amount: -(record[0]?.amount || 0) }]
+		});
+	});
 	return noContentResponse();
 });

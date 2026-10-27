@@ -29,6 +29,13 @@
       "when": 1792941293459,
       "tag": "0003_light_valkyrie",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "6",
+      "when": 1793074393222,
+      "tag": "0004_smart_roxanne_simpson",
+      "breakpoints": true
     }
   ]
 }

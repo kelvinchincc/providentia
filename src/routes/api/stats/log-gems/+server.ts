@@ -4,19 +4,22 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { StatKey } from '#lib/constants/stat-key.js';
 import { BadRequestException } from '#lib/exception/http/bad-request-exception.js';
+import { UnauthorizedException } from '#lib/exception/http/unauthorized-exception.js';
 import { logGemApiSchema, type LogGemApiRequest } from '#lib/schema/api/log-gems.js';
 import { db } from '#lib/server/db/index.js';
 import { gem } from '#lib/server/db/schemas/gem.schema.js';
-import { stat } from '#lib/server/db/schemas/stat.schema.js';
 import { createApiRoute, noContentResponse } from '#lib/server/utils/api.js';
 import { verifyAuth } from '#lib/server/utils/auth.js';
 import { logger } from '#lib/server/utils/logger.js';
-import { updateStats } from '#lib/server/services/stats.service.js';
+import { lazyUpdateStats } from '#lib/server/services/stats.service.js';
 
 export const POST = createApiRoute(async ({ cookies, request }) => {
 	const user = await verifyAuth(cookies);
+
+	if (!user) {
+		throw new UnauthorizedException();
+	}
 
 	const body: LogGemApiRequest = await (async () => {
 		try {
@@ -40,9 +43,12 @@ export const POST = createApiRoute(async ({ cookies, request }) => {
 			amount: body.amount,
 			note: body.note
 		});
-	});
 
-	await updateStats(user.id);
+		await lazyUpdateStats(tx, {
+			userId: user.id,
+			changes: [{ type: body.type, amount: body.amount }]
+		});
+	});
 
 	return noContentResponse();
 });

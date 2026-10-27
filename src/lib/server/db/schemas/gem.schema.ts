@@ -21,5 +21,8 @@ export const gem = sqliteTable(
 		note: text('note'),
 		type: text('type').notNull()
 	},
-	(table) => [index('idx_gems_userid_amount').on(table.userId, table.amount)]
+	(table) => [
+		index('idx_gems_userid_amount').on(table.userId, table.amount),
+		index('idx_gems_userid_obtained_at').on(table.userId, table.obtainedAt, table.amount)
+	]
 );
