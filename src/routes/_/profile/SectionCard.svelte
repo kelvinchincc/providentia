@@ -16,5 +16,5 @@
 
 <section class="card bg-base-200 p-4 shadow-lg">
 	<h2 class="mb-1 text-xl font-bold">{title}</h2>
-	<div class="grid h-30 place-items-center">{@render children()}</div>
+	{@render children()}
 </section>

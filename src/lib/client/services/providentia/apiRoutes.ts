@@ -13,3 +13,6 @@ export const gemHistory = '/api/stats/list-gems';
 export const gemsOverview = '/api/stats/overview';
 export const deleteGems = '/api/stats/delete-gems';
 export const updateGems = '/api/stats/edit-gems';
+
+export const listNotePreset = '/api/note-presets';
+export const addNotePreset = '/api/note-presets';

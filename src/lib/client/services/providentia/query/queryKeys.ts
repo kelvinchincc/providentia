@@ -9,5 +9,7 @@ export const queryKeys = {
 	gemHistory: () => [...queryKeys.base, 'gem-history'] as const,
 	gemHistoryWithParams: (params: { from: string; limit: number }) =>
 		[...queryKeys.gemHistory(), params] as const,
-	gemsOverview: () => [...queryKeys.base, 'stats', 'overview'] as const
+	gemsOverview: () => [...queryKeys.base, 'stats', 'overview'] as const,
+
+	notePresets: () => [...queryKeys.base, 'note-presets'] as const
 };
