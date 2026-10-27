@@ -2,7 +2,6 @@
 	import GemsOverview from '#lib/client/components/gems-overview/index.svelte';
 	import TargetCard from '#lib/client/components/target-card/index.svelte';
 	import LogGemsDialog from '#lib/client/components/dialog/log-gems-dialog/index.svelte';
-	import { dialogStoreActions } from '#lib/client/store/genericDialogStore.js';
 	import { goto } from '$app/navigation';
 	import { resolve } from '$app/paths';
 	import { GEM_UNIT } from '$app/env/public';
@@ -47,7 +46,7 @@
 
 	function onAddForcast() {
 		// TODO: Implement the logic to add a new forcast
-		dialogStoreActions.alert('Comming Soon!');
+		alert('Comming Soon!');
 	}
 
 	function onObtainHistoryClicked() {

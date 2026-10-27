@@ -12,7 +12,6 @@
 	import { cn } from '#lib/client/utils/cn.js';
 	import { GemType } from '#lib/constants/gem-type.js';
 	import { createUpdateGemsMutation } from '#lib/client/services/providentia/mutations/update-gems-mutation.js';
-	import { dialogStoreActions } from '#lib/client/store/genericDialogStore.js';
 	import { dispatch } from '#lib/client/utils/timing.js';
 	import { useQueryClient } from '@tanstack/svelte-query';
 	import { queryKeys } from '#lib/client/services/providentia/query/queryKeys.js';
@@ -38,9 +37,7 @@
 				onClose();
 			} catch (error) {
 				console.error('Error updating gem record:', error);
-				dialogStoreActions.alert('Unable to update gem record. Please try again later.', {
-					title: 'Unexpected Error Occurred'
-				});
+				alert('Unable to update gem record. Please try again later.');
 			} finally {
 				dispatch(() => {
 					queryClient.invalidateQueries({ queryKey: queryKeys.gemHistory() });

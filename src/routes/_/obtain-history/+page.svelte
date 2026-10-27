@@ -5,7 +5,6 @@
 -->
 <script lang="ts">
 	import LogGemsDialog from '#lib/client/components/dialog/log-gems-dialog/index.svelte';
-	import QuestionDialog from '#lib/client/components/dialog/question-dialog/index.svelte';
 	import EditGemsDialog from '#lib/client/components/dialog/edit-gems-dialog/index.svelte';
 
 	import { createGemsHistoryQuery } from '#lib/client/services/providentia/query/gems-history-query.js';
@@ -13,7 +12,6 @@
 	import { GEM_UNIT } from '$app/env/public';
 	import { cn } from '#lib/client/utils/cn.js';
 	import { createDeleteGemsMutation } from '#lib/client/services/providentia/mutations/delete-gems-mutation.js';
-	import { dialogStoreActions } from '#lib/client/store/genericDialogStore.js';
 	import { useQueryClient } from '@tanstack/svelte-query';
 	import { dispatch } from '#lib/client/utils/timing.js';
 	import { queryKeys } from '#lib/client/services/providentia/query/queryKeys.js';
@@ -27,13 +25,30 @@
 	const deleteGemsMutation = createDeleteGemsMutation();
 
 	let isLogGemsDialogOpen = $state(false);
-	let gemRecordToDelete = $state<string | null>(null);
 	let isEditGemsDialogOpen = $state(false);
 	let gemRecordToEdit = $state<GemRecord | null>(null);
 
 	$effect(() => {
 		console.log(gemsHistoryQuery.data);
 	});
+
+	async function onDeleteGemRecord(recId: string) {
+		let result = confirm('Are you sure to delete this record? This action cannot be undone.');
+
+		if (!result) return;
+		try {
+			await deleteGemsMutation.mutateAsync(recId);
+			alert('Record deleted successfully!');
+		} catch (error) {
+			console.error('Error deleting gem record:', error);
+			alert('Unable to delete record. Please try again later.');
+		} finally {
+			dispatch(() => {
+				queryClient.invalidateQueries({ queryKey: queryKeys.gemHistory() });
+				queryClient.invalidateQueries({ queryKey: queryKeys.gemsOverview() });
+			});
+		}
+	}
 </script>
 
 <LogGemsDialog open={isLogGemsDialogOpen} onClose={() => (isLogGemsDialogOpen = false)} />
@@ -41,24 +56,6 @@
 	open={isEditGemsDialogOpen}
 	recordToEdit={gemRecordToEdit}
 	onClose={() => (isEditGemsDialogOpen = false)}
-/>
-<QuestionDialog
-	open={gemRecordToDelete != null}
-	title="Are you sure to delete this record?"
-	message="This action cannot undo"
-	onClose={() => (gemRecordToDelete = null)}
-	onYes={async () => {
-		try {
-			await deleteGemsMutation.mutateAsync(gemRecordToDelete!);
-		} catch (error) {
-			dialogStoreActions.alert('Opps! Something went wrong ,please try again later!');
-		} finally {
-			dispatch(() => {
-				queryClient.invalidateQueries({ queryKey: queryKeys.gemHistory() });
-				queryClient.invalidateQueries({ queryKey: queryKeys.gemsOverview() });
-			});
-		}
-	}}
 />
 
 <section class="mx-auto w-200">
@@ -122,7 +119,7 @@
 										<button
 											class="btn btn-square btn-error"
 											aria-label="Delete"
-											onclick={() => (gemRecordToDelete = item.id)}
+											onclick={() => onDeleteGemRecord(item.id)}
 										>
 											<i class="fa-solid fa-trash"></i>
 										</button>

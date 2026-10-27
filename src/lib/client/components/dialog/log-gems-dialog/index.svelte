@@ -9,7 +9,6 @@
 	import BaseDialog from '#lib/client/components/dialog/base-dialog/index.svelte';
 	import { createForm } from '@tanstack/svelte-form';
 	import { createDefaultValues, logGemSchema } from '#lib/schema/api/log-gems.js';
-	import { dialogStoreActions } from '#lib/client/store/genericDialogStore.js';
 	import { cn } from '#lib/client/utils/cn.js';
 	import { dispatch } from '#lib/client/utils/timing.js';
 	import { createLogGemsMutation } from '#lib/client/services/providentia/mutations/log-gems-mutation.js';
@@ -39,9 +38,7 @@
 					amount: delta.toString(),
 					...value
 				});
-				dialogStoreActions.alert('Gems logged successfully!', {
-					title: 'Success'
-				});
+				alert('Gems logged successfully!');
 				dispatch(() => {
 					queryClient.invalidateQueries({
 						queryKey: queryKeys.gemsOverview()
@@ -53,9 +50,7 @@
 				});
 			} catch (error) {
 				console.error('Error logging gems:', error);
-				dialogStoreActions.alert('Unable to log gems. Please try again later.', {
-					title: 'Unexpected Error Occurred'
-				});
+				alert('Unable to log gems. Please try again later.');
 			}
 		}
 	}));
