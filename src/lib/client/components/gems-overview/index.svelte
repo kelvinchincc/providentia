@@ -38,9 +38,9 @@
 	{/snippet}
 
 	<section class="grid grid-cols-[repeat(auto-fit,minmax(200px,1fr))] gap-4">
+		{@render stat(`Total ${GEM_UNIT}`, data?.total ?? 0, 'Total spendable')}
 		{@render stat(`Free ${GEM_UNIT}`, data?.free ?? 0, 'Earned from the game')}
 		{@render stat(`Paid ${GEM_UNIT}`, data?.paid ?? 0, 'Purchased from store')}
-		{@render stat(`Total ${GEM_UNIT}`, data?.total ?? 0, 'Total spendable')}
 		{@render stat(`Pull Count`, data?.pullCount ?? 0, 'Total number of pulls')}
 		{@render stat('Lenear Rewards', data?.linearAvg ?? 0, 'Login rewards')}
 		{@render stat('30 Days Gain Average', data?.monthlyAvg ?? 0, 'Average 30 days gain')}
