@@ -15,9 +15,11 @@
 	import { useQueryClient } from '@tanstack/svelte-query';
 	import { queryKeys } from '#lib/client/services/providentia/query/queryKeys.js';
 	import { createGemsOverviewQuery } from '#lib/client/services/providentia/query/gems-overview-query.js';
+	import { createNotePresetsQuery } from '#lib/client/services/providentia/query/note-presets-query.js';
 
 	const { open, onClose }: Props = $props();
 	const gemsOverviewQuery = createGemsOverviewQuery();
+	const notePresetsQuery = createNotePresetsQuery();
 	const logGemsMutation = createLogGemsMutation();
 	const queryClient = useQueryClient();
 
@@ -55,14 +57,7 @@
 		}
 	}));
 
-	// TODO: This should be from API
-	const presets = [
-		'Store Purchase',
-		'Daily Reward',
-		'Event Reward',
-		'Level Reward',
-		'Quest Reward'
-	];
+	const presets = notePresetsQuery.data ?? [];
 
 	let mode = $state<'direct' | 'delta'>('delta');
 
@@ -185,13 +180,13 @@
 		<section class="flex flex-col gap-2">
 			<div class="text-sm text-neutral">Note Presets:</div>
 			<div class="flex flex-wrap gap-1">
-				{#each presets as preset (preset)}
+				{#each presets as preset (preset.id)}
 					<button
 						class="badge flex cursor-pointer items-center rounded-full badge-outline text-xs badge-primary"
-						onclick={() => form.setFieldValue('note', preset)}
+						onclick={() => form.setFieldValue('note', preset.tag)}
 						type="button"
 					>
-						{preset}
+						{preset.tag}
 					</button>
 				{/each}
 			</div>
