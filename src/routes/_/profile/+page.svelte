@@ -4,12 +4,36 @@
  file, You can obtain one at http://mozilla.org/MPL/2.0/.
 -->
 <script lang="ts">
+	import { createAddNotePresetMutation } from '#lib/client/services/providentia/mutations/add-note-preset-mutation.js';
 	import { createNotePresetsQuery } from '#lib/client/services/providentia/query/note-presets-query.js';
 	import { cn } from '#lib/client/utils/cn.js';
+	import { useQueryClient } from '@tanstack/svelte-query';
 	import SectionCard from './SectionCard.svelte';
+	import { dispatch } from '#lib/client/utils/timing.js';
+	import { queryKeys } from '#lib/client/services/providentia/query/queryKeys.js';
+
+	const addNotePresetsMutation = createAddNotePresetMutation();
+	const queryClient = useQueryClient();
 
 	const notePresetsQuery = createNotePresetsQuery();
 	const notePresets = $derived(notePresetsQuery.data ?? []);
+
+	async function handleAddNotePreset() {
+		try {
+			const tag = prompt('Enter a tag for the new note preset:');
+			if (!tag) {
+				alert('Tag cannot be empty.');
+				return;
+			}
+
+			await addNotePresetsMutation.mutateAsync({ content: tag });
+		} catch (error) {
+			console.error('Error adding note preset:', error);
+			alert('Failed to add note preset. Please try again later.');
+		} finally {
+			dispatch(() => queryClient.invalidateQueries({ queryKey: queryKeys.notePresets() }));
+		}
+	}
 </script>
 
 <main class="mx-auto flex max-w-[min(80vw,500px)] flex-col gap-3">
@@ -47,7 +71,7 @@
 						</section>
 					</div>
 				{/each}
-				<button class="btn btn-primary">
+				<button class="btn btn-primary" onclick={handleAddNotePreset}>
 					<i class="fa-solid fa-plus"></i>
 					Add
 				</button>
