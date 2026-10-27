@@ -17,7 +17,7 @@ export const createGemsOverviewQuery = () => {
 			overviewAPIResposneSchema.parse(res.data);
 		} catch (error) {
 			console.error(error);
-			throw new Error('Invalid response from API');
+			throw new Error('Invalid response from API', { cause: error });
 		}
 
 		return res.data.success ? res.data.data : undefined;

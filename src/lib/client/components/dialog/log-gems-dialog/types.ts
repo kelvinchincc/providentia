@@ -6,4 +6,4 @@
 
 import type { BaseModelProps } from '../base-dialog/types';
 
-export interface Props extends BaseModelProps {}
+export type Props = BaseModelProps;

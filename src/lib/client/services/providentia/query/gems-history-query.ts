@@ -4,7 +4,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { createInfiniteQuery, createQuery } from '@tanstack/svelte-query';
+import { createInfiniteQuery } from '@tanstack/svelte-query';
 import { queryKeys } from './queryKeys';
 import { client } from '../apiClient';
 import { gemHistory } from '../apiRoutes';

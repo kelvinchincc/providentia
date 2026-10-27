@@ -6,7 +6,6 @@
 		initialValues
 	} from '#lib/schema/form/first-registration-form.js';
 	import { createForm } from '@tanstack/svelte-form';
-	import axios from 'axios';
 	import { dispatch } from '#lib/client/utils/timing.js';
 	import { createRegisterMutation } from '#lib/client/services/providentia/mutations/register-mutation.js';
 

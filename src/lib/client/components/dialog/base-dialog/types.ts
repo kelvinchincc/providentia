@@ -4,6 +4,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
+import type { Snippet } from 'svelte';
+
 export interface BaseModelProps {
 	open: boolean;
 	onClose: () => void;
@@ -11,5 +13,5 @@ export interface BaseModelProps {
 
 export interface Props extends BaseModelProps {
 	class?: string;
-	children: any;
+	children: Snippet;
 }

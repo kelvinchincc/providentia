@@ -30,7 +30,7 @@ export const POST = createApiRoute(async ({ request }) => {
 
 	try {
 		registerUserRequestSchema.parse(body);
-	} catch (error) {
+	} catch (_error) {
 		throw new BadRequestException('Malformed request');
 	}
 

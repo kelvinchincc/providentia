@@ -25,7 +25,7 @@ export const PUT = createApiRoute(async ({ cookies, request }) => {
 
 	try {
 		updateGemSchema.parse(body);
-	} catch (error) {
+	} catch (_error) {
 		throw new BadRequestException('Invalid request body');
 	}
 

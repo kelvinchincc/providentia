@@ -1,5 +1,9 @@
+<script>
+	import { resolve } from '$app/paths';
+</script>
+
 <main class="p-4">
-	<h1 class="mb-1 text-3xl"><a href="/" class="link link-primary">Providentia</a></h1>
+	<h1 class="mb-1 text-3xl"><a href={resolve('/')} class="link link-primary">Providentia</a></h1>
 
 	<p>
 		Providentia is Open Sourced under the

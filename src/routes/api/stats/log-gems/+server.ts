@@ -32,7 +32,7 @@ export const POST = createApiRoute(async ({ cookies, request }) => {
 
 	try {
 		logGemApiSchema.parse(body);
-	} catch (error) {
+	} catch (_error) {
 		throw new BadRequestException('Invalid request body');
 	}
 

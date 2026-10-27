@@ -34,7 +34,7 @@ export async function hashPassword(password: string) {
 	try {
 		const hash = await argon2.hash(password);
 		return hash;
-	} catch (error) {
+	} catch (_error) {
 		throw new FailedHashPasswordException('Failed to hash password');
 	}
 }

@@ -5,6 +5,7 @@
 -->
 <script lang="ts">
 	import dayjs from 'dayjs';
+	import { resolve } from '$app/paths';
 
 	const year = dayjs().year();
 </script>
@@ -20,7 +21,7 @@
 	</div>
 	<ul class="flex gap-2">
 		<li>
-			<a href="/about" class="bold link link-primary">Credit</a>
+			<a href={resolve('/about')} class="bold link link-primary">Credit</a>
 		</li>
 		<li>
 			<a

@@ -5,7 +5,6 @@
  */
 
 import axios, { type AxiosError, type InternalAxiosRequestConfig } from 'axios';
-import { authStoreActions } from '#lib/client/store/authStore.js';
 import { authRefresh } from './apiRoutes';
 
 export const client = axios.create();
@@ -22,7 +21,7 @@ const refreshToken = () => {
 		.catch((error) => {
 			// clear auth state, layout redirects to login
 			console.error(error);
-			// authStoreActions.logout(); 
+			// authStoreActions.logout();
 			throw error;
 		})
 		.finally(() => {

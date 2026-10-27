@@ -6,7 +6,6 @@
 
 import { createMutation } from '@tanstack/svelte-query';
 import { authLogout } from '../apiRoutes';
-import axios from 'axios';
 import { authStoreActions } from '#lib/client/store/authStore.js';
 import { client } from '../apiClient';
 

@@ -19,7 +19,7 @@ export function createUpdateGemsMutation() {
 			updateGemFormSchema.parse(data);
 		} catch (error) {
 			console.error('Validation error:', error);
-			throw new Error('Invalid data format');
+			throw new Error('Invalid data format', { cause: error });
 		}
 
 		await client.put(updateGems, {
