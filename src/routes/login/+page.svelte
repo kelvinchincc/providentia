@@ -9,9 +9,10 @@
 	import { createLoginMutation } from '#lib/client/services/providentia/mutations/login-mutation.js';
 	import { goto } from '$app/navigation';
 	import { resolve } from '$app/paths';
-	import { authStoreActions } from '#lib/client/store/authStore.js';
+	import { authStoreActions, useAuthStore } from '#lib/client/store/authStore.js';
 	import { dispatch } from '#lib/client/utils/timing.js';
 
+	const authStore = useAuthStore();
 	const loginMutation = createLoginMutation();
 
 	const form = createForm(() => ({
@@ -38,6 +39,12 @@
 			}
 		}
 	}));
+
+	$effect(() => {
+		if (!authStore.current.username) return;
+
+		goto(resolve('_'));
+	});
 </script>
 
 <main class="grid min-h-screen place-items-center p-3">
