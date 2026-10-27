@@ -5,8 +5,9 @@
  */
 
 import { randomUUIDv7 } from 'crypto';
-import { index, sqliteTable, text } from 'drizzle-orm/sqlite-core';
+import { index, integer, sqliteTable, text } from 'drizzle-orm/sqlite-core';
 import { user } from './user.schema';
+import { generateCurrentTimestamp } from '#lib/server/utils/datetime.js';
 
 export const notePreset = sqliteTable(
 	'note_presets',
@@ -17,8 +18,8 @@ export const notePreset = sqliteTable(
 			.references(() => user.id),
 		name: text('name').notNull(),
 		content: text('content').notNull(),
-		createdAt: text('created_at').notNull(),
-		updatedAt: text('updated_at').notNull()
+		createdAt: integer('created_at').notNull().$defaultFn(generateCurrentTimestamp),
+		updatedAt: integer('updated_at').notNull().$defaultFn(generateCurrentTimestamp)
 	},
 	(table) => [index('idx_note_presets_userid_name').on(table.userId, table.name)]
 );
