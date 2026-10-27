@@ -55,7 +55,7 @@ export const POST = createApiRoute(async ({ request, cookies }) => {
 		const refreshJwt = await signJWTSecret({
 			u: user.id,
 			t: JWTType.REFRESH,
-			s: user.jwtSeed
+			s: user.refreshTokenSeed
 		});
 
 		cookies.set(COOKIE_OPTIONS.AUTH_COOKIE, jwt, { sameSite: 'strict' });

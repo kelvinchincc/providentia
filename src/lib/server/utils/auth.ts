@@ -103,7 +103,7 @@ export async function verifyJWTSecret(token: string, type: JWTPayload['t']) {
 			return null;
 		}
 
-		const seed = user.jwtSeed;
+		const seed = type === 'a' ? user.jwtSeed : user.refreshTokenSeed;
 
 		if (payload.s !== seed || payload.t !== type) {
 			return null;
