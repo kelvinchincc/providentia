@@ -4,37 +4,51 @@
  file, You can obtain one at http://mozilla.org/MPL/2.0/.
 -->
 <script lang="ts">
-	import { createAddNotePresetMutation } from '#lib/client/services/providentia/mutations/add-note-preset-mutation.js';
+	import AddNotePresetDialog from '#lib/client/components/dialog/add-note-preset-dialog/index.svelte';
+
 	import { createNotePresetsQuery } from '#lib/client/services/providentia/query/note-presets-query.js';
 	import { cn } from '#lib/client/utils/cn.js';
 	import { useQueryClient } from '@tanstack/svelte-query';
 	import SectionCard from './SectionCard.svelte';
 	import { dispatch } from '#lib/client/utils/timing.js';
 	import { queryKeys } from '#lib/client/services/providentia/query/queryKeys.js';
-
-	const addNotePresetsMutation = createAddNotePresetMutation();
-	const queryClient = useQueryClient();
+	import { createDeleteNotePresetMutation } from '#lib/client/services/providentia/mutations/delete-note-preset-mutation.js';
 
 	const notePresetsQuery = createNotePresetsQuery();
 	const notePresets = $derived(notePresetsQuery.data ?? []);
+	const queryClient = useQueryClient();
+	const deleteNotePresetMutation = createDeleteNotePresetMutation();
+
+	let isAddNotePresetDialogOpen = $state(false);
 
 	async function handleAddNotePreset() {
-		try {
-			const tag = prompt('Enter a tag for the new note preset:');
-			if (!tag) {
-				alert('Tag cannot be empty.');
-				return;
-			}
+		isAddNotePresetDialogOpen = true;
+	}
 
-			await addNotePresetsMutation.mutateAsync({ content: tag });
+	async function handleDeletePreset(id: string) {
+		const confirmed = confirm(
+			'Are you sure you want to delete this preset? This action cannot be undone.'
+		);
+		if (!confirmed) return;
+
+		try {
+			await deleteNotePresetMutation.mutateAsync(id);
+			alert('Note preset deleted successfully!');
 		} catch (error) {
-			console.error('Error adding note preset:', error);
-			alert('Failed to add note preset. Please try again later.');
+			console.error('Error deleting note preset:', error);
+			alert('Failed to delete note preset. Please try again later.');
 		} finally {
-			dispatch(() => queryClient.invalidateQueries({ queryKey: queryKeys.notePresets() }));
+			dispatch(() => {
+				queryClient.invalidateQueries({ queryKey: queryKeys.notePresets() });
+			});
 		}
 	}
 </script>
+
+<AddNotePresetDialog
+	open={isAddNotePresetDialogOpen}
+	onClose={() => (isAddNotePresetDialogOpen = false)}
+/>
 
 <main class="mx-auto flex max-w-[min(80vw,500px)] flex-col gap-3">
 	<h1 class="text-2xl font-bold">Profile</h1>
@@ -65,7 +79,11 @@
 							<button class="btn btn-square btn-secondary" aria-label="Edit">
 								<i class="fa-solid fa-pen-to-square"></i>
 							</button>
-							<button class="btn btn-square btn-error" aria-label="Delete">
+							<button
+								class="btn btn-square btn-error"
+								aria-label="Delete"
+								onclick={() => handleDeletePreset(preset.id)}
+							>
 								<i class="fa-solid fa-trash"></i>
 							</button>
 						</section>
