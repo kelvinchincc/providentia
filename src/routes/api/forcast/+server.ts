@@ -12,10 +12,13 @@ import {
 	createForcastPayloadSchema,
 	createForcastResponseSchema
 } from '#lib/schema/api/create-forcast.js';
+import { updateForcastPayloadSchema } from '#lib/schema/api/update-forcast.js';
 import { db } from '#lib/server/db/index.js';
 import { forcast } from '#lib/server/db/schemas/forcast.schema.js';
 import { createApiRoute, noContentResponse, okResponse } from '#lib/server/utils/api.js';
 import { verifyAuth } from '#lib/server/utils/auth.js';
+import { generateCurrentTimestamp } from '#lib/server/utils/datetime.js';
+import { logger } from '#lib/server/utils/logger.js';
 import dayjs from 'dayjs';
 import { and, eq } from 'drizzle-orm';
 
@@ -42,6 +45,39 @@ export const POST = createApiRoute(async ({ cookies, request }) => {
 	if (result.length === 0) throw new BadRequestException('Failed to create forcast');
 
 	return okResponse(createOkApiResponse(createForcastResponseSchema, { id: result[0].id }), 201);
+});
+
+export const PUT = createApiRoute(async ({ cookies, request }) => {
+	const user = await verifyAuth(cookies);
+	const body = updateForcastPayloadSchema.safeParse(await request.json());
+
+	if (!user) throw new UnauthorizedException();
+	if (!body.success) {
+		logger.error(`Invalid request body: ${JSON.stringify({ cause: body.error })}`);
+		throw new BadRequestException('Invalid request body');
+	}
+
+	await db.transaction(async (tx) => {
+		const rows = await tx
+			.update(forcast)
+			.set({
+				name: body.data.name,
+				targetDate: body.data.targetDate,
+				updatedAt: generateCurrentTimestamp()
+			})
+			.where(and(eq(forcast.userId, user.id), eq(forcast.id, body.data.id)))
+			.returning();
+
+		if (rows.length === 0) {
+			throw new NotFoundException(
+				'Forcast not found or you do not have permission to update it'
+			);
+		} else if (rows.length > 1) {
+			throw new BadRequestException('Multiple forcasts found with the same id');
+		}
+	});
+
+	return noContentResponse();
 });
 
 export const DELETE = createApiRoute(async ({ cookies, url }) => {
