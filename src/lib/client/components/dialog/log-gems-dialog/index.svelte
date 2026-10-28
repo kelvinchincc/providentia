@@ -16,6 +16,7 @@
 	import { queryKeys } from '#lib/client/services/providentia/query/queryKeys.js';
 	import { createGemsOverviewQuery } from '#lib/client/services/providentia/query/gems-overview-query.js';
 	import { createNotePresetsQuery } from '#lib/client/services/providentia/query/note-presets-query.js';
+	import { resolve } from '$app/paths';
 
 	const { open, onClose }: Props = $props();
 	const gemsOverviewQuery = createGemsOverviewQuery();
@@ -180,15 +181,28 @@
 		<section class="flex flex-col gap-2">
 			<div class="text-sm text-neutral">Note Presets:</div>
 			<div class="flex flex-wrap gap-1">
-				{#each presets as preset (preset.id)}
-					<button
-						class="badge flex cursor-pointer items-center rounded-full badge-outline text-xs badge-primary"
-						onclick={() => form.setFieldValue('note', preset.tag)}
-						type="button"
-					>
-						{preset.tag}
-					</button>
-				{/each}
+				{#if notePresetsQuery.isFetching}
+					<div class="skeleton skeleton-text">Loading...</div>
+				{:else if notePresetsQuery.isError}
+					<div class="text-right text-xs text-error">Failed to load note presets.</div>
+				{:else if presets.length === 0}
+					<div class="text-sm text-neutral italic">
+						No presets available. Manage it under your <a
+							class="link"
+							href={resolve('/_/profile')}>profile</a
+						>.
+					</div>
+				{:else}
+					{#each presets as preset (preset.id)}
+						<button
+							class="badge flex cursor-pointer items-center rounded-full badge-outline text-xs badge-primary"
+							onclick={() => form.setFieldValue('note', preset.tag)}
+							type="button"
+						>
+							{preset.tag}
+						</button>
+					{/each}
+				{/if}
 			</div>
 		</section>
 
