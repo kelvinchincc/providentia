@@ -7,3 +7,4 @@ export * from './user.schema';
 export * from './gem.schema';
 export * from './stat.schema';
 export * from './note-preset.schema';
+export * from './forcast.schema';
