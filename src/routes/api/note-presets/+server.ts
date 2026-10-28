@@ -9,10 +9,12 @@ import { UnauthorizedException } from '#lib/exception/http/unauthorized-exceptio
 import { createOkApiResponse } from '#lib/schema/api/base.js';
 import { createNotePresetRequest } from '#lib/schema/api/create-note-preset.js';
 import { notePresetsSchema, type NotePreset } from '#lib/schema/api/get-note-presets.js';
+import { updateNotePresetPayloadSchema } from '#lib/schema/api/update-note-preset.js';
 import { db } from '#lib/server/db/index.js';
 import { notePreset } from '#lib/server/db/schemas/note-preset.schema.js';
 import { createApiRoute, noContentResponse, okResponse } from '#lib/server/utils/api.js';
 import { verifyAuth } from '#lib/server/utils/auth.js';
+import dayjs from 'dayjs';
 import { eq, and } from 'drizzle-orm';
 
 export const GET = createApiRoute(async ({ cookies }) => {
@@ -47,6 +49,24 @@ export const POST = createApiRoute(async ({ cookies, request }) => {
 		content: payload.content,
 		name: payload.name ?? ''
 	});
+
+	return noContentResponse();
+});
+
+export const PUT = createApiRoute(async ({ cookies, request }) => {
+	const user = await verifyAuth(cookies);
+	const body = updateNotePresetPayloadSchema.safeParse(await request.json());
+
+	if (user == null) throw new UnauthorizedException();
+	if (!body.success) throw new BadRequestException(body.error.message);
+
+	await db
+		.update(notePreset)
+		.set({
+			content: body.data.content,
+			updatedAt: dayjs().unix()
+		})
+		.where(and(eq(notePreset.userId, user.id), eq(notePreset.id, body.data.id)));
 
 	return noContentResponse();
 });

@@ -5,6 +5,7 @@
 -->
 <script lang="ts">
 	import AddNotePresetDialog from '#lib/client/components/dialog/add-note-preset-dialog/index.svelte';
+	import UpdateNotePresetDialog from '#lib/client/components/dialog/update-note-preset-dialog/index.svelte';
 
 	import { createNotePresetsQuery } from '#lib/client/services/providentia/query/note-presets-query.js';
 	import { cn } from '#lib/client/utils/cn.js';
@@ -20,9 +21,18 @@
 	const deleteNotePresetMutation = createDeleteNotePresetMutation();
 
 	let isAddNotePresetDialogOpen = $state(false);
+	let isUpdateNotePresetDialogOpen = $state(false);
+	let notePresetIdToUpdate = $state('');
+	let currentNotePresetToPopulate = $state('');
 
 	async function handleAddNotePreset() {
 		isAddNotePresetDialogOpen = true;
+	}
+
+	async function handleUpdateNotePreset(id: string, currentPreset: string) {
+		notePresetIdToUpdate = id;
+		isUpdateNotePresetDialogOpen = true;
+		currentNotePresetToPopulate = currentPreset;
 	}
 
 	async function handleDeletePreset(id: string) {
@@ -48,6 +58,12 @@
 <AddNotePresetDialog
 	open={isAddNotePresetDialogOpen}
 	onClose={() => (isAddNotePresetDialogOpen = false)}
+/>
+<UpdateNotePresetDialog
+	open={isUpdateNotePresetDialogOpen}
+	onClose={() => (isUpdateNotePresetDialogOpen = false)}
+	idToUpdate={notePresetIdToUpdate}
+	currentContent={currentNotePresetToPopulate}
 />
 
 <main class="mx-auto flex max-w-[min(80vw,500px)] flex-col gap-3">
@@ -76,7 +92,11 @@
 					>
 						<div class="font-bold">{preset.tag}</div>
 						<section>
-							<button class="btn btn-square btn-secondary" aria-label="Edit">
+							<button
+								class="btn btn-square btn-secondary"
+								aria-label="Edit"
+								onclick={() => handleUpdateNotePreset(preset.id, preset.tag)}
+							>
 								<i class="fa-solid fa-pen-to-square"></i>
 							</button>
 							<button

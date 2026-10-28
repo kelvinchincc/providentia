@@ -17,3 +17,4 @@ export const updateGems = '/api/stats/edit-gems';
 export const listNotePreset = '/api/note-presets';
 export const addNotePreset = '/api/note-presets';
 export const deleteNotePreset = '/api/note-presets';
+export const updateNotePreset = '/api/note-presets';
