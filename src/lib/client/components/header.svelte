@@ -36,18 +36,20 @@
 	</section>
 
 	<section class="flex items-center gap-2">
-		<button
-			class="btn btn-square overflow-clip rounded-lg btn-ghost"
-			title={authStore.current.username ?? 'Anonymous'}
-			onclick={handleNavigateToProfile}
-		>
-			<Avatar
-				name={authStore.current.username ?? undefined}
-				variant="pixel"
-				square
-				size={40}
-			/>
-		</button>
+		<div class="tooltip tooltip-bottom" data-tip="Profile">
+			<button
+				class="btn btn-square overflow-clip rounded-lg btn-ghost"
+				title={authStore.current.username ?? 'Anonymous'}
+				onclick={handleNavigateToProfile}
+			>
+				<Avatar
+					name={authStore.current.username ?? undefined}
+					variant="pixel"
+					square
+					size={40}
+				/>
+			</button>
+		</div>
 		<button class="btn btn-square btn-primary" title="Logout" onclick={handleLogout}>
 			<i class="fa-solid fa-arrow-right-from-bracket"></i>
 		</button>
