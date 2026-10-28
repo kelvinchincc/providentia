@@ -13,6 +13,7 @@
 	import { createAddNotePresetMutation } from '#lib/client/services/providentia/mutations/add-note-preset-mutation.js';
 	import { queryKeys } from '#lib/client/services/providentia/query/queryKeys.js';
 	import { dispatch } from '#lib/client/utils/timing.js';
+	import { cn } from '#lib/client/utils/cn.js';
 
 	const { open, onClose }: Props = $props();
 	const queryClient = useQueryClient();
@@ -57,10 +58,15 @@
 	>
 		<form.Field
 			name="preset"
-			validators={{ onSubmit: z.string().min(1, 'Preset cannot be empty') }}
+			validators={{
+				onSubmit: z
+					.string()
+					.min(1, 'Preset cannot be empty')
+					.max(30, 'Preset cannot exceed 30 characters')
+			}}
 		>
 			{#snippet children({ state: { meta, value }, handleBlur, handleChange })}
-				<label class="input w-full">
+				<label class={cn('input w-full', { 'border-error': meta.errors.length > 0 })}>
 					<i class="fa-regular fa-note-sticky"></i>
 					<input
 						placeholder="Enter preset"

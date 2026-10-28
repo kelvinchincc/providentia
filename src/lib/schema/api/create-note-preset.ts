@@ -9,7 +9,7 @@ import { z } from 'zod';
 export const createNotePresetRequest = z.object({
 	// Optional for now, reserved for future use
 	name: z.string().optional(),
-	content: z.string().min(1).max(10000)
+	content: z.string().min(1).max(30)
 });
 
 export type CreateNotePresetRequest = z.infer<typeof createNotePresetRequest>;
