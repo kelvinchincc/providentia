@@ -35,8 +35,40 @@
 		<GemsOverview />
 	</div>
 
-	<section id="forecast">
-		<section class="flex items-center justify-end gap-2">
+	<section id="forecast" class="pt-4">
+		<h1 class="text-2xl">Forecast</h1>
+
+		<!-- Mobile menu -->
+		<div class="flex flex-row justify-end md:hidden">
+			<details class="dropdown dropdown-end">
+				<summary class="btn m-1 btn-primary">Actions</summary>
+				<ul
+					class="mt-.5 menu dropdown-content z-1 w-52 rounded-box bg-base-100 p-2 shadow-sm"
+				>
+					<li>
+						<button onclick={onAddForecast}>
+							<i class="fa-solid fa-plus"></i>
+							Add forecast
+						</button>
+					</li>
+					<li>
+						<button onclick={() => (logGemsDialogOpen = true)}>
+							<i class="fa-solid fa-pen-to-square"></i>
+							Log {GEM_UNIT}
+						</button>
+					</li>
+					<li>
+						<button onclick={onObtainHistoryClicked}>
+							<i class="fa-solid fa-clock-rotate-left"></i>
+							Obtain history
+						</button>
+					</li>
+				</ul>
+			</details>
+		</div>
+
+		<!-- Desktop menu -->
+		<section class="hidden items-center justify-end gap-2 md:flex">
 			<button class="btn btn-primary" onclick={onAddForecast}>
 				<i class="fa-solid fa-plus"></i>
 				Add forecast
