@@ -5,6 +5,7 @@
 -->
 <script lang="ts">
 	import { createGemsOverviewQuery } from '#lib/client/services/providentia/query/gems-overview-query.js';
+	import { cn } from '#lib/client/utils/cn.js';
 	import { GEM_UNIT } from '$app/env/public';
 
 	const gemsOverviewQuery = createGemsOverviewQuery();
@@ -46,29 +47,36 @@
 		{@render stat('30 Days Gain Average', data?.monthlyAvg ?? 0, 'Average 30 days gain')}
 	</section>
 
-	<section class="card grid grid-cols-[auto_auto_1fr] gap-2 bg-base-200 p-4 md:hidden">
-		<div>Total {GEM_UNIT}</div>
-		<div>:</div>
-		<div>{data?.total ?? 0}</div>
+	<section
+		class={cn(
+			'card grid grid-cols-[auto_1fr] gap-2 bg-base-200 p-4',
+			'min-[650px]:grid-cols-[auto_1fr_auto_1fr] min-[650px]:gap-x-8 md:hidden'
+		)}
+	>
+		<div
+			class="contents min-[650px]:col-span-2 min-[650px]:grid min-[650px]:grid-cols-subgrid min-[650px]:gap-2"
+		>
+			<div>Total {GEM_UNIT}</div>
+			<div class="text-right">{data?.total.toLocaleString() ?? 0}</div>
 
-		<div>Free {GEM_UNIT}</div>
-		<div>:</div>
-		<div>{data?.free ?? 0}</div>
+			<div>Free {GEM_UNIT}</div>
+			<div class="text-right">{data?.free.toLocaleString() ?? 0}</div>
 
-		<div>Paid {GEM_UNIT}</div>
-		<div>:</div>
-		<div>{data?.paid ?? 0}</div>
+			<div>Paid {GEM_UNIT}</div>
+			<div class="text-right">{data?.paid.toLocaleString() ?? 0}</div>
+		</div>
 
-		<div>Pull Count</div>
-		<div>:</div>
-		<div>{data?.pullCount ?? 0}</div>
+		<div
+			class="contents min-[650px]:col-span-2 min-[650px]:grid min-[650px]:grid-cols-subgrid min-[650px]:gap-2"
+		>
+			<div>Pull Count</div>
+			<div class="text-right">{data?.pullCount.toLocaleString() ?? 0}</div>
 
-		<div>Lenear Rewards</div>
-		<div>:</div>
-		<div>{data?.linearAvg ?? 0}</div>
+			<div>Lenear Rewards</div>
+			<div class="text-right">{data?.linearAvg.toLocaleString() ?? 0}</div>
 
-		<div>30 Days Gain Average</div>
-		<div>:</div>
-		<div>{data?.monthlyAvg ?? 0}</div>
+			<div>30 Days Gain Average</div>
+			<div class="text-right">{data?.monthlyAvg.toLocaleString() ?? 0}</div>
+		</div>
 	</section>
 {/if}
