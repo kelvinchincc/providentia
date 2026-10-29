@@ -68,6 +68,37 @@ greater than `0`. For example:
 PULL_PRICE=160
 ```
 
+## WORST_CASE_PULLS
+
+The number of pulls needed to obtain one copy of a target unit in the worst case, for example when no copy shows up
+before the pity counter is reached. Multiplied by `MAX_COPIES` to get the total number of pulls needed to max out a
+target (`TARGET_PULL_AMOUNT`). This must be a positive number, and it is required. For example:
+
+```
+WORST_CASE_PULLS=200
+```
+
+## MAX_COPIES
+
+The number of copies of a target unit needed to max it out. Multiplied by `WORST_CASE_PULLS` to get the total number of
+pulls needed for a target (`TARGET_PULL_AMOUNT`). This must be a positive number, and it is required. For example:
+
+```
+MAX_COPIES=6
+```
+
+## BUFFER_FACTOR
+
+A safety multiplier applied to the cost of a target. The safe price is calculated as
+`SAFE_PULL_PRICE = TARGET_PULL_PRICE * BUFFER_FACTOR`, where `TARGET_PULL_PRICE = PULL_PRICE * TARGET_PULL_AMOUNT`.
+Forecasts are marked as `safe` when the expected gems reach the safe price, `hit` when they reach the target price, and
+`no` otherwise. This must be a positive number, and it is required. Decimals are allowed. Keep it at `1` or above, since
+a value below `1` makes `safe` trigger before `hit`, so `hit` never shows. For example:
+
+```
+BUFFER_FACTOR=2
+```
+
 ## TOTAL_WEEKLY_GEMS_OBTAINABLE
 
 The total amount of gems a user can get in a week, uses to calculate daily confrimed obtain rate, which is a constants

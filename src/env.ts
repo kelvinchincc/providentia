@@ -20,6 +20,7 @@ export const variables = defineEnvVars({
 	PULL_PRICE: { schema: number('PULL_PRICE'), public: true },
 	WORST_CASE_PULLS: { schema: number('WORST_CASE_PULLS'), public: true },
 	MAX_COPIES: { schema: number('MAX_COPIES'), public: true },
+	BUFFER_FACTOR: { schema: number('BUFFER_FACTOR'), public: true },
 	TOTAL_WEEKLY_GEMS_OBTAINABLE: {
 		schema: (value) => Number.parseInt(value ?? '0') || 0
 	}

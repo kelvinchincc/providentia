@@ -12,7 +12,11 @@ import {
 	createForcastPayloadSchema,
 	createForcastResponseSchema
 } from '#lib/schema/api/create-forcast.js';
-import { forcastItemsSchema, type ForcastItems } from '#lib/schema/api/get-forcasts.js';
+import {
+	forcastItemsSchema,
+	type ForcastItems,
+	type ForcastTargetHit
+} from '#lib/schema/api/get-forcasts.js';
 import { updateForcastPayloadSchema } from '#lib/schema/api/update-forcast.js';
 import { db } from '#lib/server/db/index.js';
 import { forcast } from '#lib/server/db/schemas/forcast.schema.js';
@@ -25,10 +29,11 @@ import { and, asc, eq } from 'drizzle-orm';
 import { DAILY_AVERAGE_GEMS_OBTAINED } from '#lib/constants/static.js';
 import { stat } from '#lib/server/db/schemas/stat.schema.js';
 import { StatKey } from '#lib/constants/stat-key.js';
-import { PULL_PRICE, WORST_CASE_PULLS, MAX_COPIES } from '$app/env/public';
+import { PULL_PRICE, WORST_CASE_PULLS, MAX_COPIES, BUFFER_FACTOR } from '$app/env/public';
 
 const TARGET_PULL_AMOUNT = WORST_CASE_PULLS * MAX_COPIES;
 const TARGET_PULL_PRICE = PULL_PRICE * TARGET_PULL_AMOUNT;
+const SAFE_PULL_PRICE = TARGET_PULL_PRICE * BUFFER_FACTOR;
 
 export const GET = createApiRoute(async ({ cookies }) => {
 	const user = await verifyAuth(cookies);
@@ -67,6 +72,11 @@ export const GET = createApiRoute(async ({ cookies }) => {
 		const newMonthlyAverage =
 			Math.floor(monthlyAverage * (dayjs.unix(itr.targetDate).diff(today, 'days') + 1)) +
 			currentTotal;
+		const targetCheck = (value: number): ForcastTargetHit => {
+			if (value >= SAFE_PULL_PRICE) return 'safe';
+			if (value >= TARGET_PULL_PRICE) return 'hit';
+			return 'no';
+		};
 
 		return {
 			id: itr.id,
@@ -78,22 +88,12 @@ export const GET = createApiRoute(async ({ cookies }) => {
 				linear: {
 					amount: newLinearAverage,
 					pull: Math.floor(newLinearAverage / PULL_PRICE),
-					targetHit:
-						newLinearAverage > TARGET_PULL_PRICE
-							? 'safe'
-							: newLinearAverage === TARGET_PULL_PRICE
-								? 'hit'
-								: 'no'
+					targetHit: targetCheck(newLinearAverage)
 				},
 				monthlyAvg: {
 					amount: newMonthlyAverage,
 					pull: Math.floor(newMonthlyAverage / PULL_PRICE),
-					targetHit:
-						newMonthlyAverage > TARGET_PULL_PRICE
-							? 'safe'
-							: newMonthlyAverage === TARGET_PULL_PRICE
-								? 'hit'
-								: 'no'
+					targetHit: targetCheck(newMonthlyAverage)
 				}
 			},
 			createdAt: itr.createdAt,
