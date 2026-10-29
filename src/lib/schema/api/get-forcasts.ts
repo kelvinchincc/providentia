@@ -18,6 +18,8 @@ export const forcastItemSchema = z.object({
 	id: z.uuid(),
 	name: z.string(),
 	targetDate: z.number().int(),
+	targetAmount: z.number().int(),
+	targetPull: z.number().int(),
 	expected: z.object({
 		linear: expectedStatSchema,
 		monthlyAvg: expectedStatSchema

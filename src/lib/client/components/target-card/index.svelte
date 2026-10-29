@@ -8,6 +8,7 @@
 	import { formatDate } from '#lib/client/utils/display.js';
 	import type { ForcastTargetHit } from '#lib/schema/api/get-forcasts.js';
 	import type { Props } from './types';
+	import { GEM_UNIT } from '$app/env/public';
 
 	const { item }: Props = $props();
 
@@ -32,8 +33,8 @@
 	</header>
 	<section class="grid grid-cols-[auto_auto] gap-1">
 		{@render field('Target Date', formatDate(item.targetDate))}
-		<!-- {@render field('Linear Gain', item.expected.linear.amount.toLocaleString())}
-		{@render field('30 Days Average Gain', item.expected.monthlyAvg.amount.toLocaleString())} -->
+		{@render field(`Needed ${GEM_UNIT}`, item.targetAmount.toLocaleString())}
+		{@render field('Needed Pulls', item.targetPull.toLocaleString())}
 
 		<section class="col-start-1 -col-end-1">
 			<h3 class="bold mt-2 text-lg">Linear Forcast</h3>

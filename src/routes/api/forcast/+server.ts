@@ -25,9 +25,10 @@ import { and, asc, eq } from 'drizzle-orm';
 import { DAILY_AVERAGE_GEMS_OBTAINED } from '#lib/constants/static.js';
 import { stat } from '#lib/server/db/schemas/stat.schema.js';
 import { StatKey } from '#lib/constants/stat-key.js';
-import { PULL_PRICE } from '$app/env/public';
-const WORST_CASE_PULLS = 200;
-const MAX_COPIES = 6;
+import { PULL_PRICE, WORST_CASE_PULLS, MAX_COPIES } from '$app/env/public';
+
+const TARGET_PULL_AMOUNT = WORST_CASE_PULLS * MAX_COPIES;
+const TARGET_PULL_PRICE = PULL_PRICE * TARGET_PULL_AMOUNT;
 
 export const GET = createApiRoute(async ({ cookies }) => {
 	const user = await verifyAuth(cookies);
@@ -66,21 +67,21 @@ export const GET = createApiRoute(async ({ cookies }) => {
 		const newMonthlyAverage =
 			Math.floor(monthlyAverage * (dayjs.unix(itr.targetDate).diff(today, 'days') + 1)) +
 			currentTotal;
-		const targetPullPrice = PULL_PRICE * WORST_CASE_PULLS * MAX_COPIES;
-		logger.debug(JSON.stringify({ PULL_PRICE, WORST_CASE_PULLS, MAX_COPIES, targetPullPrice }));
 
 		return {
 			id: itr.id,
 			name: itr.name,
 			targetDate: itr.targetDate,
+			targetAmount: TARGET_PULL_PRICE,
+			targetPull: TARGET_PULL_AMOUNT,
 			expected: {
 				linear: {
 					amount: newLinearAverage,
 					pull: Math.floor(newLinearAverage / PULL_PRICE),
 					targetHit:
-						newLinearAverage > targetPullPrice
+						newLinearAverage > TARGET_PULL_PRICE
 							? 'safe'
-							: newLinearAverage === targetPullPrice
+							: newLinearAverage === TARGET_PULL_PRICE
 								? 'hit'
 								: 'no'
 				},
@@ -88,9 +89,9 @@ export const GET = createApiRoute(async ({ cookies }) => {
 					amount: newMonthlyAverage,
 					pull: Math.floor(newMonthlyAverage / PULL_PRICE),
 					targetHit:
-						newMonthlyAverage > targetPullPrice
+						newMonthlyAverage > TARGET_PULL_PRICE
 							? 'safe'
-							: newMonthlyAverage === targetPullPrice
+							: newMonthlyAverage === TARGET_PULL_PRICE
 								? 'hit'
 								: 'no'
 				}

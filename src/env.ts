@@ -18,6 +18,8 @@ export const variables = defineEnvVars({
 	DATABASE_URL: { schema: required('DATABASE_URL') },
 	GEM_UNIT: { schema: (value) => value || 'Gems', public: true },
 	PULL_PRICE: { schema: number('PULL_PRICE'), public: true },
+	WORST_CASE_PULLS: { schema: number('WORST_CASE_PULLS'), public: true },
+	MAX_COPIES: { schema: number('MAX_COPIES'), public: true },
 	TOTAL_WEEKLY_GEMS_OBTAINABLE: {
 		schema: (value) => Number.parseInt(value ?? '0') || 0
 	}
