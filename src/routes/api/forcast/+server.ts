@@ -12,6 +12,7 @@ import {
 	createForcastPayloadSchema,
 	createForcastResponseSchema
 } from '#lib/schema/api/create-forcast.js';
+import { forcastItemsSchema, type ForcastItems } from '#lib/schema/api/get-forcasts.js';
 import { updateForcastPayloadSchema } from '#lib/schema/api/update-forcast.js';
 import { db } from '#lib/server/db/index.js';
 import { forcast } from '#lib/server/db/schemas/forcast.schema.js';
@@ -20,7 +21,30 @@ import { verifyAuth } from '#lib/server/utils/auth.js';
 import { generateCurrentTimestamp } from '#lib/server/utils/datetime.js';
 import { logger } from '#lib/server/utils/logger.js';
 import dayjs from 'dayjs';
-import { and, eq } from 'drizzle-orm';
+import { and, asc, eq } from 'drizzle-orm';
+
+export const GET = createApiRoute(async ({ cookies }) => {
+	const user = await verifyAuth(cookies);
+
+	if (!user) throw new UnauthorizedException();
+
+	const result = await db
+		.select()
+		.from(forcast)
+		.where(eq(forcast.userId, user.id))
+		.orderBy(asc(forcast.targetDate));
+	const mapped: ForcastItems = result.map((itr) => {
+		return {
+			id: itr.id,
+			name: itr.name,
+			targetDate: itr.targetDate,
+			linearAverage: 0,
+			monthlyAverage: 0
+		};
+	});
+
+	return okResponse(createOkApiResponse(forcastItemsSchema, mapped));
+});
 
 export const POST = createApiRoute(async ({ cookies, request }) => {
 	const user = await verifyAuth(cookies);
