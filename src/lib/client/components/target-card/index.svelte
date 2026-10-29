@@ -9,14 +9,36 @@
 	import type { ForecastTargetHit } from '#lib/schema/api/get-forecasts.js';
 	import type { Props } from './types';
 	import { GEM_UNIT } from '$app/env/public';
+	import { createDeleteForecastMutation } from '#lib/client/services/providentia/mutations/delete-forecast-mutation.js';
+	import { useQueryClient } from '@tanstack/svelte-query';
+	import { queryKeys } from '#lib/client/services/providentia/query/queryKeys.js';
 
 	const { item }: Props = $props();
+	const queryClient = useQueryClient();
 
 	const textColourMap: Record<ForecastTargetHit, string> = {
 		no: 'text-error',
 		hit: 'text-warning',
 		safe: 'text-success'
 	};
+
+	const deleteForecastMutation = createDeleteForecastMutation();
+
+	async function handleDeleteForecast(forecastId: string) {
+		const confirmDelete = confirm(
+			'Are you sure you want to delete this forecast? This action cannot be undone.'
+		);
+		if (!confirmDelete) return;
+
+		try {
+			await deleteForecastMutation.mutateAsync(forecastId);
+		} catch (error) {
+			console.error('Error deleting forecast:', error);
+			alert('Failed to delete forecast. Please try again.');
+		} finally {
+			queryClient.invalidateQueries({ queryKey: queryKeys.forecasts() });
+		}
+	}
 </script>
 
 {#snippet field(label: string, value: string, className: string = '')}
@@ -27,7 +49,11 @@
 <section class="card rounded-lg bg-base-200 p-4">
 	<header class="mb-2 flex items-center justify-between">
 		<h2 class="bold text-xl">{item.name}</h2>
-		<button class="btn btn-square btn-error" aria-label="Remove Forecast">
+		<button
+			class="btn btn-square btn-error"
+			aria-label="Remove Forecast"
+			onclick={() => handleDeleteForecast(item.id)}
+		>
 			<i class="fa-solid fa-trash"></i>
 		</button>
 	</header>
