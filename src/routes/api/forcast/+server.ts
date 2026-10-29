@@ -72,12 +72,12 @@ export const GET = createApiRoute(async ({ cookies }) => {
 			expected: {
 				linear: {
 					amount: newLinearAverage,
-					pull: newLinearAverage / PULL_PRICE,
+					pull: Math.floor(newLinearAverage / PULL_PRICE),
 					targetHit: newLinearAverage >= PULL_PRICE * 600
 				},
 				monthlyAvg: {
 					amount: newMonthlyAverage,
-					pull: newMonthlyAverage / PULL_PRICE,
+					pull: Math.floor(newMonthlyAverage / PULL_PRICE),
 					targetHit: newMonthlyAverage >= PULL_PRICE * 600
 				}
 			},

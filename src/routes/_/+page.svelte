@@ -91,7 +91,7 @@
 				<span>Opps! Something went wrong!</span>
 			</div>
 		{:else if forcastData.length <= 0}
-			<div class="mt-4 alert alert-outline">
+			<div class="mt-4 alert">
 				<i class="fa-solid fa-circle-info"></i>
 				<span>No forcast created, click "Add forcast" to create one.</span>
 			</div>
