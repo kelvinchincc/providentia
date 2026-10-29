@@ -44,21 +44,33 @@ export const GET = createApiRoute(async ({ cookies }) => {
 		.from(forcast)
 		.where(eq(forcast.userId, user.id))
 		.orderBy(asc(forcast.targetDate));
+	const currentTotal = await (async () => {
+		const result = await db
+			.select()
+			.from(stat)
+			.where(and(eq(stat.userId, user.id), eq(stat.item, StatKey.TOTAL_GEMS)))
+			.limit(1);
+		if (result.length <= 0) return 0;
+		return result[0].value || 0;
+	})();
 	// today, at 00:00:00, in UTC
 	const today = dayjs().startOf('day');
 	const mapped: ForcastItems = result.map((itr) => {
+		const newLinearAverage =
+			Math.floor(
+				DAILY_AVERAGE_GEMS_OBTAINED * (dayjs.unix(itr.targetDate).diff(today, 'days') + 1)
+			) + currentTotal;
+		const newMonthlyAverage =
+			Math.floor(monthlyAverage * (dayjs.unix(itr.targetDate).diff(today, 'days') + 1)) +
+			currentTotal;
 		return {
 			id: itr.id,
 			name: itr.name,
 			targetDate: itr.targetDate,
 			// until target date, how many gems can be obtained at the daily average rate
-			linearAverage: Math.floor(
-				DAILY_AVERAGE_GEMS_OBTAINED * (dayjs.unix(itr.targetDate).diff(today, 'days') + 1)
-			),
+			linearAverage: newLinearAverage,
 			// until target date, how many gems can be obtained at the monthly average rate
-			monthlyAverage: Math.floor(
-				monthlyAverage * (dayjs.unix(itr.targetDate).diff(today, 'days') + 1)
-			),
+			monthlyAverage: newMonthlyAverage,
 			createdAt: itr.createdAt,
 			updatedAt: itr.updatedAt
 		};
