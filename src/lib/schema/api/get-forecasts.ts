@@ -14,7 +14,7 @@ const expectedStatSchema = z.object({
 	targetHit: targetStatusEnumSchema
 });
 
-export const forcastItemSchema = z.object({
+export const forecastItemSchema = z.object({
 	id: z.uuid(),
 	name: z.string(),
 	targetDate: z.number().int(),
@@ -27,10 +27,10 @@ export const forcastItemSchema = z.object({
 	createdAt: z.number().int(),
 	updatedAt: z.number().int()
 });
-export const forcastItemsSchema = z.array(forcastItemSchema);
-export const forcastItemsApiResponseSchema = createBaseApiResponseSchema(forcastItemsSchema);
+export const forecastItemsSchema = z.array(forecastItemSchema);
+export const forecastItemsApiResponseSchema = createBaseApiResponseSchema(forecastItemsSchema);
 
-export type ForcastTargetHit = z.infer<typeof targetStatusEnumSchema>;
-export type ForcastItem = z.infer<typeof forcastItemSchema>;
-export type ForcastItems = z.infer<typeof forcastItemsSchema>;
-export type ForcastItemsApiResponse = z.infer<typeof forcastItemsApiResponseSchema>;
+export type ForecastTargetHit = z.infer<typeof targetStatusEnumSchema>;
+export type ForecastItem = z.infer<typeof forecastItemSchema>;
+export type ForecastItems = z.infer<typeof forecastItemsSchema>;
+export type ForecastItemsApiResponse = z.infer<typeof forecastItemsApiResponseSchema>;

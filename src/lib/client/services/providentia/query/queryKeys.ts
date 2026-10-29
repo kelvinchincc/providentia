@@ -13,5 +13,5 @@ export const queryKeys = {
 
 	notePresets: () => [...queryKeys.base, 'note-presets'] as const,
 
-	forcasts: () => [...queryKeys.base, 'forcasts'] as const
+	forecasts: () => [...queryKeys.base, 'forecasts'] as const
 };

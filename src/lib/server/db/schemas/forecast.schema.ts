@@ -10,8 +10,8 @@ import { index, integer, sqliteTable, text } from 'drizzle-orm/sqlite-core';
 import { user } from './user.schema';
 import { randomUUIDv7 } from 'crypto';
 
-export const forcast = sqliteTable(
-	'forcasts',
+export const forecast = sqliteTable(
+	'forecasts',
 	{
 		id: text('id').primaryKey().$defaultFn(randomUUIDv7),
 		userId: text('user_id')
@@ -24,7 +24,7 @@ export const forcast = sqliteTable(
 	},
 	(table) => [
 		// Sort by targetDate ascending, then by updatedAt descending
-		index('forcasts_target_date_updated_at_idx').on(
+		index('forecasts_target_date_updated_at_idx').on(
 			table.targetDate,
 			sql`${table.updatedAt} desc`
 		)

@@ -7,19 +7,19 @@
 import { z } from 'zod';
 import { createBaseApiResponseSchema } from './base';
 
-export const createForcastPayloadSchema = z.object({
+export const createForecastPayloadSchema = z.object({
 	name: z.string().min(1, 'Name is required.'),
 	targetDate: z
 		.number()
 		.min(1, 'Target date must be a positive integer representing a timestamp in unix time.')
 });
-export const createForcastResponseSchema = z.object({
+export const createForecastResponseSchema = z.object({
 	id: z.uuid()
 });
-export const createForcastApiResponseSchema = createBaseApiResponseSchema(
-	createForcastResponseSchema
+export const createForecastApiResponseSchema = createBaseApiResponseSchema(
+	createForecastResponseSchema
 );
 
-export type CreateForcastPayload = z.infer<typeof createForcastPayloadSchema>;
-export type CreateForcastResponse = z.infer<typeof createForcastResponseSchema>;
-export type CreateForcastApiResponse = z.infer<typeof createForcastApiResponseSchema>;
+export type CreateForecastPayload = z.infer<typeof createForecastPayloadSchema>;
+export type CreateForecastResponse = z.infer<typeof createForecastResponseSchema>;
+export type CreateForecastApiResponse = z.infer<typeof createForecastApiResponseSchema>;

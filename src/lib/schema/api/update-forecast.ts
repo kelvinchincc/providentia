@@ -6,10 +6,10 @@
 
 import { z } from 'zod';
 
-export const updateForcastPayloadSchema = z.object({
+export const updateForecastPayloadSchema = z.object({
 	id: z.uuid().min(1, 'Id is required'),
 	name: z.string().optional(),
 	targetDate: z.number().optional()
 });
 
-export type UpdateForcastPayload = z.infer<typeof updateForcastPayloadSchema>;
+export type UpdateForecastPayload = z.infer<typeof updateForecastPayloadSchema>;

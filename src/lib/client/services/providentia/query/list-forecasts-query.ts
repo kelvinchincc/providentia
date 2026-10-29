@@ -7,24 +7,24 @@
 import { createQuery } from '@tanstack/svelte-query';
 import { queryKeys } from './queryKeys';
 import { client } from '../apiClient';
-import { listForcasts } from '../apiRoutes';
-import { forcastItemsApiResponseSchema } from '#lib/schema/api/get-forcasts.js';
+import { listForecasts } from '../apiRoutes';
+import { forecastItemsApiResponseSchema } from '#lib/schema/api/get-forecasts.js';
 
-export function createListForcastsQuery() {
+export function createListForecastsQuery() {
 	const queryFn = async () => {
-		const result = await client.get(listForcasts);
-		const data = forcastItemsApiResponseSchema.safeParse(result.data);
+		const result = await client.get(listForecasts);
+		const data = forecastItemsApiResponseSchema.safeParse(result.data);
 		if (!data.success) {
-			throw new Error('Failed to parse forcast items response', { cause: data.error });
+			throw new Error('Failed to parse forecast items response', { cause: data.error });
 		}
 		if (!data.data.success)
-			throw new Error('Failed to fetch forcast items', { cause: data.data.message });
+			throw new Error('Failed to fetch forecast items', { cause: data.data.message });
 
 		return data.data.data;
 	};
 
 	return createQuery(() => ({
-		queryKey: queryKeys.forcasts(),
+		queryKey: queryKeys.forecasts(),
 		queryFn
 	}));
 }

@@ -4,8 +4,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import type { ForcastItem } from '#lib/schema/api/get-forcasts.js';
+import type { ForecastItem } from '#lib/schema/api/get-forecasts.js';
 
 export interface Props {
-	item: ForcastItem;
+	item: ForecastItem;
 }

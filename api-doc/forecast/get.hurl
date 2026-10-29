@@ -1,4 +1,4 @@
-GET {{BASE}}/api/forcast
+GET {{BASE}}/api/forecast
 
 [Cookies]
 auth: {{AUTH}}

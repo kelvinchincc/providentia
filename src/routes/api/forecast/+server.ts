@@ -9,17 +9,17 @@ import { NotFoundException } from '#lib/exception/http/not-found-exception.js';
 import { UnauthorizedException } from '#lib/exception/http/unauthorized-exception.js';
 import { createOkApiResponse } from '#lib/schema/api/base.js';
 import {
-	createForcastPayloadSchema,
-	createForcastResponseSchema
-} from '#lib/schema/api/create-forcast.js';
+	createForecastPayloadSchema,
+	createForecastResponseSchema
+} from '#lib/schema/api/create-forecast.js';
 import {
-	forcastItemsSchema,
-	type ForcastItems,
-	type ForcastTargetHit
-} from '#lib/schema/api/get-forcasts.js';
-import { updateForcastPayloadSchema } from '#lib/schema/api/update-forcast.js';
+	forecastItemsSchema,
+	type ForecastItems,
+	type ForecastTargetHit
+} from '#lib/schema/api/get-forecasts.js';
+import { updateForecastPayloadSchema } from '#lib/schema/api/update-forecast.js';
 import { db } from '#lib/server/db/index.js';
-import { forcast } from '#lib/server/db/schemas/forcast.schema.js';
+import { forecast } from '#lib/server/db/schemas/forecast.schema.js';
 import { createApiRoute, noContentResponse, okResponse } from '#lib/server/utils/api.js';
 import { verifyAuth } from '#lib/server/utils/auth.js';
 import { generateCurrentTimestamp } from '#lib/server/utils/datetime.js';
@@ -50,9 +50,9 @@ export const GET = createApiRoute(async ({ cookies }) => {
 	})();
 	const result = await db
 		.select()
-		.from(forcast)
-		.where(eq(forcast.userId, user.id))
-		.orderBy(asc(forcast.targetDate));
+		.from(forecast)
+		.where(eq(forecast.userId, user.id))
+		.orderBy(asc(forecast.targetDate));
 	const currentTotal = await (async () => {
 		const result = await db
 			.select()
@@ -64,7 +64,7 @@ export const GET = createApiRoute(async ({ cookies }) => {
 	})();
 	// today, at 00:00:00, in UTC
 	const today = dayjs().startOf('day');
-	const mapped: ForcastItems = result.map((itr) => {
+	const mapped: ForecastItems = result.map((itr) => {
 		const newLinearAverage =
 			Math.floor(
 				DAILY_AVERAGE_GEMS_OBTAINED * (dayjs.unix(itr.targetDate).diff(today, 'days') + 1)
@@ -72,7 +72,7 @@ export const GET = createApiRoute(async ({ cookies }) => {
 		const newMonthlyAverage =
 			Math.floor(monthlyAverage * (dayjs.unix(itr.targetDate).diff(today, 'days') + 1)) +
 			currentTotal;
-		const targetCheck = (value: number): ForcastTargetHit => {
+		const targetCheck = (value: number): ForecastTargetHit => {
 			if (value >= SAFE_PULL_PRICE) return 'safe';
 			if (value >= TARGET_PULL_PRICE) return 'hit';
 			return 'no';
@@ -101,12 +101,12 @@ export const GET = createApiRoute(async ({ cookies }) => {
 		};
 	});
 
-	return okResponse(createOkApiResponse(forcastItemsSchema, mapped));
+	return okResponse(createOkApiResponse(forecastItemsSchema, mapped));
 });
 
 export const POST = createApiRoute(async ({ cookies, request }) => {
 	const user = await verifyAuth(cookies);
-	const body = createForcastPayloadSchema.safeParse(await request.json());
+	const body = createForecastPayloadSchema.safeParse(await request.json());
 
 	if (!user) throw new UnauthorizedException();
 	if (!body.success) throw new BadRequestException('Invalid request body');
@@ -116,7 +116,7 @@ export const POST = createApiRoute(async ({ cookies, request }) => {
 	if (target.isBefore(today)) throw new BadRequestException('Target date must be in the future');
 
 	const result = await db
-		.insert(forcast)
+		.insert(forecast)
 		.values({
 			name: body.data.name,
 			targetDate: body.data.targetDate,
@@ -124,14 +124,14 @@ export const POST = createApiRoute(async ({ cookies, request }) => {
 		})
 		.returning();
 
-	if (result.length === 0) throw new BadRequestException('Failed to create forcast');
+	if (result.length === 0) throw new BadRequestException('Failed to create forecast');
 
-	return okResponse(createOkApiResponse(createForcastResponseSchema, { id: result[0].id }), 201);
+	return okResponse(createOkApiResponse(createForecastResponseSchema, { id: result[0].id }), 201);
 });
 
 export const PUT = createApiRoute(async ({ cookies, request }) => {
 	const user = await verifyAuth(cookies);
-	const body = updateForcastPayloadSchema.safeParse(await request.json());
+	const body = updateForecastPayloadSchema.safeParse(await request.json());
 
 	if (!user) throw new UnauthorizedException();
 	if (!body.success) {
@@ -141,21 +141,21 @@ export const PUT = createApiRoute(async ({ cookies, request }) => {
 
 	await db.transaction(async (tx) => {
 		const rows = await tx
-			.update(forcast)
+			.update(forecast)
 			.set({
 				name: body.data.name,
 				targetDate: body.data.targetDate,
 				updatedAt: generateCurrentTimestamp()
 			})
-			.where(and(eq(forcast.userId, user.id), eq(forcast.id, body.data.id)))
+			.where(and(eq(forecast.userId, user.id), eq(forecast.id, body.data.id)))
 			.returning();
 
 		if (rows.length === 0) {
 			throw new NotFoundException(
-				'Forcast not found or you do not have permission to update it'
+				'Forecast not found or you do not have permission to update it'
 			);
 		} else if (rows.length > 1) {
-			throw new BadRequestException('Multiple forcasts found with the same id');
+			throw new BadRequestException('Multiple forecasts found with the same id');
 		}
 	});
 
@@ -167,15 +167,15 @@ export const DELETE = createApiRoute(async ({ cookies, url }) => {
 	const id = url.searchParams.get('id');
 
 	if (!user) throw new UnauthorizedException();
-	if (!id) throw new BadRequestException('Missing forcast id');
+	if (!id) throw new BadRequestException('Missing forecast id');
 
 	const result = await db
-		.delete(forcast)
-		.where(and(eq(forcast.userId, user.id), eq(forcast.id, id)))
+		.delete(forecast)
+		.where(and(eq(forecast.userId, user.id), eq(forecast.id, id)))
 		.returning();
 
 	if (result.length === 0) {
-		throw new NotFoundException('Forcast not found or you do not have permission to delete it');
+		throw new NotFoundException('Forecast not found or you do not have permission to delete it');
 	}
 
 	return noContentResponse();

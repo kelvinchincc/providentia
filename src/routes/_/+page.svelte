@@ -5,15 +5,15 @@
 	import { goto } from '$app/navigation';
 	import { resolve } from '$app/paths';
 	import { GEM_UNIT } from '$app/env/public';
-	import { createListForcastsQuery } from '#lib/client/services/providentia/query/list-forcasts-query.js';
+	import { createListForecastsQuery } from '#lib/client/services/providentia/query/list-forecasts-query.js';
 
-	const listForcastsQuery = createListForcastsQuery();
-	const forcastData = $derived(listForcastsQuery.data ?? []);
+	const listForecastsQuery = createListForecastsQuery();
+	const forecastData = $derived(listForecastsQuery.data ?? []);
 
-	// const mockedForcast = [
+	// const mockedForecast = [
 	// 	{
 	// 		id: 1,
-	// 		name: 'Forcast 1',
+	// 		name: 'Forecast 1',
 	// 		createdAt: '2024-06-01',
 	// 		updatedAt: '2024-06-01',
 	// 		createdBy: 'User 1',
@@ -24,7 +24,7 @@
 	// 	},
 	// 	{
 	// 		id: 2,
-	// 		name: 'Forcast 2',
+	// 		name: 'Forecast 2',
 	// 		createdAt: '2024-06-02',
 	// 		updatedAt: '2024-06-02',
 	// 		createdBy: 'User 2',
@@ -35,7 +35,7 @@
 	// 	},
 	// 	{
 	// 		id: 3,
-	// 		name: 'Forcast 3',
+	// 		name: 'Forecast 3',
 	// 		createdAt: '2024-06-03',
 	// 		updatedAt: '2024-06-03',
 	// 		createdBy: 'User 3',
@@ -48,8 +48,8 @@
 
 	let logGemsDialogOpen = $state(false);
 
-	function onAddForcast() {
-		// TODO: Implement the logic to add a new forcast
+	function onAddForecast() {
+		// TODO: Implement the logic to add a new forecast
 		alert('Comming Soon!');
 	}
 
@@ -65,11 +65,11 @@
 		<GemsOverview />
 	</div>
 
-	<section id="forcast">
+	<section id="forecast">
 		<section class="flex items-center justify-end gap-2">
-			<button class="btn btn-primary" onclick={onAddForcast}>
+			<button class="btn btn-primary" onclick={onAddForecast}>
 				<i class="fa-solid fa-plus"></i>
-				Add forcast
+				Add forecast
 			</button>
 			<button class="btn btn-primary" onclick={() => (logGemsDialogOpen = true)}>
 				<i class="fa-solid fa-pen-to-square"></i>
@@ -81,23 +81,23 @@
 			</button>
 		</section>
 
-		{#if listForcastsQuery.isFetching}
+		{#if listForecastsQuery.isFetching}
 			<div class="mt-4 grid place-items-center">
 				<div class="loading loading-xl loading-spinner"></div>
 			</div>
-		{:else if listForcastsQuery.isError}
+		{:else if listForecastsQuery.isError}
 			<div class="mt-4 alert alert-outline alert-error">
 				<i class="fa-regular fa-circle-xmark"></i>
 				<span>Opps! Something went wrong!</span>
 			</div>
-		{:else if forcastData.length <= 0}
+		{:else if forecastData.length <= 0}
 			<div class="mt-4 alert">
 				<i class="fa-solid fa-circle-info"></i>
-				<span>No forcast created, click "Add forcast" to create one.</span>
+				<span>No forecast created, click "Add forecast" to create one.</span>
 			</div>
 		{:else}
 			<section class="mt-4 grid grid-cols-[repeat(auto-fill,minmax(320px,1fr))] gap-4">
-				{#each forcastData as item (item.id)}
+				{#each forecastData as item (item.id)}
 					<TargetCard {item} />
 				{/each}
 			</section>

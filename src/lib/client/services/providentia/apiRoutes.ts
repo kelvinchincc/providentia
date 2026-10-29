@@ -19,7 +19,7 @@ export const addNotePreset = '/api/note-presets';
 export const deleteNotePreset = '/api/note-presets';
 export const updateNotePreset = '/api/note-presets';
 
-export const listForcasts = '/api/forcast';
-export const createForcast = '/api/forcast';
-export const deleteForcast = '/api/forcast';
-export const updateForcast = '/api/forcast';
+export const listForecasts = '/api/forecast';
+export const createForecast = '/api/forecast';
+export const deleteForecast = '/api/forecast';
+export const updateForecast = '/api/forecast';
