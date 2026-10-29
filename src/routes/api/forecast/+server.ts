@@ -67,13 +67,13 @@ export const GET = createApiRoute(async ({ cookies }) => {
 	const mapped: ForecastItems = result.map((itr) => {
 		const hadPassed = today.unix() > itr.targetDate;
 		const newLinearAverage = hadPassed
-			? 0
+			? currentTotal
 			: Math.floor(
 					DAILY_AVERAGE_GEMS_OBTAINED *
 						(dayjs.unix(itr.targetDate).diff(today, 'days') + 1)
 				) + currentTotal;
 		const newMonthlyAverage = hadPassed
-			? 0
+			? currentTotal
 			: Math.floor(monthlyAverage * (dayjs.unix(itr.targetDate).diff(today, 'days') + 1)) +
 				currentTotal;
 
