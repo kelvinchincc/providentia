@@ -81,20 +81,36 @@
 			</button>
 		</section>
 
-		<section class="mt-4 grid grid-cols-[repeat(auto-fill,minmax(320px,1fr))] gap-4">
-			{#each forcastData as item (item.id)}
-				<TargetCard
-					item={{
-						id: item.id,
-						createdAt: item.createdAt,
-						updatedAt: item.updatedAt,
-						expectedGemsMonthlyAvg: item.monthlyAverage,
-						expectedGemsLinear: item.linearAverage,
-						name: item.name,
-						targetDate: item.targetDate
-					}}
-				/>
-			{/each}
-		</section>
+		{#if listForcastsQuery.isFetching}
+			<div class="mt-4 grid place-items-center">
+				<div class="loading loading-xl loading-spinner"></div>
+			</div>
+		{:else if listForcastsQuery.isError}
+			<div class="mt-4 alert alert-outline alert-error">
+				<i class="fa-regular fa-circle-xmark"></i>
+				<span>Opps! Something went wrong!</span>
+			</div>
+		{:else if forcastData.length <= 0}
+			<div class="mt-4 alert alert-outline">
+				<i class="fa-solid fa-circle-info"></i>
+				<span>No forcast created, click "Add forcast" to create one.</span>
+			</div>
+		{:else}
+			<section class="mt-4 grid grid-cols-[repeat(auto-fill,minmax(320px,1fr))] gap-4">
+				{#each forcastData as item (item.id)}
+					<TargetCard
+						item={{
+							id: item.id,
+							createdAt: item.createdAt,
+							updatedAt: item.updatedAt,
+							expectedGemsMonthlyAvg: item.expected.monthlyAvg.amount,
+							expectedGemsLinear: item.expected.linear.amount,
+							name: item.name,
+							targetDate: item.targetDate
+						}}
+					/>
+				{/each}
+			</section>
+		{/if}
 	</section>
 </main>

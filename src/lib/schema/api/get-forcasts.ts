@@ -7,12 +7,19 @@
 import { z } from 'zod';
 import { createBaseApiResponseSchema } from './base';
 
+const expectedStatSchema = z.object({
+	amount: z.number().int(),
+	pull: z.number().int(),
+	targetHit: z.boolean()
+});
 export const forcastItemSchema = z.object({
 	id: z.uuid(),
 	name: z.string(),
 	targetDate: z.number().int(),
-	linearAverage: z.number().int(),
-	monthlyAverage: z.number().int(),
+	expected: z.object({
+		linear: expectedStatSchema,
+		monthlyAvg: expectedStatSchema
+	}),
 	createdAt: z.number().int(),
 	updatedAt: z.number().int()
 });

@@ -25,6 +25,7 @@ import { and, asc, eq } from 'drizzle-orm';
 import { DAILY_AVERAGE_GEMS_OBTAINED } from '#lib/constants/static.js';
 import { stat } from '#lib/server/db/schemas/stat.schema.js';
 import { StatKey } from '#lib/constants/stat-key.js';
+import { PULL_PRICE } from '$app/env/public';
 
 export const GET = createApiRoute(async ({ cookies }) => {
 	const user = await verifyAuth(cookies);
@@ -63,14 +64,23 @@ export const GET = createApiRoute(async ({ cookies }) => {
 		const newMonthlyAverage =
 			Math.floor(monthlyAverage * (dayjs.unix(itr.targetDate).diff(today, 'days') + 1)) +
 			currentTotal;
+
 		return {
 			id: itr.id,
 			name: itr.name,
 			targetDate: itr.targetDate,
-			// until target date, how many gems can be obtained at the daily average rate
-			linearAverage: newLinearAverage,
-			// until target date, how many gems can be obtained at the monthly average rate
-			monthlyAverage: newMonthlyAverage,
+			expected: {
+				linear: {
+					amount: newLinearAverage,
+					pull: newLinearAverage / PULL_PRICE,
+					targetHit: newLinearAverage >= PULL_PRICE * 600
+				},
+				monthlyAvg: {
+					amount: newMonthlyAverage,
+					pull: newMonthlyAverage / PULL_PRICE,
+					targetHit: newMonthlyAverage >= PULL_PRICE * 600
+				}
+			},
 			createdAt: itr.createdAt,
 			updatedAt: itr.updatedAt
 		};
