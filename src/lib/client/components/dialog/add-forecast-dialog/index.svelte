@@ -54,7 +54,7 @@
 						placeholder="Forecast name"
 						{value}
 						onblur={handleBlur}
-						onchange={(e) => handleChange((e.target as HTMLInputElement).value)}
+						onchange={(e) => handleChange(e.currentTarget.value)}
 					/>
 				</label>
 				{#if meta.errors.length > 0}

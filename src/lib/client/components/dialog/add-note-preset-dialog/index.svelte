@@ -71,7 +71,7 @@
 					<input
 						placeholder="Enter preset"
 						onblur={handleBlur}
-						onchange={(e) => handleChange((e.target as HTMLInputElement).value)}
+						onchange={(e) => handleChange(e.currentTarget.value)}
 						{value}
 					/>
 				</label>

@@ -67,7 +67,7 @@
 							placeholder="Username"
 							value={field.state.value}
 							onchange={(e) => {
-								field.handleChange((e.target as HTMLInputElement)?.value);
+								field.handleChange(e.currentTarget?.value);
 							}}
 							onblur={field.handleBlur}
 						/>
@@ -86,7 +86,7 @@
 							placeholder="Password"
 							onblur={field.handleBlur}
 							onchange={(e) => {
-								field.handleChange((e.target as HTMLInputElement)?.value);
+								field.handleChange(e.currentTarget?.value);
 							}}
 						/>
 					</label>

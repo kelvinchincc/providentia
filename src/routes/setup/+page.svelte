@@ -55,7 +55,7 @@
 							value={field.state.value}
 							onblur={field.handleBlur}
 							oninput={(e) =>
-								field.handleChange((e?.target as HTMLInputElement).value)}
+								field.handleChange(e?.currentTarget.value)}
 						/>
 					</label>
 					<div class="text-xs text-error">
@@ -74,7 +74,7 @@
 							value={field.state.value}
 							onblur={field.handleBlur}
 							oninput={(e) =>
-								field.handleChange((e?.target as HTMLInputElement).value)}
+								field.handleChange(e?.currentTarget.value)}
 						/>
 					</label>
 					<div class="text-xs text-error">
@@ -93,7 +93,7 @@
 							value={field.state.value}
 							onblur={field.handleBlur}
 							oninput={(e) =>
-								field.handleChange((e?.target as HTMLInputElement).value)}
+								field.handleChange(e?.currentTarget.value)}
 						/>
 					</label>
 					<div class="text-xs text-error">

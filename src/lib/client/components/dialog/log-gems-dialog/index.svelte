@@ -117,7 +117,7 @@
 						<input
 							type="text"
 							{value}
-							onchange={(e) => handleChange((e.target as HTMLInputElement).value)}
+							onchange={(e) => handleChange(e.currentTarget.value)}
 							onblur={handleBlur}
 							placeholder={mode === 'direct' ? 'Amount' : 'Current Amount'}
 						/>
@@ -139,7 +139,7 @@
 						<select
 							{value}
 							onchange={(e) => {
-								handleChange((e.target as HTMLSelectElement).value as typeof value);
+								handleChange(e.currentTarget.value as typeof value);
 							}}
 							onblur={handleBlur}
 						>
@@ -165,7 +165,7 @@
 							type="text"
 							{value}
 							onblur={handleBlur}
-							onchange={(e) => handleChange((e.target as HTMLInputElement).value)}
+							onchange={(e) => handleChange(e.currentTarget.value)}
 							placeholder="Note"
 						/>
 					</label>
