@@ -4,10 +4,10 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import type { BaseModelProps } from '../base-dialog/types';
+import type { BaseDialogProps } from '../base-dialog/types';
 
 // export type Props = BaseModelProps;
-export interface Props extends BaseModelProps {
+export interface Props extends BaseDialogProps {
 	idToUpdate: string;
 	currentContent: string;
 }

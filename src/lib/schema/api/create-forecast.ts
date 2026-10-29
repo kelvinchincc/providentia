@@ -6,6 +6,7 @@
 
 import { z } from 'zod';
 import { createBaseApiResponseSchema } from './base';
+import dayjs, { type Dayjs } from 'dayjs';
 
 export const createForecastPayloadSchema = z.object({
 	name: z.string().min(1, 'Name is required.'),
@@ -19,7 +20,29 @@ export const createForecastResponseSchema = z.object({
 export const createForecastApiResponseSchema = createBaseApiResponseSchema(
 	createForecastResponseSchema
 );
+export const createForecastFormSchema = z.object({
+	name: z.string().min(1, 'Name is required').max(30, 'Name shall not longer than 30 characters'),
+	targetDate: z
+		.custom<Dayjs>()
+		.optional()
+		.refine((value) => value != null, { error: 'Target date is required' })
+		.refine(
+			(value) => {
+				const today = dayjs().startOf('day');
+				return today.isBefore(value);
+			},
+			{ error: 'Target date must be a future date' }
+		)
+});
 
 export type CreateForecastPayload = z.infer<typeof createForecastPayloadSchema>;
 export type CreateForecastResponse = z.infer<typeof createForecastResponseSchema>;
 export type CreateForecastApiResponse = z.infer<typeof createForecastApiResponseSchema>;
+export type CreateForecastFormData = z.infer<typeof createForecastFormSchema>;
+
+export function createDefaultValues(): CreateForecastFormData {
+	return {
+		name: '',
+		targetDate: undefined
+	};
+}

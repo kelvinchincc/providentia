@@ -6,12 +6,12 @@
 
 import type { Snippet } from 'svelte';
 
-export interface BaseModelProps {
+export interface BaseDialogProps {
 	open: boolean;
 	onClose: () => void;
 }
 
-export interface Props extends BaseModelProps {
+export interface Props extends BaseDialogProps {
 	class?: string;
 	children: Snippet;
 }
