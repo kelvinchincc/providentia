@@ -15,20 +15,45 @@
 	} from '#lib/schema/api/create-forecast.js';
 	import { cn } from '#lib/client/utils/cn.js';
 	import dayjs from 'dayjs';
+	import { createAddForecastMutation } from '#lib/client/services/providentia/mutations/add-forecast-mutation.js';
+	import { dispatch } from '#lib/client/utils/timing.js';
+	import { useQueryClient } from '@tanstack/svelte-query';
+	import { queryKeys } from '#lib/client/services/providentia/query/queryKeys.js';
 
 	const { open, onClose }: BaseDialogProps = $props();
 	const uid = $props.id();
 	const formId = `${uid}-create-forecast-form`;
+
+	const queryClient = useQueryClient();
+	const addForecastMutation = createAddForecastMutation();
 
 	const form = createForm(() => ({
 		defaultValues: createDefaultValues(),
 		validators: {
 			onSubmit: createForecastFormSchema
 		},
-		onSubmit: ({ value }) => {
-			alert(JSON.stringify(value, null, 2));
+		onSubmit: async ({ value }) => {
+			try {
+				await addForecastMutation.mutateAsync({
+					name: value.name,
+					targetDate: value.targetDate?.unix() || 0
+				});
+				alert('Forecast added successfully!');
+			} catch (error) {
+				console.error('Error adding forecast:', error);
+				alert('An error occurred while adding the forecast. Please try again.');
+			} finally {
+				onClose();
+				dispatch(() => queryClient.invalidateQueries({ queryKey: queryKeys.forecasts() }));
+			}
 		}
 	}));
+
+	$effect(() => {
+		if (!open) {
+			form.reset();
+		}
+	});
 </script>
 
 <BaseDialog {open} {onClose}>
