@@ -47,17 +47,6 @@ export const GET = createApiRoute(async ({ cookies }) => {
 	// today, at 00:00:00, in UTC
 	const today = dayjs().startOf('day');
 	const mapped: ForcastItems = result.map((itr) => {
-		logger.debug(
-			`Debug Get forcast: ${JSON.stringify({
-				id: itr.id,
-				name: itr.name,
-				targetDate: dayjs.unix(itr.targetDate),
-				today: today,
-				diff: dayjs.unix(itr.targetDate).diff(today, 'days') + 1,
-				linearAverage: DAILY_AVERAGE_GEMS_OBTAINED,
-				monthlyAverage
-			})}`
-		);
 		return {
 			id: itr.id,
 			name: itr.name,
@@ -69,7 +58,9 @@ export const GET = createApiRoute(async ({ cookies }) => {
 			// until target date, how many gems can be obtained at the monthly average rate
 			monthlyAverage: Math.floor(
 				monthlyAverage * (dayjs.unix(itr.targetDate).diff(today, 'days') + 1)
-			)
+			),
+			createdAt: itr.createdAt,
+			updatedAt: itr.updatedAt
 		};
 	});
 

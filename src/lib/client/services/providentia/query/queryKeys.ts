@@ -11,5 +11,7 @@ export const queryKeys = {
 		[...queryKeys.gemHistory(), params] as const,
 	gemsOverview: () => [...queryKeys.base, 'stats', 'overview'] as const,
 
-	notePresets: () => [...queryKeys.base, 'note-presets'] as const
+	notePresets: () => [...queryKeys.base, 'note-presets'] as const,
+
+	forcasts: () => [...queryKeys.base, 'forcasts'] as const
 };

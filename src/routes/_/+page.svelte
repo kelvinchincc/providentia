@@ -5,42 +5,46 @@
 	import { goto } from '$app/navigation';
 	import { resolve } from '$app/paths';
 	import { GEM_UNIT } from '$app/env/public';
+	import { createListForcastsQuery } from '#lib/client/services/providentia/query/list-forcasts-query.js';
 
-	const mockedForcast = [
-		{
-			id: 1,
-			name: 'Forcast 1',
-			createdAt: '2024-06-01',
-			updatedAt: '2024-06-01',
-			createdBy: 'User 1',
-			updatedBy: 'User 1',
-			expectedGemsLinear: 145005,
-			expectedGemsBasic: 135760,
-			targetDate: '2024-06-30'
-		},
-		{
-			id: 2,
-			name: 'Forcast 2',
-			createdAt: '2024-06-02',
-			updatedAt: '2024-06-02',
-			createdBy: 'User 2',
-			updatedBy: 'User 2',
-			expectedGemsLinear: 150000,
-			expectedGemsBasic: 140000,
-			targetDate: '2024-07-15'
-		},
-		{
-			id: 3,
-			name: 'Forcast 3',
-			createdAt: '2024-06-03',
-			updatedAt: '2024-06-03',
-			createdBy: 'User 3',
-			updatedBy: 'User 3',
-			expectedGemsLinear: 155000,
-			expectedGemsBasic: 145000,
-			targetDate: '2024-07-30'
-		}
-	];
+	const listForcastsQuery = createListForcastsQuery();
+	const forcastData = $derived(listForcastsQuery.data ?? []);
+
+	// const mockedForcast = [
+	// 	{
+	// 		id: 1,
+	// 		name: 'Forcast 1',
+	// 		createdAt: '2024-06-01',
+	// 		updatedAt: '2024-06-01',
+	// 		createdBy: 'User 1',
+	// 		updatedBy: 'User 1',
+	// 		expectedGemsLinear: 145005,
+	// 		expectedGemsBasic: 135760,
+	// 		targetDate: '2024-06-30'
+	// 	},
+	// 	{
+	// 		id: 2,
+	// 		name: 'Forcast 2',
+	// 		createdAt: '2024-06-02',
+	// 		updatedAt: '2024-06-02',
+	// 		createdBy: 'User 2',
+	// 		updatedBy: 'User 2',
+	// 		expectedGemsLinear: 150000,
+	// 		expectedGemsBasic: 140000,
+	// 		targetDate: '2024-07-15'
+	// 	},
+	// 	{
+	// 		id: 3,
+	// 		name: 'Forcast 3',
+	// 		createdAt: '2024-06-03',
+	// 		updatedAt: '2024-06-03',
+	// 		createdBy: 'User 3',
+	// 		updatedBy: 'User 3',
+	// 		expectedGemsLinear: 155000,
+	// 		expectedGemsBasic: 145000,
+	// 		targetDate: '2024-07-30'
+	// 	}
+	// ];
 
 	let logGemsDialogOpen = $state(false);
 
@@ -78,8 +82,18 @@
 		</section>
 
 		<section class="mt-4 grid grid-cols-[repeat(auto-fill,minmax(320px,1fr))] gap-4">
-			{#each mockedForcast as item (item.id)}
-				<TargetCard {item} />
+			{#each forcastData as item (item.id)}
+				<TargetCard
+					item={{
+						id: item.id,
+						createdAt: item.createdAt,
+						updatedAt: item.updatedAt,
+						expectedGemsMonthlyAvg: item.monthlyAverage,
+						expectedGemsLinear: item.linearAverage,
+						name: item.name,
+						targetDate: item.targetDate
+					}}
+				/>
 			{/each}
 		</section>
 	</section>

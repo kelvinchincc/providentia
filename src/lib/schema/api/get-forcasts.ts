@@ -12,7 +12,9 @@ export const forcastItemSchema = z.object({
 	name: z.string(),
 	targetDate: z.number().int(),
 	linearAverage: z.number().int(),
-	monthlyAverage: z.number().int()
+	monthlyAverage: z.number().int(),
+	createdAt: z.number().int(),
+	updatedAt: z.number().int()
 });
 export const forcastItemsSchema = z.array(forcastItemSchema);
 export const forcastItemsApiResponseSchema = createBaseApiResponseSchema(forcastItemsSchema);

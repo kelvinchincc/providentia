@@ -11,6 +11,11 @@ export function formatDateTime(timestamp: number): string {
 	return date.format('DD MMM YYYY, HH:mm:ss');
 }
 
+export function formatDate(timestamp: number): string {
+	const date = dayjs.unix(timestamp);
+	return date.format('DD MMM YYYY');
+}
+
 export function formatGemType(value: string): string {
 	switch (value) {
 		case 'free':

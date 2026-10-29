@@ -4,6 +4,7 @@
  file, You can obtain one at http://mozilla.org/MPL/2.0/.
 -->
 <script lang="ts">
+	import { formatDate } from '#lib/client/utils/display.js';
 	import type { Props } from './types';
 
 	const { item }: Props = $props();
@@ -22,8 +23,8 @@
 		</button>
 	</header>
 	<section class="grid grid-cols-[auto_auto] gap-1">
-		{@render field('Target Date', item.targetDate)}
-		{@render field('Linear Gain', item.expectedGemsBasic.toLocaleString())}
-		{@render field('30 Days Average Gain', item.expectedGemsLinear.toLocaleString())}
+		{@render field('Target Date', formatDate(item.targetDate))}
+		{@render field('Linear Gain', item.expectedGemsLinear.toLocaleString())}
+		{@render field('30 Days Average Gain', item.expectedGemsMonthlyAvg.toLocaleString())}
 	</section>
 </section>

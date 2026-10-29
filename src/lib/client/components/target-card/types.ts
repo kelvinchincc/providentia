@@ -6,14 +6,12 @@
 
 export interface Props {
 	item: {
-		id: number;
+		id: string;
 		name: string;
-		createdAt: string;
-		updatedAt: string;
-		createdBy: string;
-		updatedBy: string;
+		createdAt: number;
+		updatedAt: number;
 		expectedGemsLinear: number;
-		expectedGemsBasic: number;
-		targetDate: string;
+		expectedGemsMonthlyAvg: number;
+		targetDate: number;
 	};
 }
