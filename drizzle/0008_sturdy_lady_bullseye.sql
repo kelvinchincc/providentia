@@ -14,4 +14,4 @@ INSERT INTO `__new_forecasts`("id", "user_id", "created_at", "updated_at", "targ
 DROP TABLE `forecasts`;--> statement-breakpoint
 ALTER TABLE `__new_forecasts` RENAME TO `forecasts`;--> statement-breakpoint
 PRAGMA foreign_keys=ON;--> statement-breakpoint
-CREATE INDEX `forecasts_target_date_updated_at_idx` ON `forecasts` (`target_date`,`"updated_at" desc`);
+CREATE INDEX `forecasts_target_date_updated_at_idx` ON `forecasts` (`target_date`,"updated_at" desc);
