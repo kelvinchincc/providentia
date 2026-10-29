@@ -22,24 +22,54 @@ import { generateCurrentTimestamp } from '#lib/server/utils/datetime.js';
 import { logger } from '#lib/server/utils/logger.js';
 import dayjs from 'dayjs';
 import { and, asc, eq } from 'drizzle-orm';
+import { DAILY_AVERAGE_GEMS_OBTAINED } from '#lib/constants/static.js';
+import { stat } from '#lib/server/db/schemas/stat.schema.js';
+import { StatKey } from '#lib/constants/stat-key.js';
 
 export const GET = createApiRoute(async ({ cookies }) => {
 	const user = await verifyAuth(cookies);
-
 	if (!user) throw new UnauthorizedException();
 
+	const monthlyAverage = await (async () => {
+		const result = await db
+			.select()
+			.from(stat)
+			.where(and(eq(stat.userId, user.id), eq(stat.item, StatKey.MONTHLY_AVG_GAINS)))
+			.limit(1);
+		if (result.length <= 0) return 0;
+		return result[0].value || 0;
+	})();
 	const result = await db
 		.select()
 		.from(forcast)
 		.where(eq(forcast.userId, user.id))
 		.orderBy(asc(forcast.targetDate));
+	// today, at 00:00:00, in UTC
+	const today = dayjs().startOf('day');
 	const mapped: ForcastItems = result.map((itr) => {
+		logger.debug(
+			`Debug Get forcast: ${JSON.stringify({
+				id: itr.id,
+				name: itr.name,
+				targetDate: dayjs.unix(itr.targetDate),
+				today: today,
+				diff: dayjs.unix(itr.targetDate).diff(today, 'days') + 1,
+				linearAverage: DAILY_AVERAGE_GEMS_OBTAINED,
+				monthlyAverage
+			})}`
+		);
 		return {
 			id: itr.id,
 			name: itr.name,
 			targetDate: itr.targetDate,
-			linearAverage: 0,
-			monthlyAverage: 0
+			// until target date, how many gems can be obtained at the daily average rate
+			linearAverage: Math.floor(
+				DAILY_AVERAGE_GEMS_OBTAINED * (dayjs.unix(itr.targetDate).diff(today, 'days') + 1)
+			),
+			// until target date, how many gems can be obtained at the monthly average rate
+			monthlyAverage: Math.floor(
+				monthlyAverage * (dayjs.unix(itr.targetDate).diff(today, 'days') + 1)
+			)
 		};
 	});
 
