@@ -41,7 +41,9 @@
 		<!-- Mobile menu -->
 		<div class="flex flex-row justify-end md:hidden">
 			<details class="dropdown dropdown-end">
-				<summary class="btn m-1 btn-primary">Actions</summary>
+				<summary class="btn m-1 btn-square btn-primary" aria-label="Actions">
+					<i class="fa-solid fa-caret-down text-lg"></i>
+				</summary>
 				<ul
 					class="mt-.5 menu dropdown-content z-1 w-52 rounded-box bg-base-100 p-2 shadow-sm"
 				>

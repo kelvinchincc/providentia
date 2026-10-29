@@ -10,8 +10,10 @@
 	const year = dayjs().year();
 </script>
 
-<footer class="flex justify-between bg-base-200 p-3 text-xs">
-	<div>
+<footer
+	class="flex flex-col justify-center gap-2 bg-base-200 p-3 text-xs md:flex-row md:justify-between"
+>
+	<div class="text-center">
 		<i class="fa-regular fa-copyright -scale-x-100" aria-label="copyleft"></i>{year} A side project
 		by
 		<a href="https://github.com/kelvinchincc" target="_blank" class="link link-primary"
@@ -19,7 +21,7 @@
 		>, licensed under
 		<a href="http://mozilla.org/MPL/2.0/" target="_blank" class="link link-primary">MPL 2.0</a>.
 	</div>
-	<ul class="flex gap-2">
+	<ul class="flex justify-center gap-2">
 		<li>
 			<a href={resolve('/about')} class="bold link link-primary">Credit</a>
 		</li>
