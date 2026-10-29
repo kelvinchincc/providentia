@@ -62,9 +62,20 @@
 	targetDate={item.targetDate}
 />
 
-<section class="tooltip card flex flex-col rounded-lg bg-base-200 p-4" data-tip={item.name}>
+<section
+	class={cn('tooltip card flex flex-col rounded-lg bg-base-200 p-4', {
+		'bg-base-200/40': item.hadPassed
+	})}
+	data-tip={item.name}
+>
 	<header class="mb-2 flex items-center justify-between">
-		<h2 class="bold overflow-hidden text-xl text-nowrap text-ellipsis">{item.name}</h2>
+		<h2
+			class={cn('bold overflow-hidden text-xl text-nowrap text-ellipsis', {
+				'line-through': item.hadPassed
+			})}
+		>
+			{item.name}
+		</h2>
 		<div class="ml-2 flex flex-row gap-1">
 			<button
 				class="btn btn-square btn-secondary"
@@ -92,13 +103,13 @@
 			<div class="ml-4 grid grid-cols-[auto_auto] gap-1">
 				{@render field(
 					'Amount',
-					item.expected.linear.amount.toLocaleString(),
-					textColourMap[item.expected.linear.targetHit]
+					item.hadPassed ? '-' : item.expected.linear.amount.toLocaleString(),
+					item.hadPassed ? undefined : textColourMap[item.expected.linear.targetHit]
 				)}
 				{@render field(
 					'Total Pull',
-					item.expected.linear.pull.toLocaleString(),
-					textColourMap[item.expected.linear.targetHit]
+					item.hadPassed ? '-' : item.expected.linear.pull.toLocaleString(),
+					item.hadPassed ? undefined : textColourMap[item.expected.linear.targetHit]
 				)}
 			</div>
 		</section>
@@ -108,13 +119,13 @@
 			<div class="ml-4 grid grid-cols-[auto_auto] gap-1">
 				{@render field(
 					'Amount',
-					item.expected.monthlyAvg.amount.toLocaleString(),
-					textColourMap[item.expected.monthlyAvg.targetHit]
+					item.hadPassed ? '-' : item.expected.monthlyAvg.amount.toLocaleString(),
+					item.hadPassed ? undefined : textColourMap[item.expected.monthlyAvg.targetHit]
 				)}
 				{@render field(
 					'Total Pull',
-					item.expected.monthlyAvg.pull.toLocaleString(),
-					textColourMap[item.expected.monthlyAvg.targetHit]
+					item.hadPassed ? '-' : item.expected.monthlyAvg.pull.toLocaleString(),
+					item.hadPassed ? undefined : textColourMap[item.expected.monthlyAvg.targetHit]
 				)}
 			</div>
 		</section>

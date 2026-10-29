@@ -65,13 +65,18 @@ export const GET = createApiRoute(async ({ cookies }) => {
 	// today, at 00:00:00, in UTC
 	const today = dayjs().startOf('day');
 	const mapped: ForecastItems = result.map((itr) => {
-		const newLinearAverage =
-			Math.floor(
-				DAILY_AVERAGE_GEMS_OBTAINED * (dayjs.unix(itr.targetDate).diff(today, 'days') + 1)
-			) + currentTotal;
-		const newMonthlyAverage =
-			Math.floor(monthlyAverage * (dayjs.unix(itr.targetDate).diff(today, 'days') + 1)) +
-			currentTotal;
+		const hadPassed = today.unix() > itr.targetDate;
+		const newLinearAverage = hadPassed
+			? 0
+			: Math.floor(
+					DAILY_AVERAGE_GEMS_OBTAINED *
+						(dayjs.unix(itr.targetDate).diff(today, 'days') + 1)
+				) + currentTotal;
+		const newMonthlyAverage = hadPassed
+			? 0
+			: Math.floor(monthlyAverage * (dayjs.unix(itr.targetDate).diff(today, 'days') + 1)) +
+				currentTotal;
+
 		const targetCheck = (value: number): ForecastTargetHit => {
 			if (value >= SAFE_PULL_PRICE) return 'safe';
 			if (value >= TARGET_PULL_PRICE) return 'hit';
@@ -97,7 +102,8 @@ export const GET = createApiRoute(async ({ cookies }) => {
 				}
 			},
 			createdAt: itr.createdAt,
-			updatedAt: itr.updatedAt
+			updatedAt: itr.updatedAt,
+			hadPassed
 		};
 	});
 
@@ -175,7 +181,9 @@ export const DELETE = createApiRoute(async ({ cookies, url }) => {
 		.returning();
 
 	if (result.length === 0) {
-		throw new NotFoundException('Forecast not found or you do not have permission to delete it');
+		throw new NotFoundException(
+			'Forecast not found or you do not have permission to delete it'
+		);
 	}
 
 	return noContentResponse();

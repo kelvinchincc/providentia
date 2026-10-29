@@ -25,7 +25,8 @@ export const forecastItemSchema = z.object({
 		monthlyAvg: expectedStatSchema
 	}),
 	createdAt: z.number().int(),
-	updatedAt: z.number().int()
+	updatedAt: z.number().int(),
+	hadPassed: z.boolean()
 });
 export const forecastItemsSchema = z.array(forecastItemSchema);
 export const forecastItemsApiResponseSchema = createBaseApiResponseSchema(forecastItemsSchema);
