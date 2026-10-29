@@ -7,11 +7,13 @@
 import { z } from 'zod';
 import { createBaseApiResponseSchema } from './base';
 
+export const targetStatusEnumSchema = z.enum(['no', 'hit', 'safe']);
 const expectedStatSchema = z.object({
 	amount: z.number().int(),
 	pull: z.number().int(),
-	targetHit: z.boolean()
+	targetHit: targetStatusEnumSchema
 });
+
 export const forcastItemSchema = z.object({
 	id: z.uuid(),
 	name: z.string(),
@@ -26,6 +28,7 @@ export const forcastItemSchema = z.object({
 export const forcastItemsSchema = z.array(forcastItemSchema);
 export const forcastItemsApiResponseSchema = createBaseApiResponseSchema(forcastItemsSchema);
 
+export type ForcastTargetHit = z.infer<typeof targetStatusEnumSchema>;
 export type ForcastItem = z.infer<typeof forcastItemSchema>;
 export type ForcastItems = z.infer<typeof forcastItemsSchema>;
 export type ForcastItemsApiResponse = z.infer<typeof forcastItemsApiResponseSchema>;

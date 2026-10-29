@@ -4,14 +4,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
+import type { ForcastItem } from '#lib/schema/api/get-forcasts.js';
+
 export interface Props {
-	item: {
-		id: string;
-		name: string;
-		createdAt: number;
-		updatedAt: number;
-		expectedGemsLinear: number;
-		expectedGemsMonthlyAvg: number;
-		targetDate: number;
-	};
+	item: ForcastItem;
 }

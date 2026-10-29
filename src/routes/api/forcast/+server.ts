@@ -26,6 +26,8 @@ import { DAILY_AVERAGE_GEMS_OBTAINED } from '#lib/constants/static.js';
 import { stat } from '#lib/server/db/schemas/stat.schema.js';
 import { StatKey } from '#lib/constants/stat-key.js';
 import { PULL_PRICE } from '$app/env/public';
+const WORST_CASE_PULLS = 200;
+const MAX_COPIES = 6;
 
 export const GET = createApiRoute(async ({ cookies }) => {
 	const user = await verifyAuth(cookies);
@@ -64,6 +66,8 @@ export const GET = createApiRoute(async ({ cookies }) => {
 		const newMonthlyAverage =
 			Math.floor(monthlyAverage * (dayjs.unix(itr.targetDate).diff(today, 'days') + 1)) +
 			currentTotal;
+		const targetPullPrice = PULL_PRICE * WORST_CASE_PULLS * MAX_COPIES;
+		logger.debug(JSON.stringify({ PULL_PRICE, WORST_CASE_PULLS, MAX_COPIES, targetPullPrice }));
 
 		return {
 			id: itr.id,
@@ -73,12 +77,22 @@ export const GET = createApiRoute(async ({ cookies }) => {
 				linear: {
 					amount: newLinearAverage,
 					pull: Math.floor(newLinearAverage / PULL_PRICE),
-					targetHit: newLinearAverage >= PULL_PRICE * 600
+					targetHit:
+						newLinearAverage > targetPullPrice
+							? 'safe'
+							: newLinearAverage === targetPullPrice
+								? 'hit'
+								: 'no'
 				},
 				monthlyAvg: {
 					amount: newMonthlyAverage,
 					pull: Math.floor(newMonthlyAverage / PULL_PRICE),
-					targetHit: newMonthlyAverage >= PULL_PRICE * 600
+					targetHit:
+						newMonthlyAverage > targetPullPrice
+							? 'safe'
+							: newMonthlyAverage === targetPullPrice
+								? 'hit'
+								: 'no'
 				}
 			},
 			createdAt: itr.createdAt,

@@ -98,17 +98,7 @@
 		{:else}
 			<section class="mt-4 grid grid-cols-[repeat(auto-fill,minmax(320px,1fr))] gap-4">
 				{#each forcastData as item (item.id)}
-					<TargetCard
-						item={{
-							id: item.id,
-							createdAt: item.createdAt,
-							updatedAt: item.updatedAt,
-							expectedGemsMonthlyAvg: item.expected.monthlyAvg.amount,
-							expectedGemsLinear: item.expected.linear.amount,
-							name: item.name,
-							targetDate: item.targetDate
-						}}
-					/>
+					<TargetCard {item} />
 				{/each}
 			</section>
 		{/if}
