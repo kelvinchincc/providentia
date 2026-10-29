@@ -45,6 +45,7 @@
 				dispatch(() => {
 					queryClient.invalidateQueries({ queryKey: queryKeys.gemHistory() });
 					queryClient.invalidateQueries({ queryKey: queryKeys.gemsOverview() });
+					queryClient.invalidateQueries({ queryKey: queryKeys.forecasts() });
 				});
 			}
 		}

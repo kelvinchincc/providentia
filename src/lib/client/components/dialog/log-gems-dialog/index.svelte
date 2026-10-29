@@ -49,6 +49,9 @@
 					queryClient.invalidateQueries({
 						queryKey: queryKeys.gemHistory()
 					});
+					queryClient.invalidateQueries({
+						queryKey: queryKeys.forecasts()
+					});
 					onClose();
 				});
 			} catch (error) {
