@@ -59,7 +59,7 @@
 	onClose={() => (isEditGemsDialogOpen = false)}
 />
 
-<section class="mx-auto w-200">
+<section class="mx-auto max-w-200">
 	{#if gemsHistoryQuery.isError}
 		<div role="alert" class="alert alert-outline alert-error">
 			<i class="fa-solid fa-triangle-exclamation"></i>
@@ -73,8 +73,8 @@
 					<tr>
 						<th class="w-10 max-w-20"></th>
 						<th class="w-15">Amount</th>
-						<th class="w-45">Obtained At</th>
-						<th class="w-45">Updated At</th>
+						<th class="w-45 max-[665px]:hidden">Obtained At</th>
+						<th class="w-45 max-[800px]:hidden">Updated At</th>
 						<th class="w-15">Type</th>
 						<th class="min-w-50">Note</th>
 						<th class=""></th>
@@ -96,8 +96,9 @@
 								<td class={cn('text-right', { 'text-error': item.amount < 0 })}
 									>{item.amount}</td
 								>
-								<td>{formatDateTime(item.obtainedAt)}</td>
-								<td>{formatDateTime(item.updatedAt)}</td>
+								<td class="max-[665px]:hidden">{formatDateTime(item.obtainedAt)}</td
+								>
+								<td class="max-[800px]:hidden">{formatDateTime(item.updatedAt)}</td>
 								<td>{formatGemType(item.type)}</td>
 								<td>{item.note || '-'}</td>
 								<td>
