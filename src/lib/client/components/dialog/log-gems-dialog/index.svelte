@@ -84,36 +84,40 @@
 			form.handleSubmit();
 		}}
 	>
+		<div role="tablist" class="tabs tabs-border w-full">
+			<button
+				class={cn('tab', { 'tab-active': mode === 'direct' })}
+				onclick={() => (mode = 'direct')}
+				type="button"
+				role="tab"
+			>
+				Direct
+			</button>
+			<button
+				class={cn('tab', { 'tab-active': mode === 'delta' })}
+				onclick={() => (mode = 'delta')}
+				type="button"
+				role="tab"
+			>
+				Delta
+			</button>
+		</div>
+		<div>
+			{#if mode === 'direct'}
+				<div class="text-sm text-neutral">
+					Directly set the amount of gems to a specific value. Enter the total number of
+					gems you want to have.
+				</div>
+			{:else}
+				<div class="text-sm text-neutral">
+					Enter the number of gems currently in your possession. The system will calculate
+					the difference and log it accordingly.
+				</div>
+			{/if}
+		</div>
+
 		<form.Field name="amount">
 			{#snippet children({ state: { value, meta }, handleChange, handleBlur })}
-				<div role="tablist" class="tabs tabs-border w-full">
-					<button
-						class={cn('tab', { 'tab-active': mode === 'direct' })}
-						onclick={() => (mode = 'direct')}
-						type="button"
-						role="tab"
-					>
-						<span
-							class="tooltip tooltip-start"
-							data-tip="Directly set the amount of gems to a specific value"
-						>
-							Direct
-						</span>
-					</button>
-					<button
-						class={cn('tab', { 'tab-active': mode === 'delta' })}
-						onclick={() => (mode = 'delta')}
-						type="button"
-						role="tab"
-					>
-						<span
-							class="tooltip tooltip-start"
-							data-tip="Delta mode allows you to add or subtract gems from the current amount"
-						>
-							Delta
-						</span>
-					</button>
-				</div>
 				<div>
 					<label class={cn('input w-full', { 'border-error': meta.errors.length > 0 })}>
 						<i class="fa-regular fa-gem min-w-7"></i>
