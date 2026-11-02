@@ -156,31 +156,38 @@
 				type="text"
 				class="input w-full"
 				bind:value={username}
+				placeholder="Username"
 			/>
 
 			<label class="label w-full" for={`${uid}:password-input`}> Password </label>
-			<input
-				id={`${uid}:password-input`}
-				type="password"
-				class={cn('input w-full', { 'border-error': passwordError })}
-				bind:value={password}
-			/>
-			{#if passwordError}
-				<p class="text-sm text-error">{passwordError}</p>
-			{/if}
+			<div class="w-full">
+				<input
+					id={`${uid}:password-input`}
+					type="password"
+					class={cn('input w-full', { 'border-error': passwordError })}
+					bind:value={password}
+					placeholder="Password"
+				/>
+				{#if passwordError}
+					<p class="text-sm text-error">{passwordError}</p>
+				{/if}
+			</div>
 
 			<label class="label w-full" for={`${uid}:confirm-password-input`}>
 				Confirm Password
 			</label>
-			<input
-				id={`${uid}:confirm-password-input`}
-				type="password"
-				class={cn('input w-full', { 'border-error': confirmPasswordError })}
-				bind:value={confirmPassword}
-			/>
-			{#if confirmPasswordError}
-				<p class="text-sm text-error">{confirmPasswordError}</p>
-			{/if}
+			<div class="w-full">
+				<input
+					id={`${uid}:confirm-password-input`}
+					type="password"
+					class={cn('input w-full', { 'border-error': confirmPasswordError })}
+					bind:value={confirmPassword}
+					placeholder="Confirm Password"
+				/>
+				{#if confirmPasswordError}
+					<p class="text-sm text-error">{confirmPasswordError}</p>
+				{/if}
+			</div>
 
 			<button class="btn col-span-2 mt-2 btn-block btn-primary" onclick={handleUpdateProfile}>
 				<i class="fa-regular fa-circle-up"></i>
