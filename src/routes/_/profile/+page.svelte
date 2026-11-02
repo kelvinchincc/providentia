@@ -54,16 +54,29 @@
 			return;
 		}
 
+		const payload = {
+			username: (username === authStore.current.username ? undefined : username) || undefined,
+			password: password || undefined,
+			confirmPassword: confirmPassword || undefined
+		};
+
+		// if all undefined, do not send request
+		if (!payload.username && !payload.password && !payload.confirmPassword) {
+			alert('No changes to update.');
+			return;
+		}
+
 		try {
-			await updateProfileMutation.mutateAsync({
-				username: username || undefined,
-				password: password || undefined,
-				confirmPassword: confirmPassword || undefined
-			});
+			await updateProfileMutation.mutateAsync(payload);
 			alert('Profile updated successfully, please log in again.');
+			authStoreActions.logout();
 		} catch (error) {
 			console.error('Error updating profile:', error);
 			alert('Failed to update profile. Please try again later.');
+		} finally {
+			dispatch(() => {
+				queryClient.invalidateQueries({ queryKey: queryKeys.base });
+			});
 		}
 	}
 
