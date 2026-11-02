@@ -161,6 +161,22 @@
 		</div>
 	</SectionCard>
 
+	<SectionCard title="Security">
+		<section>
+			<h3 class="mb-2 text-lg font-bold">Logout All Devices</h3>
+			<button
+				class="btn btn-block btn-error"
+				onclick={() =>
+					alert(
+						'Logout everywhere functionality is currently under development. Please check back later.'
+					)}
+			>
+				<i class="fa-solid fa-right-from-bracket"></i>
+				Logout everywhere
+			</button>
+		</section>
+	</SectionCard>
+
 	<SectionCard title="Rescan Stats">
 		<button
 			class="btn btn-block btn-primary"
