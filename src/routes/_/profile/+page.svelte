@@ -15,17 +15,45 @@
 	import { queryKeys } from '#lib/client/services/providentia/query/queryKeys.js';
 	import { createDeleteNotePresetMutation } from '#lib/client/services/providentia/mutations/delete-note-preset-mutation.js';
 	import { createForceRescanStatMutation } from '#lib/client/services/providentia/mutations/force-rescan-stat-mutatiion.js';
+	import { useAuthStore } from '#lib/client/store/authStore.js';
 
+	const uid = $props.id();
 	const notePresetsQuery = createNotePresetsQuery();
 	const notePresets = $derived(notePresetsQuery.data ?? []);
 	const queryClient = useQueryClient();
 	const forceRescanStatsMutation = createForceRescanStatMutation();
 	const deleteNotePresetMutation = createDeleteNotePresetMutation();
+	const authStore = useAuthStore();
 
 	let isAddNotePresetDialogOpen = $state(false);
 	let isUpdateNotePresetDialogOpen = $state(false);
 	let notePresetIdToUpdate = $state('');
 	let currentNotePresetToPopulate = $state('');
+	let username = $state(authStore.current.username ?? '');
+	let password = $state('');
+	let confirmPassword = $state('');
+
+	let passwordError = $state('');
+	let confirmPasswordError = $state('');
+
+	async function handleUpdateProfile() {
+		passwordError = '';
+		confirmPasswordError = '';
+
+		if (password && password.length < 6) {
+			passwordError = 'Password must be at least 6 characters long.';
+			return;
+		}
+
+		if (password !== confirmPassword) {
+			confirmPasswordError = 'Passwords do not match.';
+			return;
+		}
+
+		alert(
+			'Profile update functionality is currently under development. Please check back later.'
+		);
+	}
 
 	async function handleRescanStats() {
 		let confirmed = confirm(
@@ -93,8 +121,43 @@
 <main class="mx-auto flex max-w-[min(80vw,500px)] flex-col gap-3">
 	<h1 class="text-2xl font-bold">Profile</h1>
 	<SectionCard title="User Info">
-		<div class="grid h-30 place-items-center">
-			<div>🏗️ Under construction</div>
+		<div class="grid grid-cols-[auto_1fr] place-items-center gap-2">
+			<label class="label w-full" for={`${uid}:username-input`}> Username </label>
+			<input
+				id={`${uid}:username-input`}
+				type="text"
+				class="input w-full"
+				bind:value={username}
+			/>
+
+			<label class="label w-full" for={`${uid}:password-input`}> Password </label>
+			<input
+				id={`${uid}:password-input`}
+				type="password"
+				class={cn('input w-full', { 'border-error': passwordError })}
+				bind:value={password}
+			/>
+			{#if passwordError}
+				<p class="text-sm text-error">{passwordError}</p>
+			{/if}
+
+			<label class="label w-full" for={`${uid}:confirm-password-input`}>
+				Confirm Password
+			</label>
+			<input
+				id={`${uid}:confirm-password-input`}
+				type="password"
+				class={cn('input w-full', { 'border-error': confirmPasswordError })}
+				bind:value={confirmPassword}
+			/>
+			{#if confirmPasswordError}
+				<p class="text-sm text-error">{confirmPasswordError}</p>
+			{/if}
+
+			<button class="btn col-span-2 mt-2 btn-block btn-primary" onclick={handleUpdateProfile}>
+				<i class="fa-regular fa-circle-up"></i>
+				Update
+			</button>
 		</div>
 	</SectionCard>
 
