@@ -17,6 +17,7 @@
 	import { createForceRescanStatMutation } from '#lib/client/services/providentia/mutations/force-rescan-stat-mutatiion.js';
 	import { authStoreActions, useAuthStore } from '#lib/client/store/authStore.js';
 	import { createLogoutAllMutation } from '#lib/client/services/providentia/mutations/logout-all-mutation.js';
+	import { createUpdateProfileMutation } from '#lib/client/services/providentia/mutations/update-profile-mutation.js';
 
 	const uid = $props.id();
 	const notePresetsQuery = createNotePresetsQuery();
@@ -25,6 +26,7 @@
 	const logoutAllDevicesMutation = createLogoutAllMutation();
 	const forceRescanStatsMutation = createForceRescanStatMutation();
 	const deleteNotePresetMutation = createDeleteNotePresetMutation();
+	const updateProfileMutation = createUpdateProfileMutation();
 	const authStore = useAuthStore();
 
 	let isAddNotePresetDialogOpen = $state(false);
@@ -42,8 +44,8 @@
 		passwordError = '';
 		confirmPasswordError = '';
 
-		if (password && password.length < 6) {
-			passwordError = 'Password must be at least 6 characters long.';
+		if (password && (password.length < 8 || password.length > 100)) {
+			passwordError = 'Password must be between 8 and 100 characters.';
 			return;
 		}
 
@@ -52,9 +54,17 @@
 			return;
 		}
 
-		alert(
-			'Profile update functionality is currently under development. Please check back later.'
-		);
+		try {
+			await updateProfileMutation.mutateAsync({
+				username: username || undefined,
+				password: password || undefined,
+				confirmPassword: confirmPassword || undefined
+			});
+			alert('Profile updated successfully, please log in again.');
+		} catch (error) {
+			console.error('Error updating profile:', error);
+			alert('Failed to update profile. Please try again later.');
+		}
 	}
 
 	async function handleLogoutAllDevices() {

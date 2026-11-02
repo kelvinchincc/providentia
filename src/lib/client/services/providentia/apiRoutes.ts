@@ -8,6 +8,7 @@ export const authRefresh = '/api/auth/refresh';
 export const authLogout = '/api/auth/logout';
 export const authRegister = '/api/auth/register';
 export const authLogoutAll = '/api/auth/logout/all';
+export const updateProfile = '/api/auth/update-profile';
 
 export const logGems = '/api/stats/gems';
 export const gemHistory = '/api/stats/gems';
