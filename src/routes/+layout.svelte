@@ -7,7 +7,7 @@
 	import { QueryClient, QueryClientProvider } from '@tanstack/svelte-query';
 	import { SvelteQueryDevtools } from '@tanstack/svelte-query-devtools';
 	import './layout.css';
-	import favicon from '#lib/assets/icon.png';
+	import favicon from '#lib/assets/favicon.ico';
 
 	let { children } = $props();
 
