@@ -14,6 +14,8 @@ import { redirect } from '@sveltejs/kit';
 import type { Handle, ServerInit } from '@sveltejs/kit/hooks';
 import { sql } from 'drizzle-orm';
 
+const JOURNAL_MODE: 'WAL' | 'DELETE' = 'WAL';
+
 /**
  * Set SQLite journal mode to WAL (persistent per database file), then run pending
  * DB migrations once at startup in production. In dev, migrate manually with drizzle-kit.
@@ -22,9 +24,12 @@ import { sql } from 'drizzle-orm';
  *   The server will not serve requests on a half-configured DB.
  */
 export const init: ServerInit = async () => {
-	const [row] = await db.all<{ journal_mode: string }>(sql`PRAGMA journal_mode = WAL`);
-	if (row?.journal_mode !== 'wal') {
-		throw new Error(`Failed to set journal_mode to WAL, got: ${row?.journal_mode}`);
+	const [row] = await db.all<{ journal_mode: string }>(
+		sql.raw(`PRAGMA journal_mode = ${JOURNAL_MODE}`)
+	);
+	logger.info(`PRAGMA journal_mode: ${row?.journal_mode}`);
+	if (row?.journal_mode.toLowerCase() !== JOURNAL_MODE.toLowerCase()) {
+		throw new Error(`Failed to set journal_mode to ${JOURNAL_MODE}, got: ${row?.journal_mode}`);
 	}
 
 	if (dev) return;
