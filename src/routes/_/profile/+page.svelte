@@ -14,16 +14,40 @@
 	import { dispatch } from '#lib/client/utils/timing.js';
 	import { queryKeys } from '#lib/client/services/providentia/query/queryKeys.js';
 	import { createDeleteNotePresetMutation } from '#lib/client/services/providentia/mutations/delete-note-preset-mutation.js';
+	import { createForceRescanStatMutation } from '#lib/client/services/providentia/mutations/force-rescan-stat-mutatiion.js';
 
 	const notePresetsQuery = createNotePresetsQuery();
 	const notePresets = $derived(notePresetsQuery.data ?? []);
 	const queryClient = useQueryClient();
+	const forceRescanStatsMutation = createForceRescanStatMutation();
 	const deleteNotePresetMutation = createDeleteNotePresetMutation();
 
 	let isAddNotePresetDialogOpen = $state(false);
 	let isUpdateNotePresetDialogOpen = $state(false);
 	let notePresetIdToUpdate = $state('');
 	let currentNotePresetToPopulate = $state('');
+
+	async function handleRescanStats() {
+		let confirmed = confirm(
+			'Are you sure you want to rescan stats? This action may take a while.'
+		);
+		if (!confirmed) return;
+
+		try {
+			await forceRescanStatsMutation.mutateAsync();
+			alert('Stats rescanned successfully!');
+		} catch (error) {
+			console.error('Error rescanning stats:', error);
+			alert('Failed to rescan stats. Please try again later.');
+		} finally {
+			dispatch(() => {
+				dispatch(() => {
+					queryClient.invalidateQueries({ queryKey: queryKeys.forecasts() });
+					queryClient.invalidateQueries({ queryKey: queryKeys.gemsOverview() });
+				});
+			});
+		}
+	}
 
 	async function handleAddNotePreset() {
 		isAddNotePresetDialogOpen = true;
@@ -74,6 +98,17 @@
 		</div>
 	</SectionCard>
 
+	<SectionCard title="Rescan Stats">
+		<button
+			class="btn btn-block btn-primary"
+			onclick={handleRescanStats}
+			disabled={forceRescanStatsMutation.isPending}
+		>
+			<i class="fa-solid fa-repeat"></i>
+			Force Rescan Stats
+		</button>
+	</SectionCard>
+
 	<SectionCard title="Note Presets">
 		{#if notePresetsQuery.isError}
 			<div class="mt-3 alert alert-outline alert-error">Opps! something went wrong!</div>
@@ -109,7 +144,11 @@
 						</section>
 					</div>
 				{/each}
-				<button class="btn btn-primary" onclick={handleAddNotePreset}>
+				<button
+					class="btn btn-primary"
+					onclick={handleAddNotePreset}
+					disabled={notePresetsQuery.isFetching}
+				>
 					<i class="fa-solid fa-plus"></i>
 					Add
 				</button>
