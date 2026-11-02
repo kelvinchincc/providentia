@@ -1,18 +1,18 @@
-import { redirect } from '@sveltejs/kit';
-import type { Handle, ServerInit } from '@sveltejs/kit/hooks';
-import { sql } from 'drizzle-orm';
-
 /*
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
+
+import { db } from '#lib/server/db/index.js';
+import { runMigrations } from '#lib/server/db/migrate.js';
+import { needInitializationCheck } from '#lib/server/utils/healthcheck.js';
+import { logger } from '#lib/server/utils/logger.js';
 import { dev } from '$app/env';
 import { APP_URL } from '$app/env/private';
-import { logger } from '#lib/server/utils/logger.js';
-import { needInitializationCheck } from '#lib/server/utils/healthcheck.js';
-import { runMigrations } from '#lib/server/db/migrate.js';
-import { db } from '#lib/server/db/index.js';
+import { redirect } from '@sveltejs/kit';
+import type { Handle, ServerInit } from '@sveltejs/kit/hooks';
+import { sql } from 'drizzle-orm';
 
 /**
  * Set SQLite journal mode to WAL (persistent per database file), then run pending
