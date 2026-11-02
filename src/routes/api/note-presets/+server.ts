@@ -16,6 +16,16 @@ import { verifyAuth } from '#lib/server/utils/auth.js';
 import dayjs from 'dayjs';
 import { eq, and } from 'drizzle-orm';
 
+/**
+ * Lists the authenticated user's note presets.
+ *
+ * Each preset's `content` is returned as `tag`.
+ *
+ * @param event - The request event provided by `createApiRoute`.
+ * @param event.cookies - Cookies used to verify the access token.
+ * @returns A 200 response with the user's note presets.
+ * @throws {UnauthorizedException} 401 if the user is not authenticated.
+ */
 export const GET = createApiRoute(async ({ cookies }) => {
 	const user = await verifyAuth(cookies);
 
@@ -35,6 +45,17 @@ export const GET = createApiRoute(async ({ cookies }) => {
 	);
 });
 
+/**
+ * Creates a note preset for the authenticated user.
+ *
+ * @param event - The request event provided by `createApiRoute`.
+ * @param event.cookies - Cookies used to verify the access token.
+ * @param event.request - Incoming request whose JSON body holds `content` and an optional
+ * `name`, which defaults to an empty string.
+ * @returns A 204 No Content response on success.
+ * @throws {UnauthorizedException} 401 if the user is not authenticated.
+ * @throws {BadRequestException} 400 if the body fails schema validation.
+ */
 export const POST = createApiRoute(async ({ cookies, request }) => {
 	const authUser = await verifyAuth(cookies);
 	const body = createNotePresetRequest.safeParse(await request.json());
@@ -50,6 +71,19 @@ export const POST = createApiRoute(async ({ cookies, request }) => {
 	return noContentResponse();
 });
 
+/**
+ * Updates the content of one of the authenticated user's note presets.
+ *
+ * Returns 204 even when no preset owned by the user matches `id`, since the update does not
+ * check for a matching row.
+ *
+ * @param event - The request event provided by `createApiRoute`.
+ * @param event.cookies - Cookies used to verify the access token.
+ * @param event.request - Incoming request whose JSON body holds `id` and `content`.
+ * @returns A 204 No Content response on success.
+ * @throws {UnauthorizedException} 401 if the user is not authenticated.
+ * @throws {BadRequestException} 400 if the body fails schema validation.
+ */
 export const PUT = createApiRoute(async ({ cookies, request }) => {
 	const user = await verifyAuth(cookies);
 	const body = updateNotePresetPayloadSchema.safeParse(await request.json());
@@ -67,6 +101,18 @@ export const PUT = createApiRoute(async ({ cookies, request }) => {
 	return noContentResponse();
 });
 
+/**
+ * Deletes one of the authenticated user's note presets.
+ *
+ * Returns 204 even when no preset owned by the user matches `id`.
+ *
+ * @param event - The request event provided by `createApiRoute`.
+ * @param event.cookies - Cookies used to verify the access token.
+ * @param event.url - Request URL whose `id` query parameter names the preset to delete.
+ * @returns A 204 No Content response on success.
+ * @throws {UnauthorizedException} 401 if the user is not authenticated.
+ * @throws {BadRequestException} 400 if the `id` query parameter is missing.
+ */
 export const DELETE = createApiRoute(async ({ cookies, url }) => {
 	const authUser = await verifyAuth(cookies);
 	const id = url.searchParams.get('id');

@@ -25,6 +25,21 @@ import { logger } from '#lib/server/utils/logger.js';
 import dayjs from 'dayjs';
 import { and, desc, eq, lte } from 'drizzle-orm';
 
+/**
+ * Lists the authenticated user's gem history using keyset pagination.
+ *
+ * Items are ordered newest first by `id`. The `from` cursor is inclusive. One extra row is
+ * fetched to set `haveMore`. `next` is the cursor for the following page, or `NULL_UUID` when
+ * there are no more pages.
+ *
+ * @param event - The request event provided by `createApiRoute`.
+ * @param event.cookies - Cookies used to verify the access token.
+ * @param event.url - Query parameters: `from` (optional cursor gem id) and `limit` (page size,
+ * default 10).
+ * @returns A 200 response with `list`, `haveMore` and `next`.
+ * @throws {UnauthorizedException} 401 if the user is not authenticated.
+ * @throws {InternalServerErrorException} 500 if the rows do not match the expected schema.
+ */
 export const GET = createApiRoute(async ({ url, cookies }) => {
 	const user = await verifyAuth(cookies);
 
@@ -57,6 +72,18 @@ export const GET = createApiRoute(async ({ url, cookies }) => {
 	}
 });
 
+/**
+ * Logs a new gem and adds its amount to the user's stats.
+ *
+ * The insert and stat update run in one transaction.
+ *
+ * @param event - The request event provided by `createApiRoute`.
+ * @param event.cookies - Cookies used to verify the access token.
+ * @param event.request - Incoming request whose JSON body matches `LogGemApiRequest`.
+ * @returns A 204 No Content response on success.
+ * @throws {UnauthorizedException} 401 if the user is not authenticated.
+ * @throws {BadRequestException} 400 if the JSON cannot be parsed or the body fails validation.
+ */
 export const POST = createApiRoute(async ({ cookies, request }) => {
 	const user = await verifyAuth(cookies);
 
@@ -92,6 +119,20 @@ export const POST = createApiRoute(async ({ cookies, request }) => {
 	return noContentResponse();
 });
 
+/**
+ * Updates one of the authenticated user's gems and adjusts the stats to match.
+ *
+ * Fields omitted from the body keep their current value. A type change moves the amount between
+ * the free and paid totals. The update runs in one transaction.
+ *
+ * @param event - The request event provided by `createApiRoute`.
+ * @param event.cookies - Cookies used to verify the access token.
+ * @param event.request - Incoming request whose JSON body matches `UpdateGemSchema`.
+ * @returns A 204 No Content response on success.
+ * @throws {UnauthorizedException} 401 if the user is not authenticated.
+ * @throws {BadRequestException} 400 if the body fails schema validation.
+ * @throws {NotFoundException} 404 if no gem owned by the user matches `id`.
+ */
 export const PUT = createApiRoute(async ({ cookies, request }) => {
 	const user = await verifyAuth(cookies);
 
@@ -142,6 +183,20 @@ export const PUT = createApiRoute(async ({ cookies, request }) => {
 	return noContentResponse();
 });
 
+/**
+ * Deletes one of the authenticated user's gems and removes its amount from the stats.
+ *
+ * The delete and stat update run in one transaction, so a failed delete leaves the stats
+ * unchanged.
+ *
+ * @param event - The request event provided by `createApiRoute`.
+ * @param event.cookies - Cookies used to verify the access token.
+ * @param event.url - Request URL whose `id` query parameter names the gem to delete.
+ * @returns A 204 No Content response on success.
+ * @throws {UnauthorizedException} 401 if the user is not authenticated.
+ * @throws {BadRequestException} 400 if the `id` query parameter is missing.
+ * @throws {NotFoundException} 404 if no gem owned by the user matches `id`.
+ */
 export const DELETE = createApiRoute(async ({ cookies, url }) => {
 	const user = await verifyAuth(cookies);
 

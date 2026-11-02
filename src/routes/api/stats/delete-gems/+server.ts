@@ -12,6 +12,19 @@ import { createApiRoute, noContentResponse } from '#lib/server/utils/api.js';
 import { verifyAuth } from '#lib/server/utils/auth.js';
 import { and, eq } from 'drizzle-orm';
 
+/**
+ * Deletes one gem and removes its amount from the user's stats.
+ *
+ * The delete and stat update run in one transaction. Returns 204 even when no gem owned by the
+ * user matches `id`, in which case the stats are left unchanged.
+ *
+ * @param event - The request event provided by `createApiRoute`.
+ * @param event.cookies - Cookies used to verify the access token.
+ * @param event.url - Request URL whose `id` query parameter names the gem to delete.
+ * @returns A 204 No Content response on success.
+ * @throws {UnauthorizedException} 401 if the user is not authenticated.
+ * @throws {BadRequestException} 400 if the `id` query parameter is missing.
+ */
 export const DELETE = createApiRoute(async ({ cookies, url }) => {
 	const user = await verifyAuth(cookies);
 

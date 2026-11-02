@@ -89,3 +89,11 @@ Strong success criteria let you loop independently. Weak criteria ("make it work
 - Use `@link` to create hyperlinks to related functions, methods, or documentation. This is optional.
 - Always analyse what the function could throw and add `@throws` for each of them. If the function does not throw anything, do not add `@throws`.
 - Follow the defined line length limit of the project for JSDoc comments. If the line length limit is not defined, use a maximum of 100 characters per line.
+
+### Error Handling Guideline (API routes)
+
+- API routes are wrapped with `createApiRoute` (`src/lib/server/utils/api.ts`). It returns an `HTTPExceptionBase` subclass as its own status code, and turns any other error into a generic `500` with `{ error: 'Internal server error' }`.
+- Throw the matching class from `src/lib/exception/http/` (e.g. `BadRequestException`, `NotFoundException`, `UnauthorizedException`) for expected failures.
+- For unexpected failures that should be a 500, do not throw or document the internal error class in detail. Use `InternalServerErrorException` (`src/lib/exception/http/internal-server-error-exception.ts`) only when a handler needs a 500 with its own message. Otherwise let the error bubble up.
+- In JSDoc, document 500s with a single line:
+  `@throws {InternalServerErrorException} 500 on unexpected errors. See src/lib/exception/http/internal-server-error-exception.ts`

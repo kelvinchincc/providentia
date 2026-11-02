@@ -28,6 +28,23 @@ import {
 	REFRESH_COOKIE_TTL_MS
 } from '#lib/constants/cookies.js';
 
+/**
+ * Authenticates a user with username and password, then sets the auth and refresh cookies.
+ *
+ * Validates the body with `loginRequestSchema`, verifies the password hash, and signs access and
+ * refresh JWTs seeded from the user's `jwtSeed` and `refreshTokenSeed`. Both are set as
+ * `sameSite: strict` cookies. Tokens are not returned in the response body.
+ *
+ * @param event - The request event provided by `createApiRoute`.
+ * @param event.cookies - Cookies in which the signed auth and refresh JWTs are set.
+ * @param event.request - Incoming request whose JSON body holds `username` and `password`.
+ * @returns A 200 response with the username and token TTLs.
+ * @throws {BadRequestException} 400 if the body fails schema validation.
+ * @throws {NotFoundException} 404 if no user has the given username.
+ * @throws {UnauthorizedException} 401 if the password does not match.
+ * @throws {InternalServerErrorException} 500 on unexpected errors, such as failed password
+ * verification. See src/lib/exception/http/internal-server-error-exception.ts
+ */
 export const POST = createApiRoute(async ({ request, cookies }) => {
 	const body: LoginRequest = await request.json();
 

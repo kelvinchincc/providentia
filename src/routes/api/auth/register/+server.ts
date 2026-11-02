@@ -20,6 +20,23 @@ import {
 	ConflictException
 } from '#lib/exception/http/index.js';
 
+/**
+ * Creates the initial user account. Only allowed before any user exists.
+ *
+ * Checks that the app is not yet initialized, validates the body, confirms the passwords match,
+ * rejects duplicate usernames, then stores the user with a hashed password and fresh JWT and
+ * refresh token seeds.
+ *
+ * @param event - The request event provided by `createApiRoute`.
+ * @param event.request - Incoming request whose JSON body holds `username`, `password` and
+ * `confirmPassword`.
+ * @returns A 201 response with a `created` message.
+ * @throws {ForbiddenException} 403 if the app is already initialized.
+ * @throws {BadRequestException} 400 if the body is malformed or the passwords do not match.
+ * @throws {ConflictException} 409 if the username already exists.
+ * @throws {InternalServerErrorException} 500 on unexpected errors, such as failed password
+ * hashing. See src/lib/exception/http/internal-server-error-exception.ts
+ */
 export const POST = createApiRoute(async ({ request }) => {
 	const body: RegisterUserRequest = await request.json();
 

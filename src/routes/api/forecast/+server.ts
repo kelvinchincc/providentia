@@ -34,6 +34,19 @@ const TARGET_PULL_AMOUNT = WORST_CASE_PULLS * MAX_COPIES;
 const TARGET_PULL_PRICE = PULL_PRICE * TARGET_PULL_AMOUNT;
 const SAFE_PULL_PRICE = TARGET_PULL_PRICE * BUFFER_FACTOR;
 
+/**
+ * Lists the authenticated user's forecasts with projected gem totals.
+ *
+ * Each forecast is projected to its `targetDate` two ways: a linear average using
+ * `DAILY_AVERAGE_GEMS_OBTAINED`, and a monthly average from the stored stat. Each projection
+ * reports `targetHit` as `'safe'`, `'hit'` or `'no'`. Forecasts whose date has passed use the
+ * current total. Results are ordered by `targetDate` ascending.
+ *
+ * @param event - The request event provided by `createApiRoute`.
+ * @param event.cookies - Cookies used to verify the access token.
+ * @returns A 200 response with the forecast items.
+ * @throws {UnauthorizedException} 401 if the user is not authenticated.
+ */
 export const GET = createApiRoute(async ({ cookies }) => {
 	const user = await verifyAuth(cookies);
 
@@ -108,6 +121,18 @@ export const GET = createApiRoute(async ({ cookies }) => {
 	return okResponse(createOkApiResponse(forecastItemsSchema, mapped));
 });
 
+/**
+ * Creates a forecast for the authenticated user.
+ *
+ * @param event - The request event provided by `createApiRoute`.
+ * @param event.cookies - Cookies used to verify the access token.
+ * @param event.request - Incoming request whose JSON body holds `name` and `targetDate`
+ * (Unix timestamp in seconds).
+ * @returns A 201 response with the new forecast `id`.
+ * @throws {UnauthorizedException} 401 if the user is not authenticated.
+ * @throws {BadRequestException} 400 if the body is invalid, `targetDate` is in the past, or the
+ * insert returns no row.
+ */
 export const POST = createApiRoute(async ({ cookies, request }) => {
 	const user = await verifyAuth(cookies);
 	const body = createForecastPayloadSchema.safeParse(await request.json());
@@ -132,6 +157,20 @@ export const POST = createApiRoute(async ({ cookies, request }) => {
 	return okResponse(createOkApiResponse(createForecastResponseSchema, { id: result[0].id }), 201);
 });
 
+/**
+ * Updates the name and target date of one of the authenticated user's forecasts.
+ *
+ * The update runs in a transaction and only touches the forecast owned by the user with the
+ * given `id`.
+ *
+ * @param event - The request event provided by `createApiRoute`.
+ * @param event.cookies - Cookies used to verify the access token.
+ * @param event.request - Incoming request whose JSON body holds `id`, `name` and `targetDate`.
+ * @returns A 204 No Content response on success.
+ * @throws {UnauthorizedException} 401 if the user is not authenticated.
+ * @throws {BadRequestException} 400 if the body is invalid or more than one forecast matches.
+ * @throws {NotFoundException} 404 if no forecast owned by the user matches `id`.
+ */
 export const PUT = createApiRoute(async ({ cookies, request }) => {
 	const user = await verifyAuth(cookies);
 	const body = updateForecastPayloadSchema.safeParse(await request.json());
@@ -164,6 +203,17 @@ export const PUT = createApiRoute(async ({ cookies, request }) => {
 	return noContentResponse();
 });
 
+/**
+ * Deletes one of the authenticated user's forecasts.
+ *
+ * @param event - The request event provided by `createApiRoute`.
+ * @param event.cookies - Cookies used to verify the access token.
+ * @param event.url - Request URL whose `id` query parameter names the forecast to delete.
+ * @returns A 204 No Content response on success.
+ * @throws {UnauthorizedException} 401 if the user is not authenticated.
+ * @throws {BadRequestException} 400 if the `id` query parameter is missing.
+ * @throws {NotFoundException} 404 if no forecast owned by the user matches `id`.
+ */
 export const DELETE = createApiRoute(async ({ cookies, url }) => {
 	const user = await verifyAuth(cookies);
 	const id = url.searchParams.get('id');
