@@ -25,7 +25,7 @@
 	}
 </script>
 
-<nav class="navbar flex justify-between bg-base-100">
+<nav class="navbar sticky top-0 z-10 flex justify-between bg-base-100">
 	<section>
 		<button class="btn btn-ghost text-xl" onclick={handleNavigateToDashboard}>
 			<div class="mr-2">

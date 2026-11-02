@@ -44,7 +44,7 @@
 	});
 </script>
 
-<section class="grid min-h-screen grid-rows-[auto_1fr_auto]">
+<section class="grid min-h-dvh grid-rows-[auto_1fr_auto]">
 	<Header />
 	<div class="p-4">
 		{@render props.children()}

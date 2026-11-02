@@ -34,7 +34,7 @@
  file, You can obtain one at http://mozilla.org/MPL/2.0/.
 -->
 
-<section class="grid min-h-screen place-items-center">
+<section class="grid min-h-dvh place-items-center">
 	<main class="card w-[min(80vw,400px)] rounded-lg bg-base-200 p-5">
 		<h1 class="bold mb-3 text-2xl">Setup</h1>
 		<form
@@ -54,8 +54,7 @@
 							placeholder="Username"
 							value={field.state.value}
 							onblur={field.handleBlur}
-							oninput={(e) =>
-								field.handleChange(e?.currentTarget.value)}
+							oninput={(e) => field.handleChange(e?.currentTarget.value)}
 						/>
 					</label>
 					<div class="text-xs text-error">
@@ -73,8 +72,7 @@
 							placeholder="Password"
 							value={field.state.value}
 							onblur={field.handleBlur}
-							oninput={(e) =>
-								field.handleChange(e?.currentTarget.value)}
+							oninput={(e) => field.handleChange(e?.currentTarget.value)}
 						/>
 					</label>
 					<div class="text-xs text-error">
@@ -92,8 +90,7 @@
 							placeholder="Confirm Password"
 							value={field.state.value}
 							onblur={field.handleBlur}
-							oninput={(e) =>
-								field.handleChange(e?.currentTarget.value)}
+							oninput={(e) => field.handleChange(e?.currentTarget.value)}
 						/>
 					</label>
 					<div class="text-xs text-error">

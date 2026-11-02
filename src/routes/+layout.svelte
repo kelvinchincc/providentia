@@ -16,7 +16,7 @@
 
 <svelte:head><link rel="icon" href={favicon} /></svelte:head>
 
-<div class="m-0 min-h-screen bg-base-300 p-0">
+<div class="m-0 min-h-dvh bg-base-300 p-0">
 	<QueryClientProvider client={queryClient}>
 		{@render children()}
 		<SvelteQueryDevtools />
