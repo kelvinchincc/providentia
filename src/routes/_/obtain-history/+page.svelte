@@ -59,104 +59,184 @@
 	onClose={() => (isEditGemsDialogOpen = false)}
 />
 
-<section class="mx-auto max-w-200">
-	{#if gemsHistoryQuery.isError}
-		<div role="alert" class="alert alert-outline alert-error">
-			<i class="fa-solid fa-triangle-exclamation"></i>
-			<span>{gemsHistoryQuery.error.message}</span>
-		</div>
-	{/if}
-	{#if gemsHistoryQuery.isSuccess}
-		<div class="rounded-lg border border-base-content/5">
-			<table class="table">
-				<thead>
-					<tr>
-						<th class="w-10 max-w-20"></th>
-						<th class="w-15">Amount</th>
-						<th class="w-45 max-[665px]:hidden">Obtained At</th>
-						<th class="w-45 max-[800px]:hidden">Updated At</th>
-						<th class="w-15">Type</th>
-						<th class="min-w-50">Note</th>
-						<th class=""></th>
-					</tr>
-				</thead>
-				<tbody>
-					{#if gemsHistoryQuery.data.pages[0]?.list.length === 0}
-						<tr>
-							<td colspan="6" class="text-center">
-								<i class="fa-solid fa-ban"></i>
-								No data
-							</td>
-						</tr>
-					{/if}
-					{#each gemsHistoryQuery.data.pages as data, bulkIndex (data?.next || NULL_UUID)}
-						{#each data?.list as item, itemIndex (item.id)}
-							<tr>
-								<td>{bulkIndex * LIMIT + itemIndex + 1}</td>
-								<td class={cn('text-right', { 'text-error': item.amount < 0 })}
-									>{item.amount}</td
-								>
-								<td class="max-[665px]:hidden">{formatDateTime(item.obtainedAt)}</td
-								>
-								<td class="max-[800px]:hidden">{formatDateTime(item.updatedAt)}</td>
-								<td>{formatGemType(item.type)}</td>
-								<td>{item.note || '-'}</td>
-								<td>
-									<div class="flex gap-2">
-										<button
-											class="btn btn-square btn-secondary"
-											aria-label="Edit"
-											onclick={() => {
-												gemRecordToEdit = {
-													id: item.id,
-													amount: item.amount,
-													note: item.note,
-													type: item.type
-												};
-												isEditGemsDialogOpen = true;
-											}}
-										>
-											<i class="fa-solid fa-pen-to-square"></i>
-										</button>
-										<button
-											class="btn btn-square btn-error"
-											aria-label="Delete"
-											onclick={() => onDeleteGemRecord(item.id)}
-										>
-											<i class="fa-solid fa-trash"></i>
-										</button>
-									</div>
-								</td>
-							</tr>
-						{/each}
-					{/each}
-				</tbody>
-			</table>
-		</div>
-	{/if}
+{@render smallObtainHistoryList()}
+{@render largeObtainHistoryTable()}
 
-	<footer class="relative mt-2 h-10">
-		{#if gemsHistoryQuery.isSuccess}
-			<button
-				class="btn float-left btn-ghost"
-				disabled={gemsHistoryQuery.isFetchingNextPage || !gemsHistoryQuery.hasNextPage}
-				onclick={() => gemsHistoryQuery.fetchNextPage()}
-			>
-				<i class="fa-solid fa-chevron-down"></i>
-				Load More...
-			</button>
-			<button
-				class="btn float-right btn-primary"
-				onclick={() => (isLogGemsDialogOpen = true)}
-			>
-				<i class="fa-solid fa-pen-to-square"></i>
-				Log {GEM_UNIT}
-			</button>
-		{/if}
-		{#if gemsHistoryQuery.isFetching}
-			<div class="absolute inset-0 grid place-items-center">
-				<div class="loading loading-xl loading-dots"></div>
+{#snippet largeObtainHistoryTable()}
+	<section class="mx-auto max-w-200 max-[560px]:hidden">
+		{#if gemsHistoryQuery.isError}
+			<div role="alert" class="alert alert-outline alert-error">
+				<i class="fa-solid fa-triangle-exclamation"></i>
+				<span>{gemsHistoryQuery.error.message}</span>
 			</div>
 		{/if}
-	</footer>
-</section>
+		{#if gemsHistoryQuery.isSuccess}
+			<div class="rounded-lg border border-base-content/5">
+				<table class="table">
+					<thead>
+						<tr>
+							<th class="w-10 max-w-20"></th>
+							<th class="w-15">Amount</th>
+							<th class="w-45 max-[665px]:hidden">Obtained At</th>
+							<th class="w-45 max-[800px]:hidden">Updated At</th>
+							<th class="w-15">Type</th>
+							<th class="min-w-50">Note</th>
+							<th class=""></th>
+						</tr>
+					</thead>
+					<tbody>
+						{#if gemsHistoryQuery.data.pages[0]?.list.length === 0}
+							<tr>
+								<td colspan="6" class="text-center">
+									<i class="fa-solid fa-ban"></i>
+									No data
+								</td>
+							</tr>
+						{/if}
+						{#each gemsHistoryQuery.data.pages as data, bulkIndex (data?.next || NULL_UUID)}
+							{#each data?.list as item, itemIndex (item.id)}
+								<tr>
+									<td>{bulkIndex * LIMIT + itemIndex + 1}</td>
+									<td class={cn('text-right', { 'text-error': item.amount < 0 })}
+										>{item.amount}</td
+									>
+									<td class="max-[665px]:hidden"
+										>{formatDateTime(item.obtainedAt)}</td
+									>
+									<td class="max-[800px]:hidden"
+										>{formatDateTime(item.updatedAt)}</td
+									>
+									<td>{formatGemType(item.type)}</td>
+									<td>{item.note || '-'}</td>
+									<td>
+										<div class="flex gap-2">
+											<button
+												class="btn btn-square btn-secondary"
+												aria-label="Edit"
+												onclick={() => {
+													gemRecordToEdit = {
+														id: item.id,
+														amount: item.amount,
+														note: item.note,
+														type: item.type
+													};
+													isEditGemsDialogOpen = true;
+												}}
+											>
+												<i class="fa-solid fa-pen-to-square"></i>
+											</button>
+											<button
+												class="btn btn-square btn-error"
+												aria-label="Delete"
+												onclick={() => onDeleteGemRecord(item.id)}
+											>
+												<i class="fa-solid fa-trash"></i>
+											</button>
+										</div>
+									</td>
+								</tr>
+							{/each}
+						{/each}
+					</tbody>
+				</table>
+			</div>
+		{/if}
+
+		<footer class="relative mt-2 h-10">
+			{#if gemsHistoryQuery.isSuccess}
+				<button
+					class="btn float-left btn-ghost"
+					disabled={gemsHistoryQuery.isFetchingNextPage || !gemsHistoryQuery.hasNextPage}
+					onclick={() => gemsHistoryQuery.fetchNextPage()}
+				>
+					<i class="fa-solid fa-chevron-down"></i>
+					Load More...
+				</button>
+				<button
+					class="btn float-right btn-primary"
+					onclick={() => (isLogGemsDialogOpen = true)}
+				>
+					<i class="fa-solid fa-pen-to-square"></i>
+					Log {GEM_UNIT}
+				</button>
+			{/if}
+			{#if gemsHistoryQuery.isFetching}
+				<div class="absolute inset-0 grid place-items-center">
+					<div class="loading loading-xl loading-dots"></div>
+				</div>
+			{/if}
+		</footer>
+	</section>
+{/snippet}
+
+{#snippet smallObtainHistoryList()}
+	<section class="flex flex-col gap-3 min-[560px]:hidden">
+		{#if gemsHistoryQuery.isError}
+			<div role="alert" class="alert alert-outline alert-error">
+				<i class="fa-solid fa-triangle-exclamation"></i>
+				<span>{gemsHistoryQuery.error.message || 'Something went wrong!'}</span>
+			</div>
+		{/if}
+		{#if gemsHistoryQuery.data?.pages.length}
+			<section class="grid grid-cols-[repeat(auto-fill,minmax(203px,1fr))] gap-2">
+				{#each gemsHistoryQuery.data.pages as page, pageIndex (page?.next || NULL_UUID)}
+					{#each page?.list as item, itemIndex (item.id)}
+						<div class="card bg-base-200 p-4 shadow-lg">
+							<h3 class="text-xs text-base-content/60">
+								#{pageIndex * LIMIT + itemIndex + 1}
+							</h3>
+							<div>{formatGemType(item.type)}</div>
+							<div class={cn('text-xl', { 'text-error': item.amount < 0 })}>
+								<i class="fa-solid fa-gem text-lg"></i>
+								{item.amount}
+							</div>
+							<div class="text-sm text-base-content/60">
+								<i class="fa-solid fa-calendar-plus"></i>
+								{formatDateTime(item.obtainedAt)}
+							</div>
+							<div class="text-sm text-base-content/60">
+								<i class="fa-solid fa-calendar-check"></i>
+								{formatDateTime(item.updatedAt)}
+							</div>
+						</div>
+					{/each}
+				{/each}
+			</section>
+		{:else}
+			<div class="grid place-items-center">
+				<div>
+					<i class="fa-solid fa-ban"></i>
+					No data
+				</div>
+			</div>
+		{/if}
+		{#if gemsHistoryQuery.isFetching}
+			<div class="grid place-items-center">
+				<div class="loading loading-lg loading-dots"></div>
+			</div>
+		{:else}
+			<footer
+				class={cn(
+					'mx-auto w-[min(300px,100%)]',
+					'grid grid-cols-[repeat(auto-fill,minmax(calc(150px-0.5rem),1fr))] gap-2'
+				)}
+			>
+				<button
+					class="btn btn-block btn-secondary"
+					disabled={gemsHistoryQuery.isFetchingNextPage || !gemsHistoryQuery.hasNextPage}
+					onclick={() => gemsHistoryQuery.fetchNextPage()}
+				>
+					<i class="fa-solid fa-chevron-down"></i>
+					Load More...
+				</button>
+				<button
+					class="btn btn-block btn-primary"
+					onclick={() => (isLogGemsDialogOpen = true)}
+				>
+					<i class="fa-solid fa-pen-to-square"></i>
+					Log {GEM_UNIT}
+				</button>
+			</footer>
+		{/if}
+	</section>
+{/snippet}
