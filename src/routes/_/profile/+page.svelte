@@ -15,12 +15,14 @@
 	import { queryKeys } from '#lib/client/services/providentia/query/queryKeys.js';
 	import { createDeleteNotePresetMutation } from '#lib/client/services/providentia/mutations/delete-note-preset-mutation.js';
 	import { createForceRescanStatMutation } from '#lib/client/services/providentia/mutations/force-rescan-stat-mutatiion.js';
-	import { useAuthStore } from '#lib/client/store/authStore.js';
+	import { authStoreActions, useAuthStore } from '#lib/client/store/authStore.js';
+	import { createLogoutAllMutation } from '#lib/client/services/providentia/mutations/logout-all-mutation.js';
 
 	const uid = $props.id();
 	const notePresetsQuery = createNotePresetsQuery();
 	const notePresets = $derived(notePresetsQuery.data ?? []);
 	const queryClient = useQueryClient();
+	const logoutAllDevicesMutation = createLogoutAllMutation();
 	const forceRescanStatsMutation = createForceRescanStatMutation();
 	const deleteNotePresetMutation = createDeleteNotePresetMutation();
 	const authStore = useAuthStore();
@@ -53,6 +55,22 @@
 		alert(
 			'Profile update functionality is currently under development. Please check back later.'
 		);
+	}
+
+	async function handleLogoutAllDevices() {
+		let confirmed = confirm(
+			'Are you sure you want to logout from all devices? This action cannot be undone.'
+		);
+		if (!confirmed) return;
+
+		try {
+			await logoutAllDevicesMutation.mutateAsync();
+			alert('Logged out from all devices, please log in again.');
+			authStoreActions.logout();
+		} catch (error) {
+			console.error('Error logging out from all devices:', error);
+			alert('Failed to logout from all devices. Please try again later.');
+		}
 	}
 
 	async function handleRescanStats() {
@@ -164,13 +182,7 @@
 	<SectionCard title="Security">
 		<section>
 			<h3 class="mb-2 text-lg font-bold">Logout All Devices</h3>
-			<button
-				class="btn btn-block btn-error"
-				onclick={() =>
-					alert(
-						'Logout everywhere functionality is currently under development. Please check back later.'
-					)}
-			>
+			<button class="btn btn-block btn-error" onclick={handleLogoutAllDevices}>
 				<i class="fa-solid fa-right-from-bracket"></i>
 				Logout everywhere
 			</button>

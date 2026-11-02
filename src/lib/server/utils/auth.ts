@@ -13,10 +13,10 @@ import { jwtSchema, JWTType, type JWTPayload } from '#lib/schema/base/jwt.js';
 import { ZodError } from 'zod';
 import * as jose from 'jose';
 import type { Cookies } from '@sveltejs/kit';
-import { UnauthorizedException } from '#lib/exception/http/index.js';
+import { NotFoundException, UnauthorizedException } from '#lib/exception/http/index.js';
 import { db } from '../db';
 import { eq } from 'drizzle-orm';
-import { user as userRepo } from '../db/schemas';
+import { user, user as userRepo } from '../db/schemas';
 import { AUTH_COOKIE_TTL, COOKIE_OPTIONS, REFRESH_COOKIE_TTL } from '#lib/constants/cookies.js';
 
 export function getJWTSecret() {
@@ -137,4 +137,29 @@ export async function verifyAuth(cookies: Cookies, jwtType: JWTPayload['t'] = JW
 	if (jwtPayload == null) throw new UnauthorizedException();
 
 	return jwtPayload;
+}
+
+/**
+ * Invalidates the JWT and refresh tokens for a given user by generating new seeds.
+ *
+ * @param userObj User where their sessions needs to be invalidated.
+ * @throws {NotFoundException} If the user is not found in the database.
+ */
+export async function invalidateTokens(userObj: typeof user.$inferSelect) {
+	const jwtSeed = generateSeed();
+	const refreshTokenSeed = generateSeed();
+
+	await db.transaction(async (tx) => {
+		const result = await tx
+			.update(user)
+			.set({
+				jwtSeed,
+				refreshTokenSeed
+			})
+			.where(eq(user.id, userObj.id));
+
+		if (result.rowsAffected <= 0) {
+			throw new NotFoundException('User not found');
+		}
+	});
 }
