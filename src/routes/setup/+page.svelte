@@ -35,7 +35,7 @@
 -->
 
 <section class="grid min-h-dvh place-items-center">
-	<main class="card w-[min(80vw,400px)] rounded-lg bg-base-200 p-5">
+	<main class="card w-[min(90vw,400px)] rounded-lg bg-base-200 p-5">
 		<h1 class="bold mb-3 text-2xl">Setup</h1>
 		<form
 			onsubmit={(ev) => {
