@@ -32,7 +32,9 @@ export const init: ServerInit = async () => {
 		sql.raw(`PRAGMA journal_mode = ${JOURNAL_MODE}`)
 	);
 	logger.info(`PRAGMA journal_mode: ${row?.journal_mode}`);
-	if (row?.journal_mode.toLowerCase() !== JOURNAL_MODE.toLowerCase()) {
+
+	const modeRegex = new RegExp(`^${JOURNAL_MODE}$`, 'gmi');
+	if (!modeRegex.test(row?.journal_mode)) {
 		throw new Error(`Failed to set journal_mode to ${JOURNAL_MODE}, got: ${row?.journal_mode}`);
 	}
 };
