@@ -1,9 +1,9 @@
-PUT {{BASE}}/api/stats/edit-gems
+PUT {{BASE}}/api/stats/gems
 
 [Cookies]
 auth: {{AUTH}}
 
 {
-  "id": "01a16f4a-805b-7214-888a-dc1c9ff1be11",
+  "id": "01a19a70-7e81-759d-ab22-98c62d449065",
   "amount": 1000
 }

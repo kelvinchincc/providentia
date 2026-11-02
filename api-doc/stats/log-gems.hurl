@@ -1,4 +1,4 @@
-POST {{BASE}}/api/stats/log-gems
+POST {{BASE}}/api/stats/gems
 
 [Cookies]
 auth: {{AUTH}}

@@ -8,11 +8,11 @@ export const authRefresh = '/api/auth/refresh';
 export const authLogout = '/api/auth/logout';
 export const authRegister = '/api/auth/register';
 
-export const logGems = '/api/stats/log-gems';
-export const gemHistory = '/api/stats/list-gems';
+export const logGems = '/api/stats/gems';
+export const gemHistory = '/api/stats/gems';
 export const gemsOverview = '/api/stats/overview';
-export const deleteGems = '/api/stats/delete-gems';
-export const updateGems = '/api/stats/edit-gems';
+export const deleteGems = '/api/stats/gems';
+export const updateGems = '/api/stats/gems';
 export const forceRescanStats = '/api/stats/gems/force-rescan';
 
 export const listNotePreset = '/api/note-presets';
