@@ -74,3 +74,18 @@ Strong success criteria let you loop independently. Weak criteria ("make it work
 - package manager: pnpm
 - if told to commit, commit only the files you changed, unless being told to include unrelated files. If you see unrelated files, ask if they should be included. All changes should be in one commit unless told otherwise.
 - when writing commit messages, always look at the changes made to the files, not just by what we have discussed. If additioal files are included, collect all the changes and commit message should reflect all the changes made. If you see unrelated files, ask if they should be included. All changes should be in one commit unless told otherwise.
+- About JSDoc: Refer to the JSDoc section for the JSDoc format guidline for consistency.
+
+### JSDoc Format Guideline
+
+- Always use `/**` and `*/` for JSDoc comments.
+- Use `@param` for each parameter, specifying the type and description.
+- Use `@returns` to describe the return value, specifying the type and description.
+- No types needed, as we are using TypeScript, except the following tags:
+    - `@throws` for exceptions thrown by the function.
+- Use `@deprecated` to indicate deprecated functions or methods.
+- Use `@example` to provide usage examples for functions or methods. This is optional.
+- Use `@see` to reference related functions, methods, or documentation. This is optional.
+- Use `@link` to create hyperlinks to related functions, methods, or documentation. This is optional.
+- Always analyse what the function could throw and add `@throws` for each of them. If the function does not throw anything, do not add `@throws`.
+- Follow the defined line length limit of the project for JSDoc comments. If the line length limit is not defined, use a maximum of 100 characters per line.
