@@ -24,6 +24,10 @@ const JOURNAL_MODE: 'WAL' | 'DELETE' = 'WAL';
  *   The server will not serve requests on a half-configured DB.
  */
 export const init: ServerInit = async () => {
+	if (dev) {
+		await runMigrations();
+	}
+
 	const [row] = await db.all<{ journal_mode: string }>(
 		sql.raw(`PRAGMA journal_mode = ${JOURNAL_MODE}`)
 	);
@@ -31,9 +35,6 @@ export const init: ServerInit = async () => {
 	if (row?.journal_mode.toLowerCase() !== JOURNAL_MODE.toLowerCase()) {
 		throw new Error(`Failed to set journal_mode to ${JOURNAL_MODE}, got: ${row?.journal_mode}`);
 	}
-
-	if (dev) return;
-	await runMigrations();
 };
 
 export const handle: Handle = async ({ event, resolve }) => {
