@@ -181,23 +181,46 @@
 			<section class="grid grid-cols-[repeat(auto-fill,minmax(203px,1fr))] gap-2">
 				{#each gemsHistoryQuery.data.pages as page, pageIndex (page?.next || NULL_UUID)}
 					{#each page?.list as item, itemIndex (item.id)}
-						<div class="card bg-base-200 p-4 shadow-lg">
-							<h3 class="text-xs text-base-content/60">
-								#{pageIndex * LIMIT + itemIndex + 1}
-							</h3>
-							<div>{formatGemType(item.type)}</div>
-							<div class={cn('text-xl', { 'text-error': item.amount < 0 })}>
-								<i class="fa-solid fa-gem text-lg"></i>
-								{item.amount}
-							</div>
-							<div class="text-sm text-base-content/60">
-								<i class="fa-solid fa-calendar-plus"></i>
-								{formatDateTime(item.obtainedAt)}
-							</div>
-							<div class="text-sm text-base-content/60">
-								<i class="fa-solid fa-calendar-check"></i>
-								{formatDateTime(item.updatedAt)}
-							</div>
+						<div class="relative flex flex-col">
+							<button
+								class={cn(
+									'card cursor-pointer p-4 text-left shadow-lg',
+									'bg-base-200 hover:bg-base-100 active:bg-base-300'
+								)}
+								onclick={() => {
+									gemRecordToEdit = {
+										id: item.id,
+										amount: item.amount,
+										note: item.note,
+										type: item.type
+									};
+									isEditGemsDialogOpen = true;
+								}}
+							>
+								<h3 class="text-xs text-base-content/60">
+									#{pageIndex * LIMIT + itemIndex + 1}
+								</h3>
+								<div>{formatGemType(item.type)}</div>
+								<div class={cn('text-xl', { 'text-error': item.amount < 0 })}>
+									<i class="fa-solid fa-gem text-lg"></i>
+									{item.amount}
+								</div>
+								<div class="text-sm text-base-content/60">
+									<i class="fa-solid fa-calendar-plus"></i>
+									{formatDateTime(item.obtainedAt)}
+								</div>
+								<div class="text-sm text-base-content/60">
+									<i class="fa-solid fa-calendar-check"></i>
+									{formatDateTime(item.updatedAt)}
+								</div>
+							</button>
+							<button
+								class="btn absolute top-4 right-4 btn-square btn-error"
+								aria-label="Delete"
+								onclick={() => onDeleteGemRecord(item.id)}
+							>
+								<i class="fa-solid fa-trash"></i>
+							</button>
 						</div>
 					{/each}
 				{/each}

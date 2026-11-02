@@ -11,6 +11,7 @@ import {
 } from '#lib/schema/api/log-gems.js';
 import { createMutation } from '@tanstack/svelte-query';
 import { client } from '../apiClient';
+import { logGems } from '../apiRoutes';
 
 export const createLogGemsMutation = () => {
 	return createMutation(() => ({
@@ -20,7 +21,7 @@ export const createLogGemsMutation = () => {
 				amount: Number(amount)
 			};
 			logGemApiSchema.parse(payload);
-			const response = await client.post('/api/stats/log-gems', payload);
+			const response = await client.post(logGems, payload);
 			return response.data;
 		}
 	}));
