@@ -1,5 +1,6 @@
 import { redirect } from '@sveltejs/kit';
 import type { Handle, ServerInit } from '@sveltejs/kit/hooks';
+import { sql } from 'drizzle-orm';
 
 /*
  * This Source Code Form is subject to the terms of the Mozilla Public
@@ -11,13 +12,21 @@ import { APP_URL } from '$app/env/private';
 import { logger } from '#lib/server/utils/logger.js';
 import { needInitializationCheck } from '#lib/server/utils/healthcheck.js';
 import { runMigrations } from '#lib/server/db/migrate.js';
+import { db } from '#lib/server/db/index.js';
 
 /**
- * Run pending DB migrations once at startup in production. In dev, migrate manually with drizzle-kit.
+ * Set SQLite journal mode to WAL (persistent per database file), then run pending
+ * DB migrations once at startup in production. In dev, migrate manually with drizzle-kit.
  *
- * @throws {Error} If migrations fail. Server will not serve requests on a half-migrated DB.
+ * @throws {Error} If journal mode cannot be set to WAL or migrations fail.
+ *   The server will not serve requests on a half-configured DB.
  */
 export const init: ServerInit = async () => {
+	const [row] = await db.all<{ journal_mode: string }>(sql`PRAGMA journal_mode = WAL`);
+	if (row?.journal_mode !== 'wal') {
+		throw new Error(`Failed to set journal_mode to WAL, got: ${row?.journal_mode}`);
+	}
+
 	if (dev) return;
 	await runMigrations();
 };
