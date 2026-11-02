@@ -52,7 +52,7 @@
 </script>
 
 <main class="grid min-h-dvh place-items-center p-3">
-	<section class="card w-100 gap-2 bg-base-200 p-4 shadow-2xl">
+	<section class="card w-[min(400px,90dvw)] gap-2 bg-base-200 p-4 shadow-2xl">
 		<h1 class="mb-2 text-2xl">Login</h1>
 
 		<form
