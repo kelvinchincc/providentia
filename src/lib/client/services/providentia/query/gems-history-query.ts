@@ -15,7 +15,6 @@ import {
 
 export const createGemsHistoryQuery = ({ limit }: { limit: number }) => {
 	const queryFn = async ({ pageParam }: { pageParam: string }) => {
-		console.log({ pageParam });
 		const response = await client.get<GemHistoryApiResponse>(gemHistory, {
 			params: {
 				from: pageParam === '' ? undefined : pageParam,

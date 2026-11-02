@@ -24,7 +24,7 @@ const JOURNAL_MODE: 'WAL' | 'DELETE' = 'WAL';
  *   The server will not serve requests on a half-configured DB.
  */
 export const init: ServerInit = async () => {
-	if (dev) {
+	if (!dev) {
 		await runMigrations();
 	}
 
