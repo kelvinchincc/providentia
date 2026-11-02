@@ -66,6 +66,11 @@
 			return;
 		}
 
+		const confirmed = confirm(
+			'Are you sure you want to continue? This will log you out from all devices and you will need to log in again.'
+		);
+		if (!confirmed) return;
+
 		try {
 			await updateProfileMutation.mutateAsync(payload);
 			alert('Profile updated successfully, please log in again.');
