@@ -1,14 +1,26 @@
 import { redirect } from '@sveltejs/kit';
-import type { Handle } from '@sveltejs/kit/hooks';
+import type { Handle, ServerInit } from '@sveltejs/kit/hooks';
 
 /*
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
+import { dev } from '$app/env';
 import { APP_URL } from '$app/env/private';
 import { logger } from '#lib/server/utils/logger.js';
 import { needInitializationCheck } from '#lib/server/utils/healthcheck.js';
+import { runMigrations } from '#lib/server/db/migrate.js';
+
+/**
+ * Run pending DB migrations once at startup in production. In dev, migrate manually with drizzle-kit.
+ *
+ * @throws {Error} If migrations fail. Server will not serve requests on a half-migrated DB.
+ */
+export const init: ServerInit = async () => {
+	if (dev) return;
+	await runMigrations();
+};
 
 export const handle: Handle = async ({ event, resolve }) => {
 	if (event.url.pathname === '/setup') return resolve(event);

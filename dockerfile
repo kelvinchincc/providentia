@@ -11,6 +11,7 @@ WORKDIR /app
 COPY --from=builder /app/package.json ./
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/build ./build
+COPY --from=builder /app/drizzle ./drizzle
 # Create the data directory to avoid errors when the application tries to write to it
 RUN mkdir -p /app/data
 EXPOSE 3000
