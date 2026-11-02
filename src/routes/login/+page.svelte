@@ -11,9 +11,12 @@
 	import { resolve } from '$app/paths';
 	import { authStoreActions, useAuthStore } from '#lib/client/store/authStore.js';
 	import { dispatch } from '#lib/client/utils/timing.js';
+	import { cn } from '#lib/client/utils/cn.js';
 
 	const authStore = useAuthStore();
 	const loginMutation = createLoginMutation();
+
+	let hasError = $state(false);
 
 	const form = createForm(() => ({
 		defaultValues: initialValues(),
@@ -21,6 +24,7 @@
 			onSubmit: loginFormSchema
 		},
 		onSubmit: async ({ value }) => {
+			hasError = false;
 			try {
 				const result = await loginMutation.mutateAsync(value);
 				if (!result.success) {
@@ -34,7 +38,7 @@
 				);
 				dispatch(() => goto(resolve('_')));
 			} catch (error) {
-				alert('Login failed, please try again.');
+				hasError = true;
 				console.error('Login error:', error);
 			}
 		}
@@ -60,7 +64,11 @@
 		>
 			<form.Field name="username">
 				{#snippet children(field)}
-					<label class="input w-full">
+					<label
+						class={cn('input w-full', {
+							'border-error': hasError || field.state.meta.errors.length > 0
+						})}
+					>
 						<span><i class="fas fa-user"></i></span>
 						<input
 							type="text"
@@ -79,7 +87,11 @@
 			</form.Field>
 			<form.Field name="password">
 				{#snippet children(field)}
-					<label class="input w-full">
+					<label
+						class={cn('input w-full', {
+							'border-error': hasError || field.state.meta.errors.length > 0
+						})}
+					>
 						<span><i class="fas fa-lock"></i></span>
 						<input
 							type="password"
@@ -95,6 +107,11 @@
 					</div>
 				{/snippet}
 			</form.Field>
+			{#if hasError}
+				<section class="-mt-3 ml-2 flex flex-col gap-2">
+					<p class="text-xs text-error">Login failed, please try again.</p>
+				</section>
+			{/if}
 
 			<section class="mt-1 flex flex-col gap-2">
 				<button class="btn btn-primary" type="submit">Login</button>
