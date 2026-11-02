@@ -8,6 +8,16 @@ import { UnauthorizedException } from '#lib/exception/http/unauthorized-exceptio
 import { createApiRoute, noContentResponse } from '#lib/server/utils/api.js';
 import { invalidateTokens, verifyAuth } from '#lib/server/utils/auth.js';
 
+/**
+ * Logs the authenticated user out of all sessions.
+ *
+ * Verifies the `auth` cookie, invalidates every token issued to the user,
+ * then clears the `auth` and `refresh` cookies on the client.
+ *
+ * @param cookies - Request cookies used to verify the user and clear auth cookies.
+ * @returns A 204 No Content response.
+ * @throws {UnauthorizedException} If the user is not authenticated.
+ */
 export const POST = createApiRoute(async ({ cookies }) => {
 	const user = await verifyAuth(cookies);
 	if (!user) throw new UnauthorizedException('User not authenticated');
