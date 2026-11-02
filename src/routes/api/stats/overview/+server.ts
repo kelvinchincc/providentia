@@ -5,7 +5,6 @@
  */
 
 import { StatKey } from '#lib/constants/stat-key.js';
-import { UnauthorizedException } from '#lib/exception/http/unauthorized-exception.js';
 import { overviewSchema, type Overview } from '#lib/schema/api/overview.js';
 import { db } from '#lib/server/db/index.js';
 import { stat } from '#lib/server/db/schemas/stat.schema.js';
@@ -18,10 +17,6 @@ import { DAILY_AVERAGE_GEMS_OBTAINED } from '#lib/constants/static.js';
 
 export const GET = createApiRoute(async ({ cookies }) => {
 	const user = await verifyAuth(cookies);
-
-	if (!user) {
-		throw new UnauthorizedException();
-	}
 
 	return okResponse(createOkApiResponse(overviewSchema, await getOverview(user.id)));
 });

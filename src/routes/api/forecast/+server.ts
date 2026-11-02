@@ -6,7 +6,6 @@
 
 import { BadRequestException } from '#lib/exception/http/bad-request-exception.js';
 import { NotFoundException } from '#lib/exception/http/not-found-exception.js';
-import { UnauthorizedException } from '#lib/exception/http/unauthorized-exception.js';
 import { createOkApiResponse } from '#lib/schema/api/base.js';
 import {
 	createForecastPayloadSchema,
@@ -37,7 +36,6 @@ const SAFE_PULL_PRICE = TARGET_PULL_PRICE * BUFFER_FACTOR;
 
 export const GET = createApiRoute(async ({ cookies }) => {
 	const user = await verifyAuth(cookies);
-	if (!user) throw new UnauthorizedException();
 
 	const monthlyAverage = await (async () => {
 		const result = await db
@@ -114,7 +112,6 @@ export const POST = createApiRoute(async ({ cookies, request }) => {
 	const user = await verifyAuth(cookies);
 	const body = createForecastPayloadSchema.safeParse(await request.json());
 
-	if (!user) throw new UnauthorizedException();
 	if (!body.success) throw new BadRequestException('Invalid request body');
 	const today = dayjs();
 	const target = dayjs.unix(body.data.targetDate);
@@ -139,7 +136,6 @@ export const PUT = createApiRoute(async ({ cookies, request }) => {
 	const user = await verifyAuth(cookies);
 	const body = updateForecastPayloadSchema.safeParse(await request.json());
 
-	if (!user) throw new UnauthorizedException();
 	if (!body.success) {
 		logger.error(`Invalid request body: ${JSON.stringify({ cause: body.error })}`);
 		throw new BadRequestException('Invalid request body');
@@ -172,7 +168,6 @@ export const DELETE = createApiRoute(async ({ cookies, url }) => {
 	const user = await verifyAuth(cookies);
 	const id = url.searchParams.get('id');
 
-	if (!user) throw new UnauthorizedException();
 	if (!id) throw new BadRequestException('Missing forecast id');
 
 	const result = await db

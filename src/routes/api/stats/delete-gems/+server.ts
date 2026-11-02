@@ -5,7 +5,6 @@
  */
 
 import { BadRequestException } from '#lib/exception/http/bad-request-exception.js';
-import { UnauthorizedException } from '#lib/exception/http/unauthorized-exception.js';
 import { db } from '#lib/server/db/index.js';
 import { gem } from '#lib/server/db/schemas/gem.schema.js';
 import { lazyUpdateStats } from '#lib/server/services/stats.service.js';
@@ -15,10 +14,6 @@ import { and, eq } from 'drizzle-orm';
 
 export const DELETE = createApiRoute(async ({ cookies, url }) => {
 	const user = await verifyAuth(cookies);
-
-	if (!user) {
-		throw new UnauthorizedException();
-	}
 
 	const urlParams = new URLSearchParams(url.search);
 	const id: string | null = urlParams.get('id');

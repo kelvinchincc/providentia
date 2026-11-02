@@ -8,7 +8,6 @@ import { NULL_UUID } from '#lib/constants/values.js';
 import { BadRequestException } from '#lib/exception/http/bad-request-exception.js';
 import { InternalServerErrorException } from '#lib/exception/http/internal-server-error-exception.js';
 import { NotFoundException } from '#lib/exception/http/not-found-exception.js';
-import { UnauthorizedException } from '#lib/exception/http/unauthorized-exception.js';
 import { createOkApiResponse } from '#lib/schema/api/base.js';
 import {
 	pagedGemHistoryArraySchema,
@@ -61,10 +60,6 @@ export const GET = createApiRoute(async ({ url, cookies }) => {
 export const POST = createApiRoute(async ({ cookies, request }) => {
 	const user = await verifyAuth(cookies);
 
-	if (!user) {
-		throw new UnauthorizedException();
-	}
-
 	const body: LogGemApiRequest = await (async () => {
 		try {
 			return await request.json();
@@ -99,8 +94,6 @@ export const POST = createApiRoute(async ({ cookies, request }) => {
 
 export const PUT = createApiRoute(async ({ cookies, request }) => {
 	const user = await verifyAuth(cookies);
-
-	if (!user) throw new UnauthorizedException();
 
 	const body: UpdateGemSchema = await request.json();
 
@@ -151,10 +144,6 @@ export const PUT = createApiRoute(async ({ cookies, request }) => {
 
 export const DELETE = createApiRoute(async ({ cookies, url }) => {
 	const user = await verifyAuth(cookies);
-
-	if (!user) {
-		throw new UnauthorizedException();
-	}
 
 	const urlParams = new URLSearchParams(url.search);
 	const id: string | null = urlParams.get('id');
