@@ -8,6 +8,7 @@
 	import { createForm } from '@tanstack/svelte-form';
 	import { dispatch } from '#lib/client/utils/timing.js';
 	import { createRegisterMutation } from '#lib/client/services/providentia/mutations/register-mutation.js';
+	import { cn } from '#lib/client/utils/cn.js';
 
 	const registerMutation = createRegisterMutation();
 
@@ -47,7 +48,11 @@
 		>
 			<form.Field name="username">
 				{#snippet children(field)}
-					<label class="input w-full">
+					<label
+						class={cn('input w-full', {
+							'border-error': field.state.meta.errors.length > 0
+						})}
+					>
 						<span><i class="fas fa-user"></i></span>
 						<input
 							type="text"
@@ -65,7 +70,11 @@
 
 			<form.Field name="password">
 				{#snippet children(field)}
-					<label class="input w-full">
+					<label
+						class={cn('input w-full', {
+							'border-error': field.state.meta.errors.length > 0
+						})}
+					>
 						<span><i class="fas fa-lock"></i></span>
 						<input
 							type="password"
@@ -83,7 +92,11 @@
 
 			<form.Field name="confirmPassword">
 				{#snippet children(field)}
-					<label class="input w-full">
+					<label
+						class={cn('input w-full', {
+							'border-error': field.state.meta.errors.length > 0
+						})}
+					>
 						<span><i class="fas fa-lock"></i></span>
 						<input
 							type="password"
