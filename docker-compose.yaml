@@ -1,5 +1,6 @@
 services:
     providentia:
+        # image: ghcr.io/kelvinchincc/providentia:latest
         build:
             context: .
             dockerfile: dockerfile
