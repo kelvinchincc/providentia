@@ -12,3 +12,8 @@ window_width = 120
 indent_size = 4
 indent_style = space
 window_width = 120
+
+[*.yml]
+indent_size = 4
+indent_style = space
+window_width = 120

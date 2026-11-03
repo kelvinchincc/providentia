@@ -7,7 +7,8 @@ const config = {
 	plugins: ['prettier-plugin-svelte', 'prettier-plugin-tailwindcss'],
 	overrides: [
 		{ files: '*.svelte', options: { parser: 'svelte' } },
-		{ files: '*.yaml', options: { parser: 'yaml', useTabs: false } }
+		{ files: '*.yaml', options: { parser: 'yaml', useTabs: false } },
+		{ files: '*.yml', options: { parser: 'yaml', useTabs: false } }
 	],
 	tailwindStylesheet: './src/routes/layout.css'
 };
