@@ -30,6 +30,9 @@ vite.config.ts.timestamp-*
 *.db-shm
 *.db-wal
 
+# Testbed
+/demo
+
 # Editor
 /.vscode
 /.zed

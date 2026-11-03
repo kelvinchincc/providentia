@@ -29,3 +29,6 @@ vite.config.ts.timestamp-*
 *.db
 *.db-shm
 *.db-wal
+
+# Testbed
+/demo
