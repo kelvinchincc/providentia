@@ -2,7 +2,7 @@
 
 Gacha game "currency" tracker and planner. Log the gems you earn and spend, see your totals, and forecast whether you can afford a target pull or copy by a given date.
 
-[screenshot here]
+![screenshot](screenshot.webp)
 
 ## Features
 

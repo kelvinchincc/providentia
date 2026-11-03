@@ -39,3 +39,6 @@ vite.config.ts.timestamp-*
 /api-doc
 /data
 /scripts
+
+# Repo Assets
+/screenshot.png
