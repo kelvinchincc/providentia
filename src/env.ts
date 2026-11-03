@@ -1,11 +1,15 @@
 import { defineEnvVars } from '@sveltejs/kit/env';
+import { building } from '$app/env';
 
+// Skip validation while building (e.g. `docker build`, where `.env` is not in the context).
+// Runtime still validates on server start.
 const required = (name: string) => (input: string | undefined) => {
-	if (!input) throw new Error(`Missing required environment variable: ${name}`);
+	if (!input && !building) throw new Error(`Missing required environment variable: ${name}`);
 	return input;
 };
 
 const number = (name: string) => (input: string | undefined) => {
+	if (building && !input) return 0;
 	const value = Number(required(name)(input));
 	if (Number.isNaN(value) || value <= 0)
 		throw new Error(`Invalid environment variable: ${name} must be a positive number`);

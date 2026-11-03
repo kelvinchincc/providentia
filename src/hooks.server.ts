@@ -9,10 +9,10 @@ import { runMigrations } from '#lib/server/db/migrate.js';
 import { needInitializationCheck } from '#lib/server/utils/healthcheck.js';
 import { logger } from '#lib/server/utils/logger.js';
 import { dev } from '$app/env';
-import { APP_URL } from '$app/env/private';
 import { redirect } from '@sveltejs/kit';
 import type { Handle, ServerInit } from '@sveltejs/kit/hooks';
 import { sql } from 'drizzle-orm';
+import { resolve as resolvePath } from '$app/paths';
 
 const JOURNAL_MODE: 'WAL' | 'DELETE' = 'WAL';
 
@@ -55,7 +55,7 @@ export const handle: Handle = async ({ event, resolve }) => {
 	} catch (error) {
 		if (error instanceof Error && error.message === 'redirect-need-initialization') {
 			logger.info('Redirecting to setup page due to uninitialized state.');
-			throw redirect(301, `${APP_URL}/setup`);
+			throw redirect(301, resolvePath('setup'));
 		} else {
 			logger.error(
 				'Healthcheck failed: ' + (error instanceof Error ? error.message : String(error))
