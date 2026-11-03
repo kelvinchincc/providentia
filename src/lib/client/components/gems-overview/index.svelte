@@ -41,7 +41,7 @@
 		{@render stat(`Free ${GEM_UNIT}`, data?.free ?? 0, 'Earned from the game')}
 		{@render stat(`Paid ${GEM_UNIT}`, data?.paid ?? 0, 'Purchased from store')}
 		{@render stat(`Pull Count`, data?.pullCount ?? 0, 'Total number of pulls')}
-		{@render stat('Lenear Rewards', data?.linearAvg ?? 0, 'Login rewards')}
+		{@render stat('Daily Average Rewards', data?.linearAvg ?? 0, 'Average login rewards')}
 		{@render stat('30 Days Gain Average', data?.monthlyAvg ?? 0, 'Average 30 days gain')}
 	</section>
 
@@ -70,7 +70,7 @@
 			<div>Pull Count</div>
 			<div class="text-right">{data?.pullCount.toLocaleString() ?? 0}</div>
 
-			<div>Lenear Rewards</div>
+			<div>Daily Average Rewards</div>
 			<div class="text-right">{data?.linearAvg.toLocaleString() ?? 0}</div>
 
 			<div>30 Days Gain Average</div>
