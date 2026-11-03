@@ -15,7 +15,7 @@
 			name: 'Statistics icons created by Magnific - Flaticon',
 			url: 'https://www.flaticon.com/free-icons/statistics'
 		}
-	];
+	].sort((a, b) => a.name.localeCompare(b.name));
 
 	const libCredits = [
 		{
