@@ -63,7 +63,7 @@
 {@render largeObtainHistoryTable()}
 
 {#snippet largeObtainHistoryTable()}
-	<section class="mx-auto max-w-200 max-[560px]:hidden">
+	<section class="mx-auto max-w-200 max-[680px]:hidden">
 		{#if gemsHistoryQuery.isError}
 			<div role="alert" class="alert alert-outline alert-error">
 				<i class="fa-solid fa-triangle-exclamation"></i>
@@ -100,9 +100,7 @@
 									<td class={cn('text-right', { 'text-error': item.amount < 0 })}
 										>{item.amount}</td
 									>
-									<td class="max-[665px]:hidden"
-										>{formatDateTime(item.obtainedAt)}</td
-									>
+									<td>{formatDateTime(item.obtainedAt)}</td>
 									<td class="max-[800px]:hidden"
 										>{formatDateTime(item.updatedAt)}</td
 									>
@@ -170,7 +168,7 @@
 {/snippet}
 
 {#snippet smallObtainHistoryList()}
-	<section class="flex flex-col gap-3 min-[560px]:hidden">
+	<section class="flex flex-col gap-3 min-[680px]:hidden">
 		{#if gemsHistoryQuery.isError}
 			<div role="alert" class="alert alert-outline alert-error">
 				<i class="fa-solid fa-triangle-exclamation"></i>
@@ -238,12 +236,7 @@
 				<div class="loading loading-lg loading-dots"></div>
 			</div>
 		{:else}
-			<footer
-				class={cn(
-					'mx-auto w-[min(300px,100%)]',
-					'grid grid-cols-[repeat(auto-fill,minmax(calc(150px-0.5rem),1fr))] gap-2'
-				)}
-			>
+			<footer class={cn('mx-auto w-[min(300px,100%)]', 'grid grid-rows-2 gap-2')}>
 				<button
 					class="btn btn-block btn-secondary"
 					disabled={gemsHistoryQuery.isFetchingNextPage || !gemsHistoryQuery.hasNextPage}

@@ -63,10 +63,9 @@
 />
 
 <section
-	class={cn('tooltip card flex flex-col rounded-lg bg-base-200 p-4', {
+	class={cn('card flex flex-col rounded-lg bg-base-200 p-4', {
 		'bg-base-200/35': item.hadPassed
 	})}
-	data-tip={item.name}
 >
 	<header class="mb-2 flex items-center justify-between">
 		<h2

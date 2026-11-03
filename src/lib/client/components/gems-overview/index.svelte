@@ -13,21 +13,19 @@
 </script>
 
 {#snippet stat(label: string, amount: number, description?: string)}
-	<div class="tooltip min-w-0" data-tip={amount}>
-		<div class="stats w-full cursor-default bg-base-200 shadow-lg select-none">
-			<div class="stat min-w-0">
-				<div class="stat-title">{label}</div>
-				{#if isLoading || isRefetching}
-					<div class="my-2 h-8 w-16 skeleton"></div>
-				{:else}
-					<div class="stat-value truncate overflow-hidden">
-						{amount.toLocaleString()}
-					</div>
-				{/if}
-				{#if description}
-					<div class="stat-desc wrap-break-word whitespace-normal">{description}</div>
-				{/if}
-			</div>
+	<div class="stats w-full cursor-default bg-base-200 shadow-lg select-none">
+		<div class="stat min-w-0">
+			<div class="stat-title">{label}</div>
+			{#if isLoading || isRefetching}
+				<div class="my-2 h-8 w-16 skeleton"></div>
+			{:else}
+				<div class="stat-value truncate overflow-hidden">
+					{amount.toLocaleString()}
+				</div>
+			{/if}
+			{#if description}
+				<div class="stat-desc wrap-break-word whitespace-normal">{description}</div>
+			{/if}
 		</div>
 	</div>
 {/snippet}
