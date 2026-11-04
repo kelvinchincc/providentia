@@ -56,15 +56,19 @@ export const handle: Handle = async ({ event, resolve }) => {
 
 		// if already initialized and user is trying to access setup page, redirect to home
 		if (!needInitialization && isSetupPath) {
-			throw redirect(301, resolvePath('/'));
+			throw new Error('redirect-go-home');
 		}
 	} catch (error) {
 		if (error instanceof Error && error.message === 'redirect-need-initialization') {
 			logger.info('Redirecting to setup page due to uninitialized state.');
 			throw redirect(301, resolvePath('setup'));
+		} else if (error instanceof Error && error.message === 'redirect-go-home') {
+			logger.info('Redirecting to home page as setup is already completed.');
+			throw redirect(301, resolvePath('/'));
 		} else {
 			logger.error(
-				'Healthcheck failed: ' + (error instanceof Error ? error.message : String(error))
+				'Healthcheck failed: ' +
+					(error instanceof Error ? error.message : JSON.stringify(error))
 			);
 			return new Response('Service Unavailable', { status: 503 });
 		}
