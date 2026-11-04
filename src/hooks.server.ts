@@ -40,7 +40,6 @@ export const init: ServerInit = async () => {
 };
 
 export const handle: Handle = async ({ event, resolve }) => {
-	if (event.url.pathname === '/setup') return resolve(event);
 	// Skip healthcheck for static assets (e.g., .js, .css, .png, etc.)
 	if (event.url.pathname.split('.').length > 1) return resolve(event);
 
@@ -48,9 +47,16 @@ export const handle: Handle = async ({ event, resolve }) => {
 	if (event.url.pathname.startsWith('/api')) return resolve(event);
 
 	try {
+		const path = event.url.pathname;
+		const isSetupPath = path === '/setup' || path.startsWith('/setup/');
 		const needInitialization = await needInitializationCheck();
-		if (needInitialization) {
+		if (needInitialization && !isSetupPath) {
 			throw new Error('redirect-need-initialization');
+		}
+
+		// if already initialized and user is trying to access setup page, redirect to home
+		if (!needInitialization && isSetupPath) {
+			throw redirect(301, resolvePath('/'));
 		}
 	} catch (error) {
 		if (error instanceof Error && error.message === 'redirect-need-initialization') {
