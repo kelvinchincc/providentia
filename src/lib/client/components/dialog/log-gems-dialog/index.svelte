@@ -61,7 +61,7 @@
 		}
 	}));
 
-	const presets = notePresetsQuery.data ?? [];
+	const presets = $derived(notePresetsQuery.data ?? []);
 
 	let mode = $state<'direct' | 'delta'>('delta');
 
