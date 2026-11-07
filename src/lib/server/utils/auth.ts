@@ -18,6 +18,7 @@ import { db } from '../db';
 import { eq } from 'drizzle-orm';
 import { user, user as userRepo } from '../db/schemas';
 import { AUTH_COOKIE_TTL, COOKIE_OPTIONS, REFRESH_COOKIE_TTL } from '#lib/constants/cookies.js';
+import dayjs from 'dayjs';
 
 export function getJWTSecret() {
 	const jwtSecret = JWT_SECRET;
@@ -74,9 +75,10 @@ export async function signJWTSecret(payload: JWTPayload) {
 		throw new InvalidJWTPayloadException('Invalid JWT payload');
 	}
 
+	const now = dayjs().subtract(1, 'day').unix();
 	const signed = await new jose.SignJWT(payload)
 		.setProtectedHeader({ alg: 'HS256' })
-		.setIssuedAt()
+		.setIssuedAt(now)
 		.setExpirationTime(payload.t === JWTType.ACCESS ? AUTH_COOKIE_TTL : REFRESH_COOKIE_TTL)
 		.sign(new TextEncoder().encode(getJWTSecret()));
 	return signed;
