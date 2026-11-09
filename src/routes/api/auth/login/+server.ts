@@ -75,8 +75,16 @@ export const POST = createApiRoute(async ({ request, cookies }) => {
 			s: user.refreshTokenSeed
 		});
 
-		cookies.set(COOKIE_OPTIONS.AUTH_COOKIE, jwt, { sameSite: 'strict' });
-		cookies.set(COOKIE_OPTIONS.REFRESH_COOKIE, refreshJwt, { sameSite: 'strict' });
+		cookies.set(COOKIE_OPTIONS.AUTH_COOKIE, jwt, {
+			sameSite: 'strict',
+			path: '/',
+			maxAge: AUTH_COOKIE_TTL_MS / 1000
+		});
+		cookies.set(COOKIE_OPTIONS.REFRESH_COOKIE, refreshJwt, {
+			sameSite: 'strict',
+			path: '/',
+			maxAge: REFRESH_COOKIE_TTL_MS / 1000
+		});
 
 		const response: LoginApiData = {
 			username: user.username,
