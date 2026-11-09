@@ -100,18 +100,28 @@ export async function verifyJWTSecret(token: string, type: JWTPayload['t']) {
 		const user = await db.query.user.findFirst({ where: eq(userRepo.id, userId) });
 
 		if (!user) {
+			logger.info(`Cannot find user ${userId}`);
 			return null;
 		}
 
 		const seed = type === 'a' ? user.jwtSeed : user.refreshTokenSeed;
 
 		if (payload.s !== seed || payload.t !== type) {
+			logger.info(
+				`Payload seed is not identical: get ${JSON.stringify({
+					seed: payload.s,
+					type: payload.t
+				})}, required ${JSON.stringify({
+					seed,
+					type
+				})}`
+			);
 			return null;
 		}
 
 		return user;
 	} catch (error) {
-		logger.error('Error verifying JWT:', error);
+		logger.error('Error verifying JWT:', error instanceof Error ? error.message : error);
 		return null;
 	}
 }
@@ -128,11 +138,13 @@ export async function verifyAuth(cookies: Cookies, jwtType: JWTPayload['t'] = JW
 	const cookie =
 		jwtType === JWTType.ACCESS ? COOKIE_OPTIONS.AUTH_COOKIE : COOKIE_OPTIONS.REFRESH_COOKIE;
 	const token = cookies.get(cookie);
+	logger.info(`token: ${token}`);
 	if (token == null || token === '') {
 		throw new UnauthorizedException();
 	}
 
 	const jwtPayload = await verifyJWTSecret(token, jwtType);
+	logger.info(`JWT Payload: ${JSON.stringify(jwtPayload)}`);
 
 	if (jwtPayload == null) throw new UnauthorizedException();
 

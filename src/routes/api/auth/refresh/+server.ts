@@ -4,12 +4,17 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import { AUTH_COOKIE_TTL_MS, REFRESH_COOKIE_TTL_MS } from '#lib/constants/cookies.js';
+import {
+	AUTH_COOKIE_TTL_MS,
+	COOKIE_OPTIONS,
+	REFRESH_COOKIE_TTL_MS
+} from '#lib/constants/cookies.js';
 import { createOkApiResponse } from '#lib/schema/api/base.js';
 import { loginApiDataSchema, type LoginApiData } from '#lib/schema/api/login.js';
 import { JWTType } from '#lib/schema/base/jwt.js';
 import { createApiRoute, okResponse } from '#lib/server/utils/api.js';
 import { signJWTSecret, verifyAuth } from '#lib/server/utils/auth.js';
+import { logger } from '#lib/server/utils/logger.js';
 
 /**
  * Rotates the auth and refresh cookies using a valid refresh token.
@@ -23,6 +28,9 @@ import { signJWTSecret, verifyAuth } from '#lib/server/utils/auth.js';
  * @throws {UnauthorizedException} 401 if the refresh cookie is missing or invalid.
  */
 export const POST = createApiRoute(async ({ cookies }) => {
+	logger.info(
+		`auth cookie: ${cookies.get(COOKIE_OPTIONS.AUTH_COOKIE)}, ref cookie: ${cookies.get(COOKIE_OPTIONS.REFRESH_COOKIE)}`
+	);
 	const user = await verifyAuth(cookies, JWTType.REFRESH);
 
 	const newAuthJWT = await signJWTSecret({
