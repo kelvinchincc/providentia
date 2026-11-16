@@ -51,7 +51,7 @@
 		}
 	}));
 
-	const presets = notePresetsQuery.data ?? [];
+	const presets = $derived(notePresetsQuery.data ?? []);
 
 	$effect(() => {
 		const newValues =
