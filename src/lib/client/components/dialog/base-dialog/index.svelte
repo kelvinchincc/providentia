@@ -5,6 +5,7 @@
 -->
 <script lang="ts">
 	import { cn } from '#lib/client/utils/cn.js';
+	import { onMount } from 'svelte';
 	import type { Props } from './types';
 
 	const { open, onClose, class: className, children }: Props = $props();
@@ -19,8 +20,24 @@
 			dialog.close();
 		}
 	});
+
+	onMount(() => {
+		// block escape key down event from closing the dialog
+		const handleKeyDown = (event: KeyboardEvent) => {
+			if (event.key === 'Escape') {
+				event.preventDefault();
+				event.stopPropagation();
+			}
+		};
+
+		dialog.addEventListener('keydown', handleKeyDown);
+
+		return () => {
+			dialog.removeEventListener('keydown', handleKeyDown);
+		};
+	});
 </script>
 
-<dialog bind:this={dialog} class="modal">
+<dialog bind:this={dialog} class="modal" oncancel={(event) => event.preventDefault()}>
 	<section class={cn('modal-box', className)}>{@render children()}</section>
 </dialog>
